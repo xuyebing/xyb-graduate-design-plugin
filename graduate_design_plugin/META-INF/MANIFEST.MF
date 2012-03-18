@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Graduate_design_plugin
+Bundle-SymbolicName: graduate_design_plugin
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: graduate_design_plugin.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
