@@ -2,7 +2,7 @@ package buaa.sei.xyb.common;
 /**
  * 
  * @author Xu Yebing
- * Word 鍖呭惈涓�涓瘝璇殑閲嶈淇℃伅
+ * Word 包含一个词语的重要信息
  */
 public class Word {
 

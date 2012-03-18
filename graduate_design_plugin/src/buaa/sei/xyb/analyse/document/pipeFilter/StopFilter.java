@@ -10,22 +10,22 @@ import java.util.Set;
 /**
  * 
  * @author Xu Yebing
- * StopFilterç±»ï¼Œç”¨äºå¯¹ä¸­æ–‡åˆ†è¯ç»“æœè¿›è¡Œåœç”¨è¯è¿‡æ»¤ï¼Œå»é™¤å…¶ä¸­åœç”¨çš„è¯æ±‡
+ * StopFilterÀà£¬ÓÃÓÚ¶ÔÖĞÎÄ·Ö´Ê½á¹û½øĞĞÍ£ÓÃ´Ê¹ıÂË£¬È¥³ıÆäÖĞÍ£ÓÃµÄ´Ê»ã
  *
  */
 public class StopFilter {
-  private Set<String> stopWordSet = null; // åœç”¨è¯é›†åˆ
+  private Set<String> stopWordSet = null; // Í£ÓÃ´Ê¼¯ºÏ
   /**
-   * initStopWordSet åˆå§‹åŒ–åœç”¨è¯é›†åˆ,
-   * @param stopWordFilePath åŒ…å«åœç”¨è¯çš„æ–‡ä»¶çš„ç»å¯¹è·¯å¾„
-   * @return åˆå§‹åŒ–æˆåŠŸè¿”å›true,å¤±è´¥è¿”å›false
+   * initStopWordSet ³õÊ¼»¯Í£ÓÃ´Ê¼¯ºÏ,
+   * @param stopWordFilePath °üº¬Í£ÓÃ´ÊµÄÎÄ¼şµÄ¾ø¶ÔÂ·¾¶
+   * @return ³õÊ¼»¯³É¹¦·µ»Øtrue,Ê§°Ü·µ»Øfalse
    * @throws IOException 
    */
   public boolean initStopWordSet(String stopWordFilePath) throws IOException {
     File stopWordFile = new File(stopWordFilePath);
     if (!stopWordFile.exists() || stopWordFile.isDirectory() || stopWordFile.isHidden())
       return false;
-    // æ–‡ä»¶ä¸­ä¸€è¡Œæ˜¯ä¸€ä¸ªåœç”¨è¯ï¼ˆä¸ºäº†ä¿è¯å¯æ‰©å±•æ€§ï¼Œé‡‡ç”¨æ­£åˆ™è¡¨è¾¾å¼"\\s"è¿›è¡Œåˆ’åˆ†ï¼‰
+    // ÎÄ¼şÖĞÒ»ĞĞÊÇÒ»¸öÍ£ÓÃ´Ê£¨ÎªÁË±£Ö¤¿ÉÀ©Õ¹ĞÔ£¬²ÉÓÃÕıÔò±í´ïÊ½"\\s"½øĞĞ»®·Ö£©
     BufferedReader br = new BufferedReader(new FileReader(stopWordFile));
     String lineContent;
     while ((lineContent = br.readLine()) != null) {
@@ -33,27 +33,27 @@ public class StopFilter {
       if (lineWords.length > 0) {
         if (stopWordSet == null)
           stopWordSet = new HashSet<String>();
-        stopWordSet.addAll(Arrays.asList(lineWords)); // å°†Stringæ•°ç»„lineWordsä¸­çš„å…ƒç´ å…¨éƒ¨æ·»åŠ åˆ°stopWordSetä¸­
+        stopWordSet.addAll(Arrays.asList(lineWords)); // ½«StringÊı×élineWordsÖĞµÄÔªËØÈ«²¿Ìí¼Óµ½stopWordSetÖĞ
       }
     }
     br.close();
     return true;
   }
   /**
-   * filterStopWord å¯¹æ¯ä¸ªæ–‡æ¡£æ®µçš„åˆ†è¯ç»“æœè¿›è¡Œå»åœç”¨è¯å¤„ç†
-   * @param docWordsContent æ–‡æ¡£æ®µåˆ†è¯åçš„å†…å®¹
-   * @return åˆ†è¯åçš„ç»“æœ,è¿”å›åå°†è¢«å†™å…¥æ–‡ä»¶ä¸­
+   * filterStopWord ¶ÔÃ¿¸öÎÄµµ¶ÎµÄ·Ö´Ê½á¹û½øĞĞÈ¥Í£ÓÃ´Ê´¦Àí
+   * @param docWordsContent ÎÄµµ¶Î·Ö´ÊºóµÄÄÚÈİ
+   * @return ·Ö´ÊºóµÄ½á¹û,·µ»Øºó½«±»Ğ´ÈëÎÄ¼şÖĞ
    */
   public String filterStopWord(String docWordsContent) {
-    if (stopWordSet == null) { // æ²¡æœ‰åœç”¨è¯
-      System.out.println("======>> æ²¡æœ‰åœç”¨è¯ <<=======");
+    if (stopWordSet == null) { // Ã»ÓĞÍ£ÓÃ´Ê
+      System.out.println("======>> Ã»ÓĞÍ£ÓÃ´Ê <<=======");
       return docWordsContent;
     }
-    // å¯¹docWordsContentè¿›è¡Œåˆ’åˆ†ï¼Œå–å¾—æ¯ä¸ªè¯è¯­ï¼Œåˆ¤æ–­è¯¥è¯è¯­æ˜¯å¦è¢«åŒ…å«åœ¨åœç”¨è¯é›†åˆä¸­ï¼Œå¦‚æœæ˜¯ï¼Œåˆ™åˆ é™¤
-    String filteredContent = ""; // ä¿å­˜è¿‡æ»¤ç»“æœï¼Œç”¨äºè¿”å›
+    // ¶ÔdocWordsContent½øĞĞ»®·Ö£¬È¡µÃÃ¿¸ö´ÊÓï£¬ÅĞ¶Ï¸Ã´ÊÓïÊÇ·ñ±»°üº¬ÔÚÍ£ÓÃ´Ê¼¯ºÏÖĞ£¬Èç¹ûÊÇ£¬ÔòÉ¾³ı
+    String filteredContent = ""; // ±£´æ¹ıÂË½á¹û£¬ÓÃÓÚ·µ»Ø
     String[] docWords = docWordsContent.split("\\s");
     for (String word : docWords) {
-      // å°†ä¸æ˜¯æ•°å­—å’Œç¬¦å·ç»„æˆçš„ä¸²(NumWithPunctuate)ã€ä¸æ˜¯åœç”¨è¯çš„è¯è¯­åŠ å…¥filteredContentä¸­
+      // ½«²»ÊÇÊı×ÖºÍ·ûºÅ×é³ÉµÄ´®(NumWithPunctuate)¡¢²»ÊÇÍ£ÓÃ´ÊµÄ´ÊÓï¼ÓÈëfilteredContentÖĞ
       if (!NumberFilter.isNumWithPunctuate(word) && !stopWordSet.contains(word)) 
         filteredContent += word + " ";
     }

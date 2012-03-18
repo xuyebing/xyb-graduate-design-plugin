@@ -11,7 +11,7 @@ import org.eclipse.jdt.internal.core.JavaElement;
 /**
  * 
  * @author Xu Yebing
- * JavaProjectVisitor 鐢ㄤ簬鑾峰彇java椤圭洰涓殑.java鏂囦欢
+ * JavaProjectVisitor 用于获取java项目中的.java文件
  */
 public class JavaProjectVisitor {
 

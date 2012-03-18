@@ -18,49 +18,49 @@ import buaa.sei.xyb.common.GlobalVariant;
 /**
  * 
  * @author Xu Yebing
- * DocumentAccess è¿›è¡Œæ–‡æ¡£åˆ†æçš„ä¸»ç±»ï¼Œæ§åˆ¶æ–‡æ¡£åˆ†æçš„è¿‡ç¨‹
+ * DocumentAccess ½øĞĞÎÄµµ·ÖÎöµÄÖ÷Àà£¬¿ØÖÆÎÄµµ·ÖÎöµÄ¹ı³Ì
  */
 public class DocumentAccess {
 
-	// pOutlineLevelsçš„æ¯ä¸ªå…ƒç´ ä¿å­˜ä¸€ä¸ªæ–‡æ¡£çš„å¤§çº²çº§åˆ«ã€‚ 
+	// pOutlineLevelsµÄÃ¿¸öÔªËØ±£´æÒ»¸öÎÄµµµÄ´ó¸Ù¼¶±ğ¡£ 
 	public static Vector<Vector<Integer>> pOutlineLevels = new Vector<Vector<Integer>>();
-	// tableAtDocsä¿å­˜æ–‡æ¡£ä¸­è¡¨æ ¼çš„æ‰€åœ¨çš„æ®µè½å·,ä¸tableStartIndexé…åˆä½¿ç”¨ã€‚
+	// tableAtDocs±£´æÎÄµµÖĞ±í¸ñµÄËùÔÚµÄ¶ÎÂäºÅ,ÓëtableStartIndexÅäºÏÊ¹ÓÃ¡£
 	public static Vector<Vector<Integer>> tableAtDocs = new Vector<Vector<Integer>>();
-	// contextsä¸­çš„æ¯ä¸ªå…ƒç´ ä¿å­˜ä¸€ä¸ªæ–‡æ¡£çš„æ‰€æœ‰æ®µè½ã€‚
+	// contextsÖĞµÄÃ¿¸öÔªËØ±£´æÒ»¸öÎÄµµµÄËùÓĞ¶ÎÂä¡£
 	public static Vector<String []> contexts = new Vector<String[]>();
-	// paraBEatDocs å…¶ä¸‹æ ‡ä¸pOutlineLevelsä»¥åŠcontextsçš„ä¸‹æ ‡ä¿æŒå¯¹åº”
+	// paraBEatDocs ÆäÏÂ±êÓëpOutlineLevelsÒÔ¼°contextsµÄÏÂ±ê±£³Ö¶ÔÓ¦
 	public static Vector<Vector<int[]>> paraBEatDocs = new Vector<Vector<int[]>>();
-	// tableStartIndex ä¿å­˜æ¯ä¸ªæ–‡æ¡£çš„è¡¨æ ¼èµ·å§‹çš„åºå·ï¼ˆåœ¨WordDocParserçš„divideResultä¸­ï¼‰
+	// tableStartIndex ±£´æÃ¿¸öÎÄµµµÄ±í¸ñÆğÊ¼µÄĞòºÅ£¨ÔÚWordDocParserµÄdivideResultÖĞ£©
 	public static Vector<Integer> tableStartIndex = new Vector<Integer>();
-	// foldersToAnalyze å¾…åˆ†ææ–‡æ¡£çš„ç›®å½•é›†åˆï¼Œåˆ†æé¡ºåºæ˜¯å…ˆè¿›å…ˆå‡º
+	// foldersToAnalyze ´ı·ÖÎöÎÄµµµÄÄ¿Â¼¼¯ºÏ£¬·ÖÎöË³ĞòÊÇÏÈ½øÏÈ³ö
 	public static List<String> foldersToAnalyze;
 	
-	public static String resultPath = "D:\\ttmp_1"; // ä¿å­˜åˆ†æç»“æœçš„è·¯å¾„
-	public static String toolPath = "D:\\tool"; // åŒ…å«æœ‰ç”¨çš„æ–‡ä»¶ï¼ˆè¯å…¸ã€æ•°æ®è¯å…¸ã€åœç”¨è¯æ–‡ä»¶ç­‰ï¼‰çš„æ–‡ä»¶å¤¹ï¼ˆç»å¯¹è·¯å¾„ï¼‰
+	public static String resultPath = "D:\\ttmp_1"; // ±£´æ·ÖÎö½á¹ûµÄÂ·¾¶
+	public static String toolPath = "D:\\tool"; // °üº¬ÓĞÓÃµÄÎÄ¼ş£¨´Êµä¡¢Êı¾İ´Êµä¡¢Í£ÓÃ´ÊÎÄ¼şµÈ£©µÄÎÄ¼ş¼Ğ£¨¾ø¶ÔÂ·¾¶£©
 	
-	public static String stopWordFilePath = "D:\\ç¡•å£«å¼€é¢˜\\ä¸­æ–‡åœç”¨è¯\\stopword1.txt"; // ä¸´æ—¶ä½¿ç”¨
+	public static String stopWordFilePath = "D:\\Ë¶Ê¿¿ªÌâ\\ÖĞÎÄÍ£ÓÃ´Ê\\stopword1.txt"; // ÁÙÊ±Ê¹ÓÃ
 	/**
-	 * executeStopFilter æ‰§è¡Œå»åœç”¨è¯çš„æ“ä½œ
-	 * @return æ‰§è¡ŒæˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
+	 * executeStopFilter Ö´ĞĞÈ¥Í£ÓÃ´ÊµÄ²Ù×÷
+	 * @return Ö´ĞĞ³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
 	 * @throws IOException
 	 */
 	public static boolean executeStopFilter() throws IOException {
 		StopFilter stopFilter = new StopFilter();
-		stopFilter.initStopWordSet(stopWordFilePath); // åˆå§‹åŒ–åœç”¨è¯é›†åˆ
-		// åˆ›å»ºä¿å­˜åˆ†è¯ç»“æœçš„æ–‡ä»¶å¤¹
+		stopFilter.initStopWordSet(stopWordFilePath); // ³õÊ¼»¯Í£ÓÃ´Ê¼¯ºÏ
+		// ´´½¨±£´æ·Ö´Ê½á¹ûµÄÎÄ¼ş¼Ğ
 		String filteredFolderPath = resultPath + Constant.FILE_SEPARATOR + Constant.FILTERED_DIR + Constant.FILE_SEPARATOR + Constant.globalCategoryID;
 		File filteredFolder = new File(filteredFolderPath);
 		if (!filteredFolder.exists() || !filteredFolder.isDirectory()) {
 			if (!filteredFolder.mkdirs()) {
-				System.out.println("=====>>Error: filteredFolder æ²¡æœ‰åˆ›å»ºæˆåŠŸ <<=====");
-				return false; // ç›®å½•æ²¡æœ‰åˆ›å»ºæˆåŠŸï¼Œåˆ™è¿”å›
+				System.out.println("=====>>Error: filteredFolder Ã»ÓĞ´´½¨³É¹¦ <<=====");
+				return false; // Ä¿Â¼Ã»ÓĞ´´½¨³É¹¦£¬Ôò·µ»Ø
 			}
 		}
-		// åˆ†æjeæ–‡ä»¶å¤¹ä¸‹ç¬¬globalCategoryIDç±»åˆ†è¯æ–‡ä»¶é›†åˆ
+		// ·ÖÎöjeÎÄ¼ş¼ĞÏÂµÚglobalCategoryIDÀà·Ö´ÊÎÄ¼ş¼¯ºÏ
 		String docWordsFolderPath = resultPath + Constant.FILE_SEPARATOR + Constant.SEGMENT_DIR + Constant.FILE_SEPARATOR + Constant.globalCategoryID;
 		File docWordsFolder = new File(docWordsFolderPath);
 		if (docWordsFolder.exists() && docWordsFolder.isDirectory()) {
-			// éå†æ–‡ä»¶å¤¹ï¼Œè·å¾—å…¶ä¸‹çš„æ‰€æœ‰txtæ–‡ä»¶ï¼ˆä¸è€ƒè™‘å­æ–‡ä»¶å¤¹å’Œå…¶ä»–ç±»å‹çš„æ–‡ä»¶ï¼‰
+			// ±éÀúÎÄ¼ş¼Ğ£¬»ñµÃÆäÏÂµÄËùÓĞtxtÎÄ¼ş£¨²»¿¼ÂÇ×ÓÎÄ¼ş¼ĞºÍÆäËûÀàĞÍµÄÎÄ¼ş£©
 			File[] docWordsFiles = docWordsFolder.listFiles();
 			for (File docWordsFile : docWordsFiles) {
 				if (docWordsFile.getName().endsWith(".txt")) {
@@ -68,18 +68,18 @@ public class DocumentAccess {
 					String docWordsContent = "";
 					String lineContent;
 					while ((lineContent = br.readLine()) != null) {
-						docWordsContent += lineContent + "\n"; //è·å¾—æ–‡æ¡£çš„å…¨éƒ¨å†…å®¹
+						docWordsContent += lineContent + "\n"; //»ñµÃÎÄµµµÄÈ«²¿ÄÚÈİ
 					}
 					String filteredContent = stopFilter.filterStopWord(docWordsContent);
-					// å°†è¿‡æ»¤åçš„å†…å®¹filteredContentå†™å…¥æ–°çš„æ–‡ä»¶ä¸­ä¿å­˜
-					// æ–°æ–‡ä»¶çš„ç»å¯¹è·¯å¾„filteredFilePath
+					// ½«¹ıÂËºóµÄÄÚÈİfilteredContentĞ´ÈëĞÂµÄÎÄ¼şÖĞ±£´æ
+					// ĞÂÎÄ¼şµÄ¾ø¶ÔÂ·¾¶filteredFilePath
 					String filteredFilePath = filteredFolderPath + Constant.FILE_SEPARATOR + docWordsFile.getName();
 					File filteredFile = new File(filteredFilePath);
 					BufferedWriter bw = new BufferedWriter(new FileWriter(filteredFile));
 					bw.write(filteredContent);
 					bw.flush();
 					bw.close();
-					// äº§ç”Ÿæ–‡æ¡£æ®µå¯¹åº”çš„æ–‡æ¡£æè¿°ç¬¦
+					// ²úÉúÎÄµµ¶Î¶ÔÓ¦µÄÎÄµµÃèÊö·û
 					createDocumentDescriptor(Constant.globalCategoryID, docWordsFile.getName(),
 							                 filteredFilePath);
 				}
@@ -88,7 +88,7 @@ public class DocumentAccess {
 		return true;
 	}
 	/**
-	 * äº§ç”Ÿæ¯ä¸ªæ–‡æ¡£æ®µçš„æ–‡æ¡£æè¿°ç¬¦
+	 * ²úÉúÃ¿¸öÎÄµµ¶ÎµÄÎÄµµÃèÊö·û
 	 */
 	private static void createDocumentDescriptor (int categoryID, String name, String path) {
 		DocumentDescriptor dd = new DocumentDescriptor(categoryID, name, path);
@@ -97,7 +97,7 @@ public class DocumentAccess {
 		GlobalVariant.docDescriptorList.add(dd);
 	}
 	/**
-	 * docProcess é€’å½’åœ°åˆ†ææ¯ä¸ªè½¯ä»¶æ–‡æ¡£æ–‡ä»¶å¤¹ä¸‹çš„æ‰€æœ‰æ–‡ä»¶
+	 * docProcess µİ¹éµØ·ÖÎöÃ¿¸öÈí¼şÎÄµµÎÄ¼ş¼ĞÏÂµÄËùÓĞÎÄ¼ş
 	 * @param docPath
 	 */
 	public static void docProcess(String docPath) {
@@ -105,7 +105,7 @@ public class DocumentAccess {
 		if (!docFile.exists())
 			return;
 		if (docFile.isDirectory()) {
-			// ä¸åˆ†æåç§°ä¸º${WordDocParser.tempDir}çš„æ–‡ä»¶å¤¹
+			// ²»·ÖÎöÃû³ÆÎª${WordDocParser.tempDir}µÄÎÄ¼ş¼Ğ
 			if (docFile.getName().contains(WordDocParser.tempDir))
 				return;
 			else {
@@ -117,19 +117,19 @@ public class DocumentAccess {
 		} else {
 			WordDocParser wdp = new WordDocParser(); 
 			try {
-				// 1. æ–‡æ¡£æ®µåˆ†å‰²ï¼ŒåŒæ—¶å¯¹æ¯ä¸ªæ–‡æ¡£æ®µè¿›è¡Œåˆ†è¯æ“ä½œ [æœ¬é˜¶æ®µçš„è¾“å‡ºåŒ…æ‹¬ï¼š1.åˆ’åˆ†å¥½çš„æ–‡æ¡£æ®µé›†åˆã€‚ 2.æ¯ä¸ªæ–‡æ¡£æ®µå¯¹åº”çš„è¯è¯­é›†åˆ]
-				// ç›®å‰ç¬¬ä¸€é˜¶æ®µå·²å®Œæˆ
-				Constant.globalCategoryID ++; // æ¯åˆ†æä¸€ä¸ªè½¯ä»¶æ–‡æ¡£ï¼Œå…¨å±€ç±»åˆ«ç´¢å¼•åŠ 1.
+				// 1. ÎÄµµ¶Î·Ö¸î£¬Í¬Ê±¶ÔÃ¿¸öÎÄµµ¶Î½øĞĞ·Ö´Ê²Ù×÷ [±¾½×¶ÎµÄÊä³ö°üÀ¨£º1.»®·ÖºÃµÄÎÄµµ¶Î¼¯ºÏ¡£ 2.Ã¿¸öÎÄµµ¶Î¶ÔÓ¦µÄ´ÊÓï¼¯ºÏ]
+				// Ä¿Ç°µÚÒ»½×¶ÎÒÑÍê³É
+				Constant.globalCategoryID ++; // Ã¿·ÖÎöÒ»¸öÈí¼şÎÄµµ£¬È«¾ÖÀà±ğË÷Òı¼Ó1.
 				
 				wdp.analyze(docPath, resultPath);
 				
-				// 2. å¯¹åˆ†è¯ç»“æœè¿›è¡Œä¸åŒæ­¥éª¤çš„å¤„ç†ï¼ˆåŒ…æ‹¬ï¼šå»æ‰åœç”¨è¯ã€æ ¹æ®æ•°æ®è¯å…¸æˆ–è¯å…¸å°†æ–‡æ¡£ä¸­çš„è‹±æ–‡è¯ç¿»è¯‘æˆä¸­æ–‡è¯ç­‰ï¼‰
-				// è€ƒè™‘ä½¿ç”¨ç±»ä¼¼lucene æ ‡å‡†åˆ†æå™¨çš„â€œç®¡é“è¿‡æ»¤å™¨â€ç»“æ„ï¼Œä½¿å¾—åˆ†æè¿‡ç¨‹æ¸…æ™°ã€æ˜ç¡®
-				// TODO æ–‡æœ¬å¤„ç†è¿‡ç¨‹
+				// 2. ¶Ô·Ö´Ê½á¹û½øĞĞ²»Í¬²½ÖèµÄ´¦Àí£¨°üÀ¨£ºÈ¥µôÍ£ÓÃ´Ê¡¢¸ù¾İÊı¾İ´Êµä»ò´Êµä½«ÎÄµµÖĞµÄÓ¢ÎÄ´Ê·­Òë³ÉÖĞÎÄ´ÊµÈ£©
+				// ¿¼ÂÇÊ¹ÓÃÀàËÆlucene ±ê×¼·ÖÎöÆ÷µÄ¡°¹ÜµÀ¹ıÂËÆ÷¡±½á¹¹£¬Ê¹µÃ·ÖÎö¹ı³ÌÇåÎú¡¢Ã÷È·
+				// TODO ÎÄ±¾´¦Àí¹ı³Ì
 				boolean stopFilterFlag = DocumentAccess.executeStopFilter();
 				if (stopFilterFlag)
-					System.out.println("=====>> æå–ç»“æŸ! <<=====");
-				// TODO è¿˜æ²¡è€ƒè™‘å¤„ç†æ–‡æ¡£ä¸­çš„è‹±æ–‡å•è¯ï¼Œè¿™éœ€è¦è€ƒè™‘æ ¹æ®å­—å…¸ï¼ˆæˆ–æ•°æ®è¯å…¸ï¼‰è¿›è¡Œç¿»è¯‘ 
+					System.out.println("=====>> ÌáÈ¡½áÊø! <<=====");
+				// TODO »¹Ã»¿¼ÂÇ´¦ÀíÎÄµµÖĞµÄÓ¢ÎÄµ¥´Ê£¬ÕâĞèÒª¿¼ÂÇ¸ù¾İ×Öµä£¨»òÊı¾İ´Êµä£©½øĞĞ·­Òë 
 				
 				
 			} catch (IOException e) {
@@ -140,7 +140,7 @@ public class DocumentAccess {
 	}
 	
 //	public static void main(String args[]) {
-//		String folderSet = "D:\\ç¡•å£«å¼€é¢˜\\5.31ç»ˆç‰ˆv1.0\\æµ‹è¯•ç”¨ä¾‹é›†\\0203\\doc"; // åŒ…å«æ‰€æœ‰å¾…åˆ†æè½¯ä»¶æ–‡æ¡£çš„æ–‡ä»¶å¤¹ç»å¯¹è·¯å¾„
+//		String folderSet = "D:\\Ë¶Ê¿¿ªÌâ\\5.31ÖÕ°æv1.0\\²âÊÔÓÃÀı¼¯\\0203\\doc"; // °üº¬ËùÓĞ´ı·ÖÎöÈí¼şÎÄµµµÄÎÄ¼ş¼Ğ¾ø¶ÔÂ·¾¶
 //		DocumentAccess.docProcess(folderSet);
 //	}
 }

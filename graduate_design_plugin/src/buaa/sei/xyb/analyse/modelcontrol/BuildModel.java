@@ -18,17 +18,17 @@ import buaa.sei.xyb.common.GlobalVariant;
 
 public class BuildModel {
 
-	public static int matrixIndex = 0; // ç”¨äºè®°å½•åˆ›å»ºçŸ©é˜µæ—¶ï¼Œæ¯ä¸ªæ–‡æ¡£æ‰€å¯¹åº”çš„çŸ©é˜µçš„è¡Œå·
-	public static final String matrixFileName = "inputMatrix.txt"; // çŸ©é˜µæ–‡ä»¶å
-	public static String matrixFilePath = ""; // ä¿å­˜çŸ©é˜µæ–‡ä»¶çš„è·¯å¾„(ä¸åŒ…å«æ–‡ä»¶å)
-	private static int docNums = 0;  // ç”¨äºè®¡ç®—inputMatrixå…±æœ‰å¤šå°‘è¡Œï¼ˆLDAçš„è¾“å…¥æ–‡ä»¶ç¬¬ä¸€è¡Œçš„å†…å®¹æ˜¯è¡Œæ•°ï¼‰
+	public static int matrixIndex = 0; // ÓÃÓÚ¼ÇÂ¼´´½¨¾ØÕóÊ±£¬Ã¿¸öÎÄµµËù¶ÔÓ¦µÄ¾ØÕóµÄĞĞºÅ
+	public static final String matrixFileName = "inputMatrix.txt"; // ¾ØÕóÎÄ¼şÃû
+	public static String matrixFilePath = ""; // ±£´æ¾ØÕóÎÄ¼şµÄÂ·¾¶(²»°üº¬ÎÄ¼şÃû)
+	private static int docNums = 0;  // ÓÃÓÚ¼ÆËãinputMatrix¹²ÓĞ¶àÉÙĞĞ£¨LDAµÄÊäÈëÎÄ¼şµÚÒ»ĞĞµÄÄÚÈİÊÇĞĞÊı£©
 	private static int codeNums = 0;
 	
 	public static void main(String[] args) {
-		// 1. æ–‡æ¡£æ®µå¤„ç†
-		String folderSet = "D:\\æ¯•è®¾ç”¨ä¾‹"; // åŒ…å«æ‰€æœ‰å¾…åˆ†æè½¯ä»¶æ–‡æ¡£çš„æ–‡ä»¶å¤¹ç»å¯¹è·¯å¾„
+		// 1. ÎÄµµ¶Î´¦Àí
+		String folderSet = "D:\\±ÏÉèÓÃÀı"; // °üº¬ËùÓĞ´ı·ÖÎöÈí¼şÎÄµµµÄÎÄ¼ş¼Ğ¾ø¶ÔÂ·¾¶
 		DocumentAccess.docProcess(folderSet);
-		// 2. ä»£ç å¤„ç†
+		// 2. ´úÂë´¦Àí
 		String projectName = "UseAST";
 		try {
 			CodeAccess.codeProcess(projectName);
@@ -36,18 +36,18 @@ public class BuildModel {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-		// 3. å»ºç«‹â€œæ–‡æ¡£-å•è¯â€çŸ©é˜µï¼Œè¯¥çŸ©é˜µçš„ä¸€è¡Œå¯¹åº”ä¸€ä¸ªæ–‡æ¡£ï¼Œæ¯è¡Œçš„å†…å®¹æ˜¯ä»æ–‡æ¡£ä¸­æå–çš„è¯è¯­é›†åˆ
-		matrixFilePath = DocumentAccess.resultPath + Constant.FILE_SEPARATOR + Constant.MATRIX_DIR; // !!éœ€è¦ä¿®æ”¹!!
+		// 3. ½¨Á¢¡°ÎÄµµ-µ¥´Ê¡±¾ØÕó£¬¸Ã¾ØÕóµÄÒ»ĞĞ¶ÔÓ¦Ò»¸öÎÄµµ£¬Ã¿ĞĞµÄÄÚÈİÊÇ´ÓÎÄµµÖĞÌáÈ¡µÄ´ÊÓï¼¯ºÏ
+		matrixFilePath = DocumentAccess.resultPath + Constant.FILE_SEPARATOR + Constant.MATRIX_DIR; // !!ĞèÒªĞŞ¸Ä!!
 		File matrixDirFile = new File(matrixFilePath);
 		if (!matrixDirFile.exists()) {
 			matrixDirFile.mkdirs();
 		}
 		File matrixFile = new File(matrixFilePath + Constant.FILE_SEPARATOR + matrixFileName);
 		if (matrixFile.exists() && !matrixFile.isDirectory()) {
-			matrixFile.delete(); // å¦‚æœåŸæ¥matrixFileæ–‡ä»¶å·²å­˜åœ¨ï¼Œåˆ™å…ˆåˆ é™¤åŸæœ‰çš„æ–‡ä»¶
+			matrixFile.delete(); // Èç¹ûÔ­À´matrixFileÎÄ¼şÒÑ´æÔÚ£¬ÔòÏÈÉ¾³ıÔ­ÓĞµÄÎÄ¼ş
 		}
 		docNums = GlobalVariant.docDescriptorList.size();
-		// codeNums = GlobalVariant.codeDescriptorList.size() //ç•™å¾…è¡¥å…¨
+		// codeNums = GlobalVariant.codeDescriptorList.size() //Áô´ı²¹È«
 		int sumNum = docNums + codeNums;
 		try {
 			BufferedWriter ibw = new BufferedWriter(new FileWriter(matrixFile, true));
@@ -59,7 +59,7 @@ public class BuildModel {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		// 3.1 å…ˆåŠ å…¥æ–‡æ¡£é›†åˆ
+		// 3.1 ÏÈ¼ÓÈëÎÄµµ¼¯ºÏ
 		for(Iterator<DocumentDescriptor> iterator = GlobalVariant.docDescriptorList.iterator();
 			iterator.hasNext(); ) {
 			DocumentDescriptor dd = iterator.next();
@@ -74,16 +74,16 @@ public class BuildModel {
 						content += line + "\n";
 					}
 					br.close();
-					content = content.replaceAll("\\s", " "); // æŠŠå†…å®¹è½¬æ¢ä¸ºä¸€è¡Œä»¥ç©ºæ ¼éš”å¼€çš„è¯è¯­
+					content = content.replaceAll("\\s", " "); // °ÑÄÚÈİ×ª»»ÎªÒ»ĞĞÒÔ¿Õ¸ñ¸ô¿ªµÄ´ÊÓï
 					content = content.trim();
 					content += "\r\n";
 					// write into the matrixFile
-					BufferedWriter bw = new BufferedWriter(new FileWriter(matrixFile, true)); // FileWriterçš„ç¬¬äºŒä¸ªå‚æ•°(booleanå€¼)ä¸ºtrue
-					                                                                          // è¡¨ç¤ºä»¥ è¿½åŠ çš„æ–¹å¼å†™å…¥
+					BufferedWriter bw = new BufferedWriter(new FileWriter(matrixFile, true)); // FileWriterµÄµÚ¶ş¸ö²ÎÊı(booleanÖµ)Îªtrue
+					                                                                          // ±íÊ¾ÒÔ ×·¼ÓµÄ·½Ê½Ğ´Èë
 					bw.write(content);
 					bw.flush();
 					bw.close();
-					// è®¾ç½®æ–‡æ¡£æè¿°ç¬¦ä¸­matrixIndexçš„å€¼
+					// ÉèÖÃÎÄµµÃèÊö·ûÖĞmatrixIndexµÄÖµ
 					dd.setMatrixIndex(matrixIndex++);
 				} catch (IOException e) {
 					e.printStackTrace();

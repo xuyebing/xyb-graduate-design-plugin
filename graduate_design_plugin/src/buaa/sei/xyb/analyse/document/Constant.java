@@ -1,14 +1,14 @@
 package buaa.sei.xyb.analyse.document;
 /**
  * @author Xu Yebing
- * Constant åŒ…å«analyse.documentåŒ…ä¸­æ‰€æœ‰ç±»æ‰€ä½¿ç”¨çš„å¸¸é‡å®šä¹‰
+ * Constant °üº¬analyse.document°üÖĞËùÓĞÀàËùÊ¹ÓÃµÄ³£Á¿¶¨Òå
  */
 public class Constant {
 
   public static final String FILE_SEPARATOR = System.getProperty("file.separator");
-  public static final String SEGMENT_DIR = "je"; // ä¿å­˜æ¯ä¸ªæ–‡æ¡£æ®µçš„åˆ†è¯ç»“æœçš„æ–‡ä»¶å¤¹
-  public static final String FILTERED_DIR = "filtered"; // ä¿å­˜è¿‡æ»¤åçš„æ–‡æœ¬æ®µè¯è¯­é›†åˆçš„ç›®å½•
+  public static final String SEGMENT_DIR = "je"; // ±£´æÃ¿¸öÎÄµµ¶ÎµÄ·Ö´Ê½á¹ûµÄÎÄ¼ş¼Ğ
+  public static final String FILTERED_DIR = "filtered"; // ±£´æ¹ıÂËºóµÄÎÄ±¾¶Î´ÊÓï¼¯ºÏµÄÄ¿Â¼
   public static final String MATRIX_DIR = "matrix";
-  public static int globalCategoryID = 0; // ç”¨äºç”Ÿæˆæ¯ä¸ªæ–‡æ¡£æ‰€å±çš„ç±»åˆ«
+  public static int globalCategoryID = 0; // ÓÃÓÚÉú³ÉÃ¿¸öÎÄµµËùÊôµÄÀà±ğ
   
 }

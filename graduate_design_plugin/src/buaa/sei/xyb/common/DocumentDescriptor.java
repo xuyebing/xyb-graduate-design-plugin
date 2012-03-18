@@ -2,18 +2,18 @@ package buaa.sei.xyb.common;
 
 /**
  * @author Xu Yebing
- * 文档描述符类，包含了一个文档对象（文档段或代码段）的所有信息（如：类别、ID、文件名、主题分布信息、分词后的词语集合等）
+ * �ĵ��������࣬������һ���ĵ������ĵ��λ����Σ���������Ϣ���磺���ID���ļ���������ֲ���Ϣ���ִʺ�Ĵ��Ｏ�ϵȣ�
  */
 public class DocumentDescriptor {
 
-	// 唯一确定一个文档的索引：categoryID + ID
-//	private int ID = -1; // 文档在其类中的序号
-	private int matrixIndex = -1; // 文档在整个“词-文档”矩阵中序号（也可以说成行号），用于在LDA计算完毕后找回到对应的文档
-								  // matrixIndex在生成矩阵时才被赋值
-	private int categoryID = -1; // 文档所属的类别（如：需求、设计、代码等）。
-	                             // 对于软件文档来说，一个原始文件对应一个类别序号；对于软件代码来说，所有代码文件都属于一个类别
-	private String name; // 文档名称
-	private String path; // 文档路径(包含文档名name)
+	// Ψһȷ��һ���ĵ���������categoryID + ID
+//	private int ID = -1; // �ĵ��������е����
+	private int matrixIndex = -1; // �ĵ�����������-�ĵ�����������ţ�Ҳ����˵���кţ���������LDA������Ϻ��һص���Ӧ���ĵ�
+								  // matrixIndex�����ɾ���ʱ�ű���ֵ
+	private int categoryID = -1; // �ĵ�����������磺������ơ�����ȣ���
+	                             // ���������ĵ���˵��һ��ԭʼ�ļ���Ӧһ�������ţ���������������˵�����д����ļ�������һ�����
+	private String name; // �ĵ�����
+	private String path; // �ĵ�·��(�����ĵ���name)
 	
 	public DocumentDescriptor () {
 	}

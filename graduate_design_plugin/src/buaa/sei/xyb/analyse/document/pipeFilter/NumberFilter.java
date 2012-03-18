@@ -3,17 +3,17 @@ import java.util.regex.Pattern;
 /**
  * 
  * @author Xu Yebing
- * NumberFilterç±» ç”¨äºè¿‡æ»¤åˆ†è¯ç»“æœä¸­çš„æ•°å­—å’Œ"."(åŒ…æ‹¬"1.1.1"è¿™æ ·çš„å½¢å¼)
+ * NumberFilterÀà ÓÃÓÚ¹ıÂË·Ö´Ê½á¹ûÖĞµÄÊı×ÖºÍ"."(°üÀ¨"1.1.1"ÕâÑùµÄĞÎÊ½)
  */
 public class NumberFilter {
   /**
-   * isNumWithPunctuate åˆ¤æ–­å‚æ•°wordæ˜¯å¦ä»…ç”±"æ•°å­—" , "." , "-", "_"
+   * isNumWithPunctuate ÅĞ¶Ï²ÎÊıwordÊÇ·ñ½öÓÉ"Êı×Ö" , "." , "-", "_"
    * @return
    */
   public static boolean isNumWithPunctuate(String word) {
 //    String regex = "[0-9.\\-_]+";
-	  // \\u4E00-\\u9FA5 è¡¨ç¤ºä¸­æ–‡
-	  String regex = "[^A-Za-z\\u4E00-\\u9FA5]+"; // è¡¨ç¤ºé™¤è‹±æ–‡å’Œä¸­æ–‡ä»¥å¤–çš„å…¨éƒ¨å­—ç¬¦
+	  // \\u4E00-\\u9FA5 ±íÊ¾ÖĞÎÄ
+	  String regex = "[^A-Za-z\\u4E00-\\u9FA5]+"; // ±íÊ¾³ıÓ¢ÎÄºÍÖĞÎÄÒÔÍâµÄÈ«²¿×Ö·û
 	  return Pattern.matches(regex, word);
   }
 }

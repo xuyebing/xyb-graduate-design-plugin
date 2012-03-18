@@ -4,8 +4,8 @@ import java.util.LinkedList;
 
 public class CodeExtractElement {
 
-	private LinkedList<String> fieldsName; // å±æ€§åé›†åˆ
-	private LinkedList<String> methodsName; // æ–¹æ³•åé›†åˆ
+	private LinkedList<String> fieldsName; // ÊôĞÔÃû¼¯ºÏ
+	private LinkedList<String> methodsName; // ·½·¨Ãû¼¯ºÏ
 	
 	public void setFieldsName(LinkedList<String> fieldsName) {
 		this.fieldsName = fieldsName;

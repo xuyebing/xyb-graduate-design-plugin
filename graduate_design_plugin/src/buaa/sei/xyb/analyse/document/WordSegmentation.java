@@ -13,22 +13,22 @@ import jeasy.analysis.MMAnalyzer;
 /**
  * @author Xu Yebing
  *
- *  WordSegmentation ç”¨äºè¿›è¡Œä¸­æ–‡åˆ†è¯çš„ç±»ï¼Œå…¶ä¸»è¦æ–¹æ³•ç”¨äºå°†è¾“å…¥çš„ä¸­æ–‡æ–‡æ¡£æ®µåˆ†å‰²æˆå¯¹åº”çš„ä¸­æ–‡è¯ç»„
+ *  WordSegmentation ÓÃÓÚ½øĞĞÖĞÎÄ·Ö´ÊµÄÀà£¬ÆäÖ÷Òª·½·¨ÓÃÓÚ½«ÊäÈëµÄÖĞÎÄÎÄµµ¶Î·Ö¸î³É¶ÔÓ¦µÄÖĞÎÄ´Ê×é
  */
 public class WordSegmentation {
   /**
-   * segmentWord å°†è¾“å…¥çš„æ–‡æ¡£æ®µè½è¿›è¡Œåˆ†è¯
-   * @param docParagraph : å¾…åˆ†è¯çš„æ–‡æ¡£æ®µè½
+   * segmentWord ½«ÊäÈëµÄÎÄµµ¶ÎÂä½øĞĞ·Ö´Ê
+   * @param docParagraph : ´ı·Ö´ÊµÄÎÄµµ¶ÎÂä
    */
   public String segmentWord(String docParagraph) {
     try {
       MMAnalyzer analyzer = new MMAnalyzer();
       String workDirPath = ".";
       System.out.println(">>>> Begin word segmentation");
-      // ä¸è€ƒè™‘å¯¼å…¥ç”¨æˆ·è¯å…¸ï¼Œç›´æ¥æ ¹æ®ç³»ç»Ÿè¯å…¸è¿›è¡Œåˆ†è¯ ï¼ˆçœ‹çœ‹æ•ˆæœï¼‰
+      // ²»¿¼ÂÇµ¼ÈëÓÃ»§´Êµä£¬Ö±½Ó¸ù¾İÏµÍ³´Êµä½øĞĞ·Ö´Ê £¨¿´¿´Ğ§¹û£©
       String splitWords = analyzer.segment(docParagraph, " ");
-      System.out.println("---------- < åˆ†è¯ç»“æœ > : \n" + splitWords);
-      // è®¡ç®—è¯é¢‘
+      System.out.println("---------- < ·Ö´Ê½á¹û > : \n" + splitWords);
+      // ¼ÆËã´ÊÆµ
       wordFrequency(splitWords);
       System.out.println("---------- < key word > :");
       
@@ -39,7 +39,7 @@ public class WordSegmentation {
     }
   }
   /**
-   * wordFrequency ç»Ÿè®¡åˆ†è¯ç»“æœä¸­æ¯ä¸ªè¯å‡ºç°çš„é¢‘ç‡
+   * wordFrequency Í³¼Æ·Ö´Ê½á¹ûÖĞÃ¿¸ö´Ê³öÏÖµÄÆµÂÊ
    * 
    */
   public void wordFrequency(String splitWords) {
@@ -56,16 +56,16 @@ public class WordSegmentation {
         wordsFrequencyMap.put(word, 1);
       }
     }
-    // æŠŠHashMapä¸­çš„æ¡ç›®æŒ‰ç…§valueå€¼æ¥æ’åºï¼Œå³æŒ‰ç…§è¯é¢‘å¤§å°é™åºæ’åˆ—æ¯ä¸ªword
+    // °ÑHashMapÖĞµÄÌõÄ¿°´ÕÕvalueÖµÀ´ÅÅĞò£¬¼´°´ÕÕ´ÊÆµ´óĞ¡½µĞòÅÅÁĞÃ¿¸öword
     ArrayList<String> keys = new ArrayList<String>(wordsFrequencyMap.keySet());
     Collections.sort(keys, new Comparator<Object>() {
       @Override
       public int compare(Object o1, Object o2) {
         // TODO Auto-generated method stub
-        // æŒ‰ç…§valueçš„å¤§å°é™åºæ’åˆ—
+        // °´ÕÕvalueµÄ´óĞ¡½µĞòÅÅÁĞ
         if (Integer.parseInt(wordsFrequencyMap.get(o1).toString()) < 
             Integer.parseInt(wordsFrequencyMap.get(o2).toString())) {
-          return 1;  // å¦‚æœè¦å‡åºæ’åˆ—ï¼Œå°†å°äºå·æ¢æˆå¤§äºå·
+          return 1;  // Èç¹ûÒªÉıĞòÅÅÁĞ£¬½«Ğ¡ÓÚºÅ»»³É´óÓÚºÅ
         } else if (Integer.parseInt(wordsFrequencyMap.get(o1).toString()) == 
             Integer.parseInt(wordsFrequencyMap.get(o2).toString())) {
           return 0;
@@ -73,7 +73,7 @@ public class WordSegmentation {
           return -1;
       }
     });
-    // è¾“å‡ºæ’åºåçš„word
+    // Êä³öÅÅĞòºóµÄword
     Iterator<String> keysIterator = keys.iterator();
     int i = 1;
     while (keysIterator.hasNext()) {
@@ -84,11 +84,11 @@ public class WordSegmentation {
   
   public static void main(String args[]) {
     WordSegmentation ws = new WordSegmentation();
-//    String docPara = "æ®æŠ¥é“ï¼Œç‹„å…‹æ£®å·ç«‹å¤§å­¦ä½äºç¾å›½ä¸­åŒ—éƒ¨åŒ—è¾¾ç§‘ä»–å·çš„ç‹„å…‹æ£®å¸‚ï¼Œæ˜¯ä¸€æ‰€å…¬ç«‹ç»¼åˆæ€§å¤§å­¦ï¼Œä¸ä¸­å›½ä¸å°‘å­¦æ ¡ç­¾ç½²è¿‡åˆä½œåè®®ã€‚2003å¹´èµ·ï¼Œå…±æœ‰816åæµ·å¤–å­¦ç”Ÿå‚ä¸äº†è¯¥æ ¡çš„å›½é™…è¯¾ç¨‹ï¼Œç„¶è€Œç»è°ƒæŸ¥å‘ç°ï¼Œå…¶ä¸­743åå­¦ç”Ÿçš„æ¡£æ¡ˆæ–‡ä»¶å­˜åœ¨é—®é¢˜ï¼›è¢«æˆäºˆè”åˆå­¦ä½çš„410åå­¦ç”Ÿä¸­ï¼Œåªæœ‰10ä½å®Œæˆäº†æ‰€æœ‰çš„å¿…ä¿®è¯¾ç¨‹ï¼›120ååœ¨è¯»å­¦ç”Ÿä¸­ï¼Œä»…39åå­¦ç”Ÿä¿®å®Œæ‰€æœ‰è¯¾ç¨‹å¹¶æœ‰èµ„æ ¼è·å–å­¦ä½ï¼›studentåå­¦ç”Ÿä¹‹å‰å·²è·å¾—è¿‡å…¶ä»–è¯ä¹¦æˆ–å­¦ä½ã€‚";
-//    String docPara = "ç‰¡ä¸¹å›­åœ°é“";
-//    String docPara = "æ®è·¯é€ç¤¾æŠ¥é“ï¼Œå°åº¦å°¼è¥¿äºšç¤¾ä¼šäº‹åŠ¡éƒ¨ä¸€å®˜å‘˜æ˜ŸæœŸäºŒ(29æ—¥)è¡¨ç¤ºï¼Œ"  
-//                 "æ—¥æƒ¹å¸‚é™„è¿‘å½“åœ°æ—¶é—´27æ—¥æ™¨5æ—¶53åˆ†å‘ç”Ÿçš„é‡Œæ°6.2çº§åœ°éœ‡å·²ç»é€ æˆè‡³å°‘5427äººæ­»äº¡ï¼Œ"  
-//                 "20000ä½™äººå—ä¼¤ï¼Œè¿‘20ä¸‡äººæ— å®¶å¯å½’ã€‚";
+//    String docPara = "¾İ±¨µÀ£¬µÒ¿ËÉ­ÖİÁ¢´óÑ§Î»ÓÚÃÀ¹úÖĞ±±²¿±±´ï¿ÆËûÖİµÄµÒ¿ËÉ­ÊĞ£¬ÊÇÒ»Ëù¹«Á¢×ÛºÏĞÔ´óÑ§£¬ÓëÖĞ¹ú²»ÉÙÑ§Ğ£Ç©Êğ¹ıºÏ×÷Ğ­Òé¡£2003ÄêÆğ£¬¹²ÓĞ816Ãûº£ÍâÑ§Éú²ÎÓëÁË¸ÃĞ£µÄ¹ú¼Ê¿Î³Ì£¬È»¶ø¾­µ÷²é·¢ÏÖ£¬ÆäÖĞ743ÃûÑ§ÉúµÄµµ°¸ÎÄ¼ş´æÔÚÎÊÌâ£»±»ÊÚÓèÁªºÏÑ§Î»µÄ410ÃûÑ§ÉúÖĞ£¬Ö»ÓĞ10Î»Íê³ÉÁËËùÓĞµÄ±ØĞŞ¿Î³Ì£»120ÃûÔÚ¶ÁÑ§ÉúÖĞ£¬½ö39ÃûÑ§ÉúĞŞÍêËùÓĞ¿Î³Ì²¢ÓĞ×Ê¸ñ»ñÈ¡Ñ§Î»£»studentÃûÑ§ÉúÖ®Ç°ÒÑ»ñµÃ¹ıÆäËûÖ¤Êé»òÑ§Î»¡£";
+//    String docPara = "Äµµ¤Ô°µØÌú";
+//    String docPara = "¾İÂ·Í¸Éç±¨µÀ£¬Ó¡¶ÈÄáÎ÷ÑÇÉç»áÊÂÎñ²¿Ò»¹ÙÔ±ĞÇÆÚ¶ş(29ÈÕ)±íÊ¾£¬"  
+//                 "ÈÕÈÇÊĞ¸½½üµ±µØÊ±¼ä27ÈÕ³¿5Ê±53·Ö·¢ÉúµÄÀïÊÏ6.2¼¶µØÕğÒÑ¾­Ôì³ÉÖÁÉÙ5427ÈËËÀÍö£¬"  
+//                 "20000ÓàÈËÊÜÉË£¬½ü20ÍòÈËÎŞ¼Ò¿É¹é¡£";
     String docPara = "6/";
     ws.segmentWord(docPara);
   }

@@ -15,20 +15,20 @@ import com.jacob.com.Variant;
 public class WordDocParser {
 
 	public static String tempDir = "tempDir";
-	private static String documentDir = ""; // åŒ…å«æ‰€æœ‰å¾…åˆ†æçš„æ–‡æ¡£çš„ç›®å½•
-	public static String copyName; // ä¿å­˜è¯»å…¥æ–‡ä»¶å¤åˆ¶åçš„ç»å¯¹è·¯å¾„ï¼Œ
-								   // ä»è€Œä¿è¯åˆ†ç¦»è¡¨æ ¼çš„å¤„ç†ä¸å½±å“åŸæ–‡ä»¶ã€‚
+	private static String documentDir = ""; // °üº¬ËùÓĞ´ı·ÖÎöµÄÎÄµµµÄÄ¿Â¼
+	public static String copyName; // ±£´æ¶ÁÈëÎÄ¼ş¸´ÖÆºóµÄ¾ø¶ÔÂ·¾¶£¬
+								   // ´Ó¶ø±£Ö¤·ÖÀë±í¸ñµÄ´¦Àí²»Ó°ÏìÔ­ÎÄ¼ş¡£
 	public static Vector<Integer> pOutlineLevel = new Vector<Integer>();
-	public static Vector<Integer> tableAtDoc = new Vector<Integer>();// ä¿å­˜æ¯ä¸ªè¡¨æ ¼åœ¨æ–‡æ¡£ä¸­çš„æ®µè½å·
+	public static Vector<Integer> tableAtDoc = new Vector<Integer>();// ±£´æÃ¿¸ö±í¸ñÔÚÎÄµµÖĞµÄ¶ÎÂäºÅ
 	
 	public void analyze(String docFileName, String resultPath) throws IOException {
 		splitToSmallFiles(docFileName, resultPath);
 	}
 	/**
-	 *  å°†æ–‡ä»¶åˆ†å‰²æˆåˆé€‚çš„å¤§å°ï¼Œå¹¶ä¸”å°†åˆ†å‰²åçš„å°æ–‡ä»¶å­˜æ”¾åˆ°æŒ‡å®šçš„ç›®å½•ä¸­
-	 * åˆ†å‰²åçš„æ–‡ä»¶çš„å‘½åä¸º"åŸæ–‡ä»¶å_index.txt"ï¼Œå…¶ä¸­çš„indexè¡¨ç¤ºæ¬¡åº
-	 * @param docFile å¾…åˆ†å‰²çš„æ–‡ä»¶
-	 * @param outPutPath å­˜æ”¾åˆ†å‰²åçš„å°æ–‡ä»¶çš„ç›®å½•
+	 *  ½«ÎÄ¼ş·Ö¸î³ÉºÏÊÊµÄ´óĞ¡£¬²¢ÇÒ½«·Ö¸îºóµÄĞ¡ÎÄ¼ş´æ·Åµ½Ö¸¶¨µÄÄ¿Â¼ÖĞ
+	 * ·Ö¸îºóµÄÎÄ¼şµÄÃüÃûÎª"Ô­ÎÄ¼şÃû_index.txt"£¬ÆäÖĞµÄindex±íÊ¾´ÎĞò
+	 * @param docFile ´ı·Ö¸îµÄÎÄ¼ş
+	 * @param outPutPath ´æ·Å·Ö¸îºóµÄĞ¡ÎÄ¼şµÄÄ¿Â¼
 	 * @throws IOException 
 	 */
 	private void splitToSmallFiles(String docFile, String outPutPath) throws IOException {
@@ -60,10 +60,10 @@ public class WordDocParser {
 			writer.close();
 			System.out.println(outPutName + "; fatherFile = " + docFile + "; offset =  " + offset + "; docPart.length = " + str.length());
 			offset += str.length();
-			// è°ƒç”¨åˆ†è¯ç±»è¿›è¡Œåˆ†è¯
+			// µ÷ÓÃ·Ö´ÊÀà½øĞĞ·Ö´Ê
 			String words = wordSegmentation.segmentWord(str);
 			words = words.replaceAll("\\s+", " ");
-			// ictclasOutPutName ä¿å­˜åˆ†è¯ç»“æœçš„æ–‡ä»¶çš„ç»å¯¹è·¯å¾„
+			// ictclasOutPutName ±£´æ·Ö´Ê½á¹ûµÄÎÄ¼şµÄ¾ø¶ÔÂ·¾¶
 			String ictclasOutPutName = outPutPath + Constant.FILE_SEPARATOR + Constant.SEGMENT_DIR + Constant.FILE_SEPARATOR + Constant.globalCategoryID + Constant.FILE_SEPARATOR + docName + "_" + filePointer + ".txt";
 			writer = new BufferedWriter(new FileWriter(ictclasOutPutName));
 			writer.write(words);
@@ -74,38 +74,38 @@ public class WordDocParser {
 		System.out.println(" >>>> one file splited successful!");
 	}
 	/**
-	 * spiltFile å°†æ–‡æ¡£åˆ†å‰²æˆè‹¥å¹²ä¸ªç‰‡æ®µ
-	 * @param docFile å¾…åˆ†å‰²çš„æ–‡æ¡£
-	 * @return åˆ†å‰²å¥½çš„æ–‡æ¡£ç‰‡æ®µçš„åˆ—è¡¨
+	 * spiltFile ½«ÎÄµµ·Ö¸î³ÉÈô¸É¸öÆ¬¶Î
+	 * @param docFile ´ı·Ö¸îµÄÎÄµµ
+	 * @return ·Ö¸îºÃµÄÎÄµµÆ¬¶ÎµÄÁĞ±í
 	 */
 	private ArrayList<String> splitFile(String docFile) {
 		File doc = new File(docFile);
-		// å°†åŸæ–‡æ¡£çš„æ–‡æœ¬å’Œè¡¨æ ¼è¿›è¡Œåˆ†ç¦»
+		// ½«Ô­ÎÄµµµÄÎÄ±¾ºÍ±í¸ñ½øĞĞ·ÖÀë
 		String[] savePath =apartTableFromDoc(docFile);
-		String[] contents = readDocByParagraph(copyName); // contentsä¸­åŒ…å«äº†åˆ‡åˆ†å¥½çš„æ®µè½
-		                                                  //ï¼Œä¸€ä¸ªå…ƒç´ æ˜¯ä¸€æ®µ
-	    // ç°åœ¨éœ€è¦æ ¹æ®docFileä¸­å¾—åˆ°çš„å¤§çº²çº§åˆ«è¿›è¡Œåˆ’å—ï¼Œæ ‡è®°å‡ºæ¯å—çš„å¼€å§‹æ®µå·å’Œç»“æŸæ®µå·ï¼Œ
-		// å†å¯¹æ¯ä¸€å—è¿›è¡Œdivideï¼ˆï¼‰å¤„ç†ã€‚
-		// åˆ’å—å‡½æ•°ï¼šmakeBlockInPara()
+		String[] contents = readDocByParagraph(copyName); // contentsÖĞ°üº¬ÁËÇĞ·ÖºÃµÄ¶ÎÂä
+		                                                  //£¬Ò»¸öÔªËØÊÇÒ»¶Î
+	    // ÏÖÔÚĞèÒª¸ù¾İdocFileÖĞµÃµ½µÄ´ó¸Ù¼¶±ğ½øĞĞ»®¿é£¬±ê¼Ç³öÃ¿¿éµÄ¿ªÊ¼¶ÎºÅºÍ½áÊø¶ÎºÅ£¬
+		// ÔÙ¶ÔÃ¿Ò»¿é½øĞĞdivide£¨£©´¦Àí¡£
+		// »®¿éº¯Êı£ºmakeBlockInPara()
 		Vector<int []> block = makeBlockInPara(pOutlineLevel);
 		System.out.println("Vector<int []>block.size = "+block.size());
 		
-		ArrayList<String> divideResult =new ArrayList<String>();//divideResultä¿å­˜åˆ†å‰²å¥½çš„æ–‡æ¡£ç‰‡æ®µ
-	    Vector<int[]> vtemp = new Vector<int[]>();//vtempä¿å­˜ä¸€ä¸ªåŸæ–‡æ¡£çš„æ¯ä¸ªå­æ–‡æ¡£çš„èµ·æ­¢æ®µè½å·
+		ArrayList<String> divideResult =new ArrayList<String>();//divideResult±£´æ·Ö¸îºÃµÄÎÄµµÆ¬¶Î
+	    Vector<int[]> vtemp = new Vector<int[]>();//vtemp±£´æÒ»¸öÔ­ÎÄµµµÄÃ¿¸ö×ÓÎÄµµµÄÆğÖ¹¶ÎÂäºÅ
 	    for(Iterator<int []> it = block.iterator(); it.hasNext();)
 	    {
-	    	int [] temp = it.next();//tempä¿å­˜äº†å½“å‰å—çš„å¼€å§‹å’Œç»“æŸæ®µè½å·
+	    	int [] temp = it.next();//temp±£´æÁËµ±Ç°¿éµÄ¿ªÊ¼ºÍ½áÊø¶ÎÂäºÅ
 	    	ArrayList<String> aTemp = new ArrayList<String>();
-	    	//divideResult.addAll(DocumentPartitioner.divideWord(contents,temp[0],temp[1]));//åˆ†å—è¿›è¡Œå­æ–‡æœ¬åˆ’åˆ†  	!!!!!!!!!2010.3.8å¾…debug
+	    	//divideResult.addAll(DocumentPartitioner.divideWord(contents,temp[0],temp[1]));//·Ö¿é½øĞĞ×ÓÎÄ±¾»®·Ö  	!!!!!!!!!2010.3.8´ıdebug
 	    	aTemp = DocumentPartitioner.divideWord(contents, temp[0],temp[1]);
 	    	divideResult.addAll(aTemp);
-	    	//è®°å½•åˆ‡åˆ†åçš„æ–‡æœ¬åœ¨åŸæ–‡æ¡£ä¸­çš„æ®µè½ï¼Œä¸åŒ…æ‹¬è¡¨æ ¼
-	    	Vector<int[]> vvtem = DocumentPartitioner.array;//ä¿å­˜ä¸€ä¸ªblock çš„å­æ–‡æ¡£çš„èµ·æ­¢æ®µè½å·
+	    	//¼ÇÂ¼ÇĞ·ÖºóµÄÎÄ±¾ÔÚÔ­ÎÄµµÖĞµÄ¶ÎÂä£¬²»°üÀ¨±í¸ñ
+	    	Vector<int[]> vvtem = DocumentPartitioner.array;//±£´æÒ»¸öblock µÄ×ÓÎÄµµµÄÆğÖ¹¶ÎÂäºÅ
 	    	vtemp.addAll(vvtem);
 	    }
     	DocumentAccess.paraBEatDocs.add(vtemp);
-    	DocumentAccess.tableStartIndex.add(divideResult.size());//divideResult.size()çš„å€¼ä¸ºç¬¬ä¸€ä¸ªè¡¨æ ¼çš„åºå·ã€‚
-	    //æ¥ç€å¤„ç†ä¿å­˜è¡¨æ ¼çš„æ–‡æ¡£
+    	DocumentAccess.tableStartIndex.add(divideResult.size());//divideResult.size()µÄÖµÎªµÚÒ»¸ö±í¸ñµÄĞòºÅ¡£
+	    //½Ó×Å´¦Àí±£´æ±í¸ñµÄÎÄµµ
 	    ArrayList<String> bTemp = new ArrayList<String>();
 	    bTemp = changeTableToString(savePath);
 	    divideResult.addAll(bTemp);
@@ -114,18 +114,18 @@ public class WordDocParser {
 	}
 	/**
 	 * @author Xu Yebing
-	 * apartTableFromDoc()å°†åŸæ–‡æ¡£çš„æ–‡æœ¬å’Œè¡¨æ ¼è¿›è¡Œåˆ†ç¦»
-	 * @para String docFile ä¼ å…¥çš„åŸæ–‡æ¡£çš„ç»å¯¹è·¯å¾„
-	 * @return String[] åˆ†å‰²åçš„ä¿å­˜è¡¨æ ¼çš„æ–‡æ¡£è·¯å¾„åï¼ˆåŸæ–‡æ¡£çš„æ–‡æœ¬å†…å®¹è¿˜ä¿ç•™åœ¨docFileä¸­ï¼Œæ‰€ä»¥ä¸ç”¨è¿”å›ï¼‰
+	 * apartTableFromDoc()½«Ô­ÎÄµµµÄÎÄ±¾ºÍ±í¸ñ½øĞĞ·ÖÀë
+	 * @para String docFile ´«ÈëµÄÔ­ÎÄµµµÄ¾ø¶ÔÂ·¾¶
+	 * @return String[] ·Ö¸îºóµÄ±£´æ±í¸ñµÄÎÄµµÂ·¾¶Ãû£¨Ô­ÎÄµµµÄÎÄ±¾ÄÚÈİ»¹±£ÁôÔÚdocFileÖĞ£¬ËùÒÔ²»ÓÃ·µ»Ø£©
 	 */
 	private String[] apartTableFromDoc(String docFile){
 		  ActiveXComponent app = new ActiveXComponent("Word.Application");
-		  String[] savePath = new String[]{};// ä¿å­˜åˆ†å‰²åçš„ä¿å­˜è¡¨æ ¼çš„æ–‡æ¡£çš„è·¯å¾„åç§°
-		  // å¾—åˆ°ä¿å­˜åˆ†ç¦»åè¡¨æ ¼çš„ç»å¯¹è·¯å¾„
+		  String[] savePath = new String[]{};// ±£´æ·Ö¸îºóµÄ±£´æ±í¸ñµÄÎÄµµµÄÂ·¾¶Ãû³Æ
+		  // µÃµ½±£´æ·ÖÀëºó±í¸ñµÄ¾ø¶ÔÂ·¾¶
 		  String tempStr = docFile;
 		  int index = tempStr.lastIndexOf('\\');
 		  int indexD = tempStr.lastIndexOf('.');
-		  String fName = tempStr.substring(index + 1,indexD);//ä»ç»å¯¹è·¯å¾„ä¸­è·å¾—æ–‡æ¡£çš„åç§°
+		  String fName = tempStr.substring(index + 1,indexD);//´Ó¾ø¶ÔÂ·¾¶ÖĞ»ñµÃÎÄµµµÄÃû³Æ
 		  String subTemp = tempStr.substring(0,index);
 		  index = subTemp.lastIndexOf('\\');
 		  if (index > 0)
@@ -138,15 +138,15 @@ public class WordDocParser {
 		  String subDocFile = subTemp;
 
 		  try{
-			  app.setProperty("Visible",new Variant(false));	//è®¾ç½®wordä¸å¯è§
+			  app.setProperty("Visible",new Variant(false));	//ÉèÖÃword²»¿É¼û
 			  Dispatch docs = app.getProperty("Documents").toDispatch();
 				Dispatch doc = Dispatch.invoke(docs,"Open",Dispatch.Method,
 						new Object[]{docFile,new Variant(false),new Variant(false)},
 						new int[1]).toDispatch();
-		      ///å…ˆå°†docå¦å­˜ä¸ºï¼Œå¤‡ä»½ç”¨
+		      ///ÏÈ½«docÁí´æÎª£¬±¸·İÓÃ
 			      //String subDocFile = docFile.substring(0,docFile.lastIndexOf('.'));
-			  copyName = null;//æ¯æ¬¡å…ˆå°†å…¶æ¸…ç©º
-			  copyName = subDocFile + "_copy.doc";//å¾—åˆ°å¤‡ä»½æ–‡ä»¶çš„åç§°	  
+			  copyName = null;//Ã¿´ÎÏÈ½«ÆäÇå¿Õ
+			  copyName = subDocFile + "_copy.doc";//µÃµ½±¸·İÎÄ¼şµÄÃû³Æ	  
 			  Dispatch.call(doc,"SaveAs",new Variant(copyName));
 			  Dispatch.call(doc,"Close",new Variant(false));
 			  ///
@@ -162,32 +162,32 @@ public class WordDocParser {
 				  System.out.println("Doc has no tables");
 			  else{
 				  Dispatch table = null;
-				  Dispatch range = null;//table çš„èŒƒå›´
+				  Dispatch range = null;//table µÄ·¶Î§
 				  savePath = new String[tablesCount];
 				  for(int i = 1; i <= tablesCount; i++)
 				  {
-					  // å°†æ¯ä¸€ä¸ªè¡¨æ ¼å•ç‹¬å­˜æ”¾åˆ°ä¸€ä¸ªdocæ–‡ä»¶ä¸­ã€‚
-					  // æ³¨æ„ï¼šcutä¸€ä¸ªè¡¨æ ¼åï¼ŒåŸæ–‡æ¡£çš„è¡¨æ ¼æ•°å‡ä¸€ï¼Œæ­¤æ—¶åªæœ‰æ¯æ¬¡è¯»å–å½“å‰çš„ç¬¬ä¸€ä¸ªè¡¨æ ¼æ‰æ˜¯æ­£ç¡®çš„ã€‚
+					  // ½«Ã¿Ò»¸ö±í¸ñµ¥¶À´æ·Åµ½Ò»¸ödocÎÄ¼şÖĞ¡£
+					  // ×¢Òâ£ºcutÒ»¸ö±í¸ñºó£¬Ô­ÎÄµµµÄ±í¸ñÊı¼õÒ»£¬´ËÊ±Ö»ÓĞÃ¿´Î¶ÁÈ¡µ±Ç°µÄµÚÒ»¸ö±í¸ñ²ÅÊÇÕıÈ·µÄ¡£
 					  table = Dispatch.call(tables,"Item",new Variant(1)).toDispatch();
 					  range = Dispatch.get(table,"Range").toDispatch();
-					  // æ’å…¥ç‰¹æ®Šå­—ç¬¦ä¸²"$..$"ï¼Œå®šä½è¡¨æ ¼æ‰€åœ¨ä½ç½®ã€‚
+					  // ²åÈëÌØÊâ×Ö·û´®"$..$"£¬¶¨Î»±í¸ñËùÔÚÎ»ÖÃ¡£
 					  // Dispatch.call(range,"InsertAfter","$*VBASelection,there is a table*$");
-					  // InsertAfteråï¼Œæ–°æ’å…¥çš„æ–‡æœ¬ä¼šæ‰©å±•åˆ°rangeåŸŸä¸­ï¼Œæ‰€ä»¥è¦é‡æ–°å¾—åˆ°åªå«è¡¨æ ¼çš„rangeã€‚
+					  // InsertAfterºó£¬ĞÂ²åÈëµÄÎÄ±¾»áÀ©Õ¹µ½rangeÓòÖĞ£¬ËùÒÔÒªÖØĞÂµÃµ½Ö»º¬±í¸ñµÄrange¡£
                       // range = Dispatch.get(table,"Range").toDispatch();
 					  Dispatch.call(range,"Cut");
-					  Dispatch document = Dispatch.call(docs,"Add").toDispatch();//æ–°å»ºä¸€ä¸ªdocæ–‡ä»¶
+					  Dispatch document = Dispatch.call(docs,"Add").toDispatch();//ĞÂ½¨Ò»¸ödocÎÄ¼ş
 					  Dispatch activeDocument2 = app.getProperty("ActiveDocument").toDispatch();
 					  Dispatch selection2 = app.getProperty("Selection").toDispatch();
 					  Dispatch textRange = Dispatch.get(selection2,"Range").toDispatch();
 					  Dispatch.call(textRange,"Paste");		
-					  savePath[i-1] = subDocFile + "_table_";//æ–°å»ºçš„ä¿å­˜è¡¨æ ¼çš„wordæ–‡æ¡£çš„åç§°ã€‚
+					  savePath[i-1] = subDocFile + "_table_";//ĞÂ½¨µÄ±£´æ±í¸ñµÄwordÎÄµµµÄÃû³Æ¡£
 					  savePath[i-1] = savePath[i-1] + i + ".doc";
 					  Dispatch.call(document,"SaveAs",new Variant(savePath[i-1]));
-					  // æ’å…¥ç‰¹æ®Šå­—ç¬¦ä¸²"$..$"ï¼Œå®šä½è¡¨æ ¼æ‰€åœ¨ä½ç½®ã€‚@@@@@   2010.3.21
+					  // ²åÈëÌØÊâ×Ö·û´®"$..$"£¬¶¨Î»±í¸ñËùÔÚÎ»ÖÃ¡£@@@@@   2010.3.21
 					  // Dispatch.call(range,"InsertAfter","$*VBASelection,there is a table*$\r");
 					  Dispatch.call(range,"InsertAfter","$**$\r");			  
 				  }
-				  //æœ€ååº”è¯¥å°†ä¿®æ”¹åçš„æ–‡æ¡£å†æ¬¡è¿›è¡Œä¿å­˜
+				  //×îºóÓ¦¸Ã½«ĞŞ¸ÄºóµÄÎÄµµÔÙ´Î½øĞĞ±£´æ
 				  //Dispatch.call(doc,"SaveAs",new Variant(docFile));
 				  Dispatch.call(doc,"SaveAs",new Variant(copyName));
 			  }	
@@ -200,30 +200,30 @@ public class WordDocParser {
 		  return savePath;	
 	}
 	/**
-	 * readDocByParagraph å¯¹å»é™¤è¡¨æ ¼çš„æ–‡æ¡£è¿›è¡Œæ–‡æœ¬è¯»å–ï¼Œå¾—åˆ°æ¯ä¸€æ®µï¼Œå¹¶è¿”å›
-	 * @param doc å¾…åˆ†æçš„æ–‡æ¡£çš„ç»å¯¹è·¯å¾„å
-	 * @return æ–‡æ¡£çš„æ®µè½é›†åˆ
+	 * readDocByParagraph ¶ÔÈ¥³ı±í¸ñµÄÎÄµµ½øĞĞÎÄ±¾¶ÁÈ¡£¬µÃµ½Ã¿Ò»¶Î£¬²¢·µ»Ø
+	 * @param doc ´ı·ÖÎöµÄÎÄµµµÄ¾ø¶ÔÂ·¾¶Ãû
+	 * @return ÎÄµµµÄ¶ÎÂä¼¯ºÏ
 	 */
 	private String[] readDocByParagraph(String doc) {
 		if (doc == null) {
-			System.out.println("å¾…åˆ†æçš„æ–‡ä»¶åä¸ºNULL!");
+			System.out.println("´ı·ÖÎöµÄÎÄ¼şÃûÎªNULL!");
 			return null;
 		}
-		String[] c = achieveParaAndOLLevel(doc); // è·å¾—æ–‡æ¡£ä¸­çš„æ®µè½åŠæ¯æ®µçš„å¤§çº²çº§åˆ«
+		String[] c = achieveParaAndOLLevel(doc); // »ñµÃÎÄµµÖĞµÄ¶ÎÂä¼°Ã¿¶ÎµÄ´ó¸Ù¼¶±ğ
 		return c;
 	}
 	/**
-	 * achieveParaAndOLLevel è·å¾—æ–‡æ¡£ä¸­çš„æ®µè½åŠæ¯æ®µçš„å¤§çº²çº§åˆ«
-	 * @param filename å¾…åˆ†æçš„æ–‡æ¡£ç»å¯¹è·¯å¾„å
-	 * @return æ–‡æ¡£çš„æ®µè½é›†åˆ
+	 * achieveParaAndOLLevel »ñµÃÎÄµµÖĞµÄ¶ÎÂä¼°Ã¿¶ÎµÄ´ó¸Ù¼¶±ğ
+	 * @param filename ´ı·ÖÎöµÄÎÄµµ¾ø¶ÔÂ·¾¶Ãû
+	 * @return ÎÄµµµÄ¶ÎÂä¼¯ºÏ
 	 */
 	private String[] achieveParaAndOLLevel(String filename) {
 		ActiveXComponent app = new ActiveXComponent("Word.Application");
-		String[] para = null;//ä¿å­˜æ–‡æ¡£ä¸­çš„æ¯ä¸ªæ®µè½
-		pOutlineLevel.removeAllElements();//æ¸…ç©ºpOutlineLevelé˜²æ­¢å‰ä¸€ä¸ªæ–‡ä»¶çš„å½±å“ã€‚
-		tableAtDoc.removeAllElements();//åŒä¸Š
+		String[] para = null;//±£´æÎÄµµÖĞµÄÃ¿¸ö¶ÎÂä
+		pOutlineLevel.removeAllElements();//Çå¿ÕpOutlineLevel·ÀÖ¹Ç°Ò»¸öÎÄ¼şµÄÓ°Ïì¡£
+		tableAtDoc.removeAllElements();//Í¬ÉÏ
 		try{
-			app.setProperty("Visible",new Variant(false));//è®¾ç½®wordä¸å¯è§
+			app.setProperty("Visible",new Variant(false));//ÉèÖÃword²»¿É¼û
 			Dispatch docs = app.getProperty("Documents").toDispatch();
 			Dispatch document = Dispatch.invoke(docs,"Open",Dispatch.Method,
 					new Object[]{filename,new Variant(false),new Variant(false)},
@@ -239,22 +239,22 @@ public class WordDocParser {
               for(int i = 1; i <= paragraphCount; i++)
 			  {
 			     paragraph = Dispatch.call(paragraphs,"Item",new Variant(i)).toDispatch();
-			    // è·å¾—å¤§çº²çº§åˆ«
+			    // »ñµÃ´ó¸Ù¼¶±ğ
 			     pOutlineLevel.addElement(new Integer(Dispatch.get(paragraph,"OutlineLevel").toInt()));
 			     Dispatch range = Dispatch.get(paragraph,"Range").toDispatch();
 			     para[i-1]= Dispatch.get(range,"Text").toString();
 			     /*if(para[i-1].contains("$*VBASelection,there is a table*$"))
 			     {
-			    	 tableAtDoc.add(i-1);// è®°å½•è¯¥è¡¨æ ¼æ‰€åœ¨çš„æ®µè½å·
+			    	 tableAtDoc.add(i-1);// ¼ÇÂ¼¸Ã±í¸ñËùÔÚµÄ¶ÎÂäºÅ
 			     }*/
 			     if(para[i-1].contains("$**$"))
 			     {
-			    	 tableAtDoc.add(i-1);// è®°å½•è¯¥è¡¨æ ¼æ‰€åœ¨çš„æ®µè½å·
+			    	 tableAtDoc.add(i-1);// ¼ÇÂ¼¸Ã±í¸ñËùÔÚµÄ¶ÎÂäºÅ
 			     }
-			     System.out.println("ç¬¬ " + i +"æ®µçš„å†…å®¹ä¸º:");
+			     System.out.println("µÚ " + i +"¶ÎµÄÄÚÈİÎª:");
 			     System.out.println("\t"+ para[i-1]);
 			     if(para[i-1].equals("\r"))///!!!!!
-			         System.out.println("this para ä¸ºç©º");
+			         System.out.println("this para Îª¿Õ");
 			  }
 			}
 		}catch(Exception e){
@@ -265,11 +265,11 @@ public class WordDocParser {
 		}
 		Vector<Integer> ptemp = new Vector<Integer>();
 		ptemp.addAll(pOutlineLevel);
-		//SingleProcess.pOutlineLevels.add(pOutlineLevel);//å°†è¯»åˆ°çš„ä¸€ä¸ªæ–‡æ¡£çš„å¤§çº²çº§åˆ«ä¿å­˜åˆ°æ€»çš„é›†åˆä¸­å»ã€‚
-		DocumentAccess.pOutlineLevels.add(ptemp);// å°†è¯»åˆ°çš„ä¸€ä¸ªæ–‡æ¡£çš„å¤§çº²çº§åˆ«ä¿å­˜åˆ°æ€»çš„é›†åˆä¸­å»ã€‚
+		//SingleProcess.pOutlineLevels.add(pOutlineLevel);//½«¶Áµ½µÄÒ»¸öÎÄµµµÄ´ó¸Ù¼¶±ğ±£´æµ½×ÜµÄ¼¯ºÏÖĞÈ¥¡£
+		DocumentAccess.pOutlineLevels.add(ptemp);// ½«¶Áµ½µÄÒ»¸öÎÄµµµÄ´ó¸Ù¼¶±ğ±£´æµ½×ÜµÄ¼¯ºÏÖĞÈ¥¡£
 		Vector<Integer> ttemp = new Vector<Integer>();
 		ttemp.addAll(tableAtDoc);
-		DocumentAccess.tableAtDocs.add(ttemp);// å°†ä¸€ä¸ªæ–‡æ¡£ä¸­çš„æ‰€æœ‰è¡¨æ ¼å¯¹åº”çš„æ®µè½å·ä¿å­˜åˆ°æ€»çš„é›†åˆä¸­å»
+		DocumentAccess.tableAtDocs.add(ttemp);// ½«Ò»¸öÎÄµµÖĞµÄËùÓĞ±í¸ñ¶ÔÓ¦µÄ¶ÎÂäºÅ±£´æµ½×ÜµÄ¼¯ºÏÖĞÈ¥
 		System.out.println("pLevel.length =" + DocumentAccess.pOutlineLevels.size());
 		for(int i = 0 ; i < DocumentAccess.pOutlineLevels.size(); i++)
 		{
@@ -277,26 +277,26 @@ public class WordDocParser {
 			temp = DocumentAccess.pOutlineLevels.elementAt(i);
 			System.out.println("Doc_" + i + "'s length = " + temp.size());
 		}
-		// å°†paraçš„å†…å®¹å¤åˆ¶åˆ°contextsä¸€ä¸ªå…ƒç´ ä¸­ï¼Œcontextsåœ¨wordå®šä½æ˜¾ç¤ºçš„æ—¶å€™ä½¿ç”¨ã€‚
+		// ½«paraµÄÄÚÈİ¸´ÖÆµ½contextsÒ»¸öÔªËØÖĞ£¬contextsÔÚword¶¨Î»ÏÔÊ¾µÄÊ±ºòÊ¹ÓÃ¡£
 		DocumentAccess.contexts.add(para);
 		return para;
 	}
 	/**
-	 * makeBlockInPara æ ¹æ®æ–‡æ¡£æ®µè½çš„å¤§çº²çº§åˆ«ï¼Œå¯¹æ–‡æ¡£è¿›è¡Œåˆ’å—(åœ¨å—å†…å†è¿›è¡Œæ–‡æ¡£æ®µåˆ’åˆ†)
-	 * @param outlineLevel ä¿å­˜å½“å‰æ–‡æ¡£æ¯ä¸ªæ®µè½çš„å¤§çº²çº§åˆ«
-	 * @return int[].length = 2, æ¯ä¸ªå—çš„å¼€å§‹æ®µå·(int[0])å’Œç»“æŸæ®µå·(int[1])
+	 * makeBlockInPara ¸ù¾İÎÄµµ¶ÎÂäµÄ´ó¸Ù¼¶±ğ£¬¶ÔÎÄµµ½øĞĞ»®¿é(ÔÚ¿éÄÚÔÙ½øĞĞÎÄµµ¶Î»®·Ö)
+	 * @param outlineLevel ±£´æµ±Ç°ÎÄµµÃ¿¸ö¶ÎÂäµÄ´ó¸Ù¼¶±ğ
+	 * @return int[].length = 2, Ã¿¸ö¿éµÄ¿ªÊ¼¶ÎºÅ(int[0])ºÍ½áÊø¶ÎºÅ(int[1])
 	 */
 	public static Vector<int []> makeBlockInPara(Vector<Integer> outlineLevel){
 		int oSize = outlineLevel.size();
-		Vector<int []> block = new Vector<int []>();//ç”¨äºä¿å­˜å—çš„å¼€å§‹å’Œç»“æŸæ®µè½å·
+		Vector<int []> block = new Vector<int []>();//ÓÃÓÚ±£´æ¿éµÄ¿ªÊ¼ºÍ½áÊø¶ÎÂäºÅ
 		int [] blockBeginAndEnd = new int [2];
-		int preLevel = outlineLevel.get(0);//preLevelä¿å­˜å‰ä¸€ä¸ªæ®µè½çš„çº§åˆ«ã€‚
+		int preLevel = outlineLevel.get(0);//preLevel±£´æÇ°Ò»¸ö¶ÎÂäµÄ¼¶±ğ¡£
 		blockBeginAndEnd[0] = blockBeginAndEnd[1] = 1;
-		int curLevel = 0;//curLevelä¿å­˜å½“å‰æ®µè½çš„çº§åˆ«ã€‚
+		int curLevel = 0;//curLevel±£´æµ±Ç°¶ÎÂäµÄ¼¶±ğ¡£
 		for(int i = 1;i < oSize; i++){
 			 curLevel = outlineLevel.get(i);
 			 if(curLevel >= preLevel){
-				 if(i == oSize -1)//iå·²ç»æ˜¯æœ€åä¸€æ®µäº†ï¼Œåˆ™ç›´æ¥äº§ç”Ÿæœ€åä¸€å—
+				 if(i == oSize -1)//iÒÑ¾­ÊÇ×îºóÒ»¶ÎÁË£¬ÔòÖ±½Ó²úÉú×îºóÒ»¿é
 				 {
 				    blockBeginAndEnd[1] = oSize;
 				    block.addElement(new int[]{blockBeginAndEnd[0],blockBeginAndEnd[1]});
@@ -305,7 +305,7 @@ public class WordDocParser {
 				 continue;
 			 }
 			 else{
-			     blockBeginAndEnd[1] = i ;//iæ˜¯ä¸Šä¸€æ®µçš„æ®µå·
+			     blockBeginAndEnd[1] = i ;//iÊÇÉÏÒ»¶ÎµÄ¶ÎºÅ
 			     block.addElement(new int []{blockBeginAndEnd[0],blockBeginAndEnd[1]});
 			     blockBeginAndEnd[0] = blockBeginAndEnd[1] = i + 1;
 			     preLevel = curLevel;
@@ -315,16 +315,16 @@ public class WordDocParser {
 	}	
 	/**
 	 * @author Xu Yebing
-	 * changeTableToString()å°†è¡¨æ ¼çš„æ¯ä¸ªå•å…ƒæ ¼å†…å®¹åˆå¹¶æˆä¸€ä¸ªString
-	 * @param tableSavePath ä¿å­˜è¡¨æ ¼çš„æ–‡æ¡£çš„ç»å¯¹è·¯å¾„
-	 * @return å°†æ–‡æ¡£çš„æ‰€æœ‰è¡¨æ ¼ç”Ÿæˆçš„Stringç»Ÿä¸€è¿”å›
+	 * changeTableToString()½«±í¸ñµÄÃ¿¸öµ¥Ôª¸ñÄÚÈİºÏ²¢³ÉÒ»¸öString
+	 * @param tableSavePath ±£´æ±í¸ñµÄÎÄµµµÄ¾ø¶ÔÂ·¾¶
+	 * @return ½«ÎÄµµµÄËùÓĞ±í¸ñÉú³ÉµÄStringÍ³Ò»·µ»Ø
 	 */
 	public ArrayList<String> changeTableToString(String[] tableSavePath){
 		ArrayList<String> tableString = new ArrayList<String>();
 		ActiveXComponent app = new ActiveXComponent("Word.Application");
 		for(int i = 0;i < tableSavePath.length; i++) {
 		    try {
-			    app.setProperty("Visible",new Variant(false));	//è®¾ç½®wordä¸å¯è§
+			    app.setProperty("Visible",new Variant(false));	//ÉèÖÃword²»¿É¼û
 				Dispatch docs = app.getProperty("Documents").toDispatch();
 				Dispatch doc = Dispatch.invoke(docs,"Open",Dispatch.Method,
 					new Object[]{tableSavePath[i],new Variant(false),new Variant(false)},
@@ -335,15 +335,15 @@ public class WordDocParser {
 			    if(paragraphCount == 0)
 				    System.out.println("Doc have no paragraphs!");
 	            Dispatch paragraph = null;
-	            String str = "";//ä¿å­˜ä¸€ä¸ªè¡¨æ ¼å¾—åˆ°çš„String
+	            String str = "";//±£´æÒ»¸ö±í¸ñµÃµ½µÄString
 	            for(int j = 1; j <= paragraphCount; j++)
 				{
 				   paragraph = Dispatch.call(paragraphs,"Item",new Variant(j)).toDispatch();
 				   Dispatch range = Dispatch.get(paragraph,"Range").toDispatch();
 				   str = str + Dispatch.get(range,"Text").toString();
 				}
-				str = str.trim();//å»é™¤stringé¦–å°¾çš„ç©ºæ ¼
-				//é‡æ–°ä¿å­˜è¡¨æ ¼æ–‡æ¡£
+				str = str.trim();//È¥³ıstringÊ×Î²µÄ¿Õ¸ñ
+				//ÖØĞÂ±£´æ±í¸ñÎÄµµ
 				Dispatch.call(doc,"SaveAs",new Variant(tableSavePath[i]));
 				tableString.add(str);		  
 			} catch(Exception e) {

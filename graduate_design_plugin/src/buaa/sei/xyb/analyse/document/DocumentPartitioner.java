@@ -2,28 +2,28 @@ package buaa.sei.xyb.analyse.document;
 import java.util.ArrayList;
 import java.util.Vector;
 public class DocumentPartitioner {
-  // å…è®¸çš„æœ€å°å­—èŠ‚æ•°
-  private static int minChar = 1000;//åœ¨sei.buaa.linktracer.views.uiçš„LinkTracerViewComposite.javaä¸­ä¿®æ”¹
-  //private static int minChar = 400;//åœ¨sei.buaa.linktracer.views.uiçš„LinkTracerViewComposite.javaä¸­ä¿®æ”¹
-  // å…è®¸çš„æœ€å¤§å­—èŠ‚æ•°
+  // ÔÊĞíµÄ×îĞ¡×Ö½ÚÊı
+  private static int minChar = 1000;//ÔÚsei.buaa.linktracer.views.uiµÄLinkTracerViewComposite.javaÖĞĞŞ¸Ä
+  //private static int minChar = 400;//ÔÚsei.buaa.linktracer.views.uiµÄLinkTracerViewComposite.javaÖĞĞŞ¸Ä
+  // ÔÊĞíµÄ×î´ó×Ö½ÚÊı
   private static int maxChar = 5000;
   //private static int maxChar = 3000;
   private static final int DIVIDE = 1;
   private static final int COMBINE = 2;
   private static final int DONOTHING = 0;
-  // ç”¨æ¥ä¿å­˜æ¯ä¸ªå­æ–‡æ¡£åœ¨åŸæ–‡æ¡£ä¸­çš„èµ·å§‹å’Œç»“æŸæ®µè½å·
+  // ÓÃÀ´±£´æÃ¿¸ö×ÓÎÄµµÔÚÔ­ÎÄµµÖĞµÄÆğÊ¼ºÍ½áÊø¶ÎÂäºÅ
   public static Vector<int []> array = new Vector<int []>();
   /**
-   * æ ¹æ®è®¾ç½®çš„æœ€å°å’Œæœ€å¤§å­—èŠ‚æ•°ï¼Œå°†æ–‡æ¡£åˆ†å‰²æˆè‹¥å¹²ä¸ªç‰‡æ®µ
-   * @param contents å¾…åˆ†å‰²çš„æ–‡æ¡£å†…å®¹; begin ä¸€ä¸ªæ–‡æœ¬å—çš„å¼€å§‹æ®µè½å·ï¼›end ä¸€ä¸ªæ–‡æœ¬å—çš„ç»“æŸæ®µè½å·
-   * @return åˆ†å‰²å¥½çš„æ–‡æ¡£ç‰‡æ®µ
+   * ¸ù¾İÉèÖÃµÄ×îĞ¡ºÍ×î´ó×Ö½ÚÊı£¬½«ÎÄµµ·Ö¸î³ÉÈô¸É¸öÆ¬¶Î
+   * @param contents ´ı·Ö¸îµÄÎÄµµÄÚÈİ; begin Ò»¸öÎÄ±¾¿éµÄ¿ªÊ¼¶ÎÂäºÅ£»end Ò»¸öÎÄ±¾¿éµÄ½áÊø¶ÎÂäºÅ
+   * @return ·Ö¸îºÃµÄÎÄµµÆ¬¶Î
    */
   public static ArrayList<String> divideWord(String[] contents,int begin,int end) {
     ArrayList<String> result = new ArrayList<String>();
     String segment = "";
-    array.removeAllElements();//æ¸…ç©ºæ‰€æœ‰å…ƒç´ 
+    array.removeAllElements();//Çå¿ÕËùÓĞÔªËØ
     int [] tempt = new int[]{begin-1,0};
-    for(int i = begin - 1; i <= end - 1; ++i) {//begin - 1:å› ä¸ºæ®µæ•°ä»1å¼€å§‹ï¼Œè€Œcontentsä»0å¼€å§‹ï¼Œend - 1åŒç†
+    for(int i = begin - 1; i <= end - 1; ++i) {//begin - 1:ÒòÎª¶ÎÊı´Ó1¿ªÊ¼£¬¶øcontents´Ó0¿ªÊ¼£¬end - 1Í¬Àí
       segment += contents[i] + " ";
       switch(chooseAction(segment.length())) {
       case DONOTHING:
@@ -45,7 +45,7 @@ public class DocumentPartitioner {
         break;
       case DIVIDE:
         //result.addAll(divideString(segment));
-        result.add(new String(segment));//ä¸åˆ‡åˆ†æœ€ååŠ å…¥segmentçš„æ®µè½ï¼Œç›´æ¥å°†è¶…è¿‡maxCharçš„segmentæ·»åŠ åˆ°resultä¸Šã€‚
+        result.add(new String(segment));//²»ÇĞ·Ö×îºó¼ÓÈësegmentµÄ¶ÎÂä£¬Ö±½Ó½«³¬¹ımaxCharµÄsegmentÌí¼Óµ½resultÉÏ¡£
         tempt[1] = i;
         int [] tt2 = tempt;
         array.add(tt2);

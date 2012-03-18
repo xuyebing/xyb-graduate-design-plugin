@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class GlobalVariant {
 
-	// docDescriptorList ä¿å­˜æ‰€æœ‰è½¯ä»¶æ–‡æ¡£æ®µçš„æè¿°ä¿¡æ¯
+	// docDescriptorList ±£´æËùÓĞÈí¼şÎÄµµ¶ÎµÄÃèÊöĞÅÏ¢
 	public static ArrayList<DocumentDescriptor> docDescriptorList = null;
-	// codeDescriptorList ä¿å­˜æ‰€æœ‰ä»£ç æ®µçš„æè¿°ä¿¡æ¯
+	// codeDescriptorList ±£´æËùÓĞ´úÂë¶ÎµÄÃèÊöĞÅÏ¢
 	public static ArrayList<DocumentDescriptor> codeDescriptorList = null;
 }

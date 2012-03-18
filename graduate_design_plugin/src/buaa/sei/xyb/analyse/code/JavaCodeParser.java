@@ -44,10 +44,10 @@ public class JavaCodeParser {
 		IField[] fields = javaClass.getFields();
 		IMethod[] methods = javaClass.getMethods();
 		for (IField field : fields) {
-			fieldList.add(field.getElementName()); // è·å¾—æ‰€æœ‰çš„å±æ€§å
+			fieldList.add(field.getElementName()); // »ñµÃËùÓĞµÄÊôĞÔÃû
 		}
 		for (IMethod method : methods) {
-			methodList.add(method.getElementName()); // è·å¾—æ‰€æœ‰çš„æ–¹æ³•å
+			methodList.add(method.getElementName()); // »ñµÃËùÓĞµÄ·½·¨Ãû
 		}
 		if (codeExtractElement == null)
 			codeExtractElement = new CodeExtractElement();

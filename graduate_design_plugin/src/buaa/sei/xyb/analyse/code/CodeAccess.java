@@ -26,7 +26,7 @@ public class CodeAccess {
 		JavaProjectVisitor jpVisitor = new JavaProjectVisitor(javaProject);
 		ArrayList<IType> elementList = jpVisitor.getJavaFiles();
 		Iterator<IType> iter = elementList.iterator();
-		Constant.globalCategoryID++; // æ‰€æœ‰çš„ä»£ç æ®µéƒ½å¯¹åº”åˆ°åŒä¸€ä¸ªç±»IDï¼Œè€Œä¸æ˜¯ä¸€ä¸ªä»£ç æ®µå¯¹åº”ä¸€ä¸ªç±»ID
+		Constant.globalCategoryID++; // ËùÓÐµÄ´úÂë¶Î¶¼¶ÔÓ¦µ½Í¬Ò»¸öÀàID£¬¶ø²»ÊÇÒ»¸ö´úÂë¶Î¶ÔÓ¦Ò»¸öÀàID
 		while (iter.hasNext()) {
 			IType element = iter.next();
 			JavaCodeParser parser = new JavaCodeParser();
@@ -35,6 +35,6 @@ public class CodeAccess {
 			parser.analyze(element);
 		}
 		
-//		ç»§ç»­æ”¹SingleProcessä¸­çš„parseSrcFilesæ–¹æ³•
+//		¼ÌÐø¸ÄSingleProcessÖÐµÄparseSrcFiles·½·¨
 	}
 }
