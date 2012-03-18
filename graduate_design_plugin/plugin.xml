@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="graduate_design_plugin.TraceableFormulaPreferencePage"
+            id="graduate_design_plugin.TraceableFormula"
+            name="TraceableFormula">
+      </page>
+   </extension>
+
+</plugin>
