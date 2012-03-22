@@ -23,19 +23,21 @@ public class BuildModel {
 	public static String matrixFilePath = ""; // 保存矩阵文件的路径(不包含文件名)
 	private static int docNums = 0;  // 用于计算inputMatrix共有多少行（LDA的输入文件第一行的内容是行数）
 	private static int codeNums = 0;
+	private String folderSet; // 包含所有待分析软件文档的文件夹绝对路径
+	private String projectName; // 待分析的项目名称
 	
-	public static void main(String[] args) {
+	public BuildModel(String folderSet, String projectName) {
+		this.folderSet = folderSet;
+		this.projectName = projectName;
+	}
+	
+	
+	public void build() throws JavaModelException {
 		// 1. 文档段处理
-		String folderSet = "D:\\毕设用例"; // 包含所有待分析软件文档的文件夹绝对路径
+		// String folderSet = "D:\\毕设用例"; // 包含所有待分析软件文档的文件夹绝对路径
 		DocumentAccess.docProcess(folderSet);
-		// 2. 代码处理
-		String projectName = "UseAST";
-		try {
-			CodeAccess.codeProcess(projectName);
-		} catch (JavaModelException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+		// 2. 代码段处理
+		CodeAccess.codeProcess(projectName);
 		// 3. 建立“文档-单词”矩阵，该矩阵的一行对应一个文档，每行的内容是从文档中提取的词语集合
 		matrixFilePath = DocumentAccess.resultPath + Constant.FILE_SEPARATOR + Constant.MATRIX_DIR; // !!需要修改!!
 		File matrixDirFile = new File(matrixFilePath);
