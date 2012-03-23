@@ -11,8 +11,8 @@ import java.util.Iterator;
 import org.eclipse.jdt.core.JavaModelException;
 
 import buaa.sei.xyb.analyse.code.CodeAccess;
-import buaa.sei.xyb.analyse.document.Constant;
 import buaa.sei.xyb.analyse.document.DocumentAccess;
+import buaa.sei.xyb.common.Constant;
 import buaa.sei.xyb.common.DocumentDescriptor;
 import buaa.sei.xyb.common.GlobalVariant;
 

@@ -12,6 +12,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import buaa.sei.xyb.analyse.modelcontrol.BuildModel;
+import buaa.sei.xyb.common.Constant;
 
 public class TraceableFormulaPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
@@ -53,6 +54,7 @@ public class TraceableFormulaPreferencePage extends PreferencePage implements
 		// GlobalVariant.softwareDocFolder = this.traceableFormulaPreferencesComposite.getSoftDoc();
 		String srcCodeProjectName = this.traceableFormulaPreferencesComposite.getSourceCodeProjectName();
 		String softwareDocFolder = this.traceableFormulaPreferencesComposite.getSoftDoc();
+		Constant.toolPath = this.traceableFormulaPreferencesComposite.getToolFolder();
 		
 		BuildModel buildModel = new BuildModel(softwareDocFolder, srcCodeProjectName);
 		try {
@@ -64,4 +66,5 @@ public class TraceableFormulaPreferencePage extends PreferencePage implements
 		return true;
 	}
 
+	考虑保存代码分析的结果到文件中，从而建立矩阵
 }

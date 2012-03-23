@@ -1,5 +1,6 @@
 package graduate_design_plugin.ui;
 
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -12,6 +13,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * TraceableFormula preferences page 
@@ -34,6 +36,9 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 	private Text textSoftDoc;
 	private Label labelSoftDoc;
 	private Button buttonSoftDoc;
+	private Text textToolFolder;
+	private Label labelToolFolder;
+	private Button buttonToolFolder;
 	
 	public String getSourceCodeProjectName() {
 		return this.sourceCodeProjectName.getText();
@@ -43,6 +48,9 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 	}
 	public String getSoftDoc() {
 		return this.textSoftDoc.getText();
+	}
+	public String getToolFolder() {
+		return this.textToolFolder.getText();
 	}
 	
 	public TraceableFormulaPreferencesComposite(Composite parent, int style) {
@@ -71,12 +79,12 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 							// Label
 							this.labelSrcCodeProjectName = new Label(
 									this.artefactConfGroup, SWT.NONE);
-							this.labelSrcCodeProjectName.setBounds(5, 67, 102, 13);
+							this.labelSrcCodeProjectName.setBounds(5, 35, 102, 20);
 							this.labelSrcCodeProjectName.setText("Source code dir");
 							// Text
 							this.sourceCodeProjectName = new Text(
 									this.artefactConfGroup, SWT.BORDER);
-							this.sourceCodeProjectName.setBounds(120, 65, 306, 20);
+							this.sourceCodeProjectName.setBounds(120, 35, 306, 20);
 							// Button
 //							this.buttonChangesrcCodeProjectName = new Button(
 //									this.artefactConfGroup, SWT.NONE);
@@ -96,12 +104,12 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 							// Text
 							this.textWorkingFolder = new Text(
 									this.artefactConfGroup, SWT.BORDER);
-							this.textWorkingFolder.setBounds(120, 95, 306, 20);
+							this.textWorkingFolder.setBounds(120, 65, 306, 20);
 							this.textWorkingFolder.setEditable(false);
 							// Label
 							this.labelWorkingFolder = new Label(
 									this.artefactConfGroup, SWT.NONE);
-							this.labelWorkingFolder.setBounds(5, 97, 102, 20);
+							this.labelWorkingFolder.setBounds(5, 67, 102, 20);
 							this.labelWorkingFolder.setText("Working folder");
 							// Button
 							this.buttonBuildSpace = new Button(
@@ -113,22 +121,20 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 									onNewDDFolder(textWorkingFolder);
 								}
 							});
-							this.buttonBuildSpace.setBounds(432, 95, 53, 20);
+							this.buttonBuildSpace.setBounds(432, 65, 53, 20);
 							this.buttonBuildSpace.setText("scan");
 						}
 						{ // 软件文档路径
 							// Text
 							this.textSoftDoc = new Text(
 									this.artefactConfGroup, SWT.BORDER);
-							this.textSoftDoc.setBounds(120, 125, 306, 20);
+							this.textSoftDoc.setBounds(120, 95, 306, 20);
 							this.textSoftDoc.setEditable(false);
 							// Label
 							this.labelSoftDoc = new Label(
 									this.artefactConfGroup, SWT.NONE);
-							this.labelSoftDoc
-							.setBounds(5, 127, 72, 13);
-							this.labelSoftDoc
-							.setText("Document dir");
+							this.labelSoftDoc.setBounds(5, 95, 102, 20);
+							this.labelSoftDoc.setText("Document dir");
 							// Button
 							this.buttonSoftDoc = new Button(
 									this.artefactConfGroup, SWT.NONE);
@@ -139,8 +145,34 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 										onNewDDFolder(textSoftDoc);
 								}
 							});
-							this.buttonSoftDoc.setBounds(432, 125, 53, 20);
+							this.buttonSoftDoc.setBounds(432, 95, 53, 20);
 							this.buttonSoftDoc.setText("scan");
+						}
+						{ // 处理代码所需工具，师兄实现版本使用
+							// Text
+							this.textToolFolder = new Text(
+									this.artefactConfGroup, SWT.BORDER);
+							this.textToolFolder.setBounds(120, 125, 306, 20);
+							this.textToolFolder.setEditable(false);
+							// String toolFolderPath = this.getClass().get;
+							// this.textToolFolder.setText(toolFolderPath);
+							// Label
+							this.labelToolFolder = new Label(
+									this.artefactConfGroup, SWT.NONE);
+							this.labelToolFolder.setBounds(5, 125, 102, 20);
+							this.labelToolFolder.setText("Tool folder");
+							// Button
+							this.buttonToolFolder = new Button(
+									this.artefactConfGroup, SWT.NONE);
+							this.buttonToolFolder
+							.addSelectionListener(new SelectionAdapter() {
+								public void widgetSelected(SelectionEvent e) {
+									super.widgetSelected(e);
+										onNewDDFolder(textToolFolder);
+								}
+							});
+							this.buttonToolFolder.setBounds(432, 125, 53, 20);
+							this.buttonToolFolder.setText("scan");
 						}
 					}
 				}

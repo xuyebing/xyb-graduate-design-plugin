@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Vector;
 
 import buaa.sei.xyb.analyse.document.pipeFilter.StopFilter;
+import buaa.sei.xyb.common.Constant;
 import buaa.sei.xyb.common.DocumentDescriptor;
 import buaa.sei.xyb.common.GlobalVariant;
 

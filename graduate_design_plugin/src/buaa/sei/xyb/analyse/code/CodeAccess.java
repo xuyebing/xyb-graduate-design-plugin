@@ -10,7 +10,7 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
-import buaa.sei.xyb.analyse.document.Constant;
+import buaa.sei.xyb.common.Constant;
 
 public class CodeAccess {
 	
@@ -33,6 +33,7 @@ public class CodeAccess {
 			parser.setProjectDir(projectDir);
 			
 			parser.analyze(element);
+			
 		}
 		
 //		继续改SingleProcess中的parseSrcFiles方法
