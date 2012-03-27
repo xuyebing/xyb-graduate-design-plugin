@@ -1,5 +1,7 @@
 package graduate_design_plugin;
 
+import java.util.Vector;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -15,6 +17,20 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 	
 	/**
+	 * preferenceListeners Added by Xu Yebing
+	 */
+	private Vector<IPreferenceListener> preferenceListeners;
+	
+	public void addPreferenceListener(IPreferenceListener pPreferenceListener) {
+		this.preferenceListeners.add(pPreferenceListener);
+	}
+	public void preferencesUpdate() {
+		for (IPreferenceListener preferenceListener : preferenceListeners) {
+			preferenceListener.preferenceChanged();
+		}
+	}
+	
+	/**
 	 * The constructor
 	 */
 	public Activator() {
@@ -27,6 +43,7 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		this.preferenceListeners = new Vector<IPreferenceListener>();
 	}
 
 	/*

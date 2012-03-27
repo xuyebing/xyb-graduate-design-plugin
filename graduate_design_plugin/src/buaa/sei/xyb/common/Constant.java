@@ -14,6 +14,13 @@ public class Constant {
   public static boolean doExpansion = true;
   
   public static String getDictPath() {
+	  if (!toolPath.endsWith(FILE_SEPARATOR))
+		  toolPath = toolPath + FILE_SEPARATOR;
 	  return toolPath + "dict" + FILE_SEPARATOR;
+  }
+  public static String getToolPath() {
+	  if (!toolPath.endsWith(FILE_SEPARATOR))
+		  toolPath = toolPath + FILE_SEPARATOR;
+	  return toolPath;
   }
 }

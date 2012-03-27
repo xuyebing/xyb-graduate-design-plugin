@@ -1,8 +1,11 @@
 package graduate_design_plugin;
 
+import graduate_design_plugin.ui.PreferenceConstant;
 import graduate_design_plugin.ui.TraceableFormulaPreferencesComposite;
+import graduate_design_plugin.ui.TraceableFormulaPreferencesComposite.PreferenceValue;
 
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -14,6 +17,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import buaa.sei.xyb.analyse.modelcontrol.BuildModel;
 import buaa.sei.xyb.common.Constant;
 
+
 public class TraceableFormulaPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
@@ -22,6 +26,7 @@ public class TraceableFormulaPreferencePage extends PreferencePage implements
 	public TraceableFormulaPreferencePage() {
 		// TODO Auto-generated constructor stub
 		super();
+		setPreferenceStore(Activator.getDefault().getPreferenceStore());
 		setDescription("Set the TraceableFormula preferences below");
 	}
 
@@ -50,6 +55,23 @@ public class TraceableFormulaPreferencePage extends PreferencePage implements
 	}
 	
 	public boolean performOk() {
+		IPreferenceStore preferenceStore = getPreferenceStore();
+		PreferenceValue preferenceValue = this.traceableFormulaPreferencesComposite.getPreferenceValue();
+		
+		// 保存首选项中的值
+		preferenceStore.setValue(PreferenceConstant.SRC_CODE_PROJ_NAME, 
+				preferenceValue.getSrcCodeProjectName());
+		preferenceStore.setValue(PreferenceConstant.WORKING_FOLDER,
+				preferenceValue.getWorkingFolder());
+		preferenceStore.setValue(PreferenceConstant.SOFTWARE_DOCUMENT,
+				preferenceValue.getSoftDoc());
+		preferenceStore.setValue(PreferenceConstant.TOOL_FOLDER,
+				preferenceValue.getToolFolder());
+		preferenceStore.setValue(PreferenceConstant.DATA_DICT,
+				preferenceValue.getDataDict());
+		// 进行preference更新
+		Activator.getDefault().preferencesUpdate();
+		
 		// GlobalVariant.sourceCodeProjectName = this.traceableFormulaPreferencesComposite.getsourceCodeProjectName();
 		// GlobalVariant.softwareDocFolder = this.traceableFormulaPreferencesComposite.getSoftDoc();
 		String srcCodeProjectName = this.traceableFormulaPreferencesComposite.getSourceCodeProjectName();
@@ -66,5 +88,4 @@ public class TraceableFormulaPreferencePage extends PreferencePage implements
 		return true;
 	}
 
-	考虑保存代码分析的结果到文件中，从而建立矩阵
 }

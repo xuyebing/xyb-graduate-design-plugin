@@ -1,6 +1,9 @@
 package graduate_design_plugin.ui;
 
+import graduate_design_plugin.Activator;
+
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -39,6 +42,15 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 	private Text textToolFolder;
 	private Label labelToolFolder;
 	private Button buttonToolFolder;
+	private Text textDataDict;
+	private Label labelDataDict;
+	private Button buttonDataDict;
+	
+	private PreferenceValue preferenceValue;
+	
+	public PreferenceValue getPreferenceValue() {
+		return this.preferenceValue;
+	}
 	
 	public String getSourceCodeProjectName() {
 		return this.sourceCodeProjectName.getText();
@@ -56,7 +68,12 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 	public TraceableFormulaPreferencesComposite(Composite parent, int style) {
 		super(parent, style);
 		// TODO Auto-generated constructor stub
+		this.preferenceValue = new PreferenceValue();
 		this.initGUI();
+		
+		// 初始化以保存的preference值
+		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
+		this.initStoredPrefs(preferenceStore);
 		
 	}
 	private void initGUI() {
@@ -73,7 +90,7 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 					this.tabConfiguration.setControl(this.confComposite); // set tab page's composite
 					{
 						this.artefactConfGroup = new Group(this.confComposite, SWT.NONE);
-						this.artefactConfGroup.setBounds(0, 0, 492, 150);
+						this.artefactConfGroup.setBounds(0, 0, 492, 190);
 						this.artefactConfGroup.setText("Artefact Configuration");
 						{
 							// Label
@@ -174,6 +191,32 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 							this.buttonToolFolder.setBounds(432, 125, 53, 20);
 							this.buttonToolFolder.setText("scan");
 						}
+						{ // 英文翻译所需的词典，师兄实现版本使用
+							// Text
+							this.textDataDict = new Text(
+									this.artefactConfGroup, SWT.BORDER);
+							this.textDataDict.setBounds(120, 155, 306, 20);
+							this.textDataDict.setEditable(false);
+							// String toolFolderPath = this.getClass().get;
+							// this.textToolFolder.setText(toolFolderPath);
+							// Label
+							this.labelDataDict = new Label(
+									this.artefactConfGroup, SWT.NONE);
+							this.labelDataDict.setBounds(5, 155, 102, 20);
+							this.labelDataDict.setText("Data Dict");
+							// Button
+							this.buttonDataDict = new Button(
+									this.artefactConfGroup, SWT.NONE);
+							this.buttonDataDict
+							.addSelectionListener(new SelectionAdapter() {
+								public void widgetSelected(SelectionEvent e) {
+									super.widgetSelected(e);
+										onNewDDFolder(textDataDict);
+								}
+							});
+							this.buttonDataDict.setBounds(432, 155, 53, 20);
+							this.buttonDataDict.setText("scan");
+						}
 					}
 				}
 			}
@@ -188,4 +231,35 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 			pathText.setText(dirPath);
 	}
 	
+	/**
+	 * 保存preference value 的类
+	 */
+	public class PreferenceValue {
+		public String getSrcCodeProjectName() {
+			return TraceableFormulaPreferencesComposite.this.sourceCodeProjectName.getText();
+		}
+		public String getWorkingFolder() {
+			return TraceableFormulaPreferencesComposite.this.textWorkingFolder.getText();
+		}
+		public String getSoftDoc() {
+			return TraceableFormulaPreferencesComposite.this.textSoftDoc.getText();
+		}
+		public String getToolFolder() {
+			return TraceableFormulaPreferencesComposite.this.textToolFolder.getText();
+		}
+		public String getDataDict() {
+			return TraceableFormulaPreferencesComposite.this.textDataDict.getText();
+		}
+	}
+	/**
+	 * Init the preference : 设置为上次执行时输入的值
+	 */
+	private void initStoredPrefs(IPreferenceStore pPreferenceStore) {
+		this.sourceCodeProjectName.setText(pPreferenceStore.getString(PreferenceConstant.SRC_CODE_PROJ_NAME));
+		this.textWorkingFolder.setText(pPreferenceStore.getString(PreferenceConstant.WORKING_FOLDER));
+		this.textSoftDoc.setText(pPreferenceStore.getString(PreferenceConstant.SOFTWARE_DOCUMENT));
+		this.textToolFolder.setText(pPreferenceStore.getString(PreferenceConstant.TOOL_FOLDER));
+		this.textDataDict.setText(pPreferenceStore.getString(PreferenceConstant.DATA_DICT));
+	}
 }
+
