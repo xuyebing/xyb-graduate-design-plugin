@@ -2,8 +2,10 @@ package buaa.sei.xyb.analyse.code;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +22,7 @@ import buaa.sei.xyb.analyse.code.util.LongFormUtils;
 import buaa.sei.xyb.analyse.code.util.SourceProcessor;
 import buaa.sei.xyb.common.CommonTool;
 import buaa.sei.xyb.common.DocumentDescriptor;
+import buaa.sei.xyb.common.dict.SegTran;
 
 public class JavaCodeParser {
 
@@ -32,11 +35,12 @@ public class JavaCodeParser {
 	private String methodComments = "";
 	private String body = "";
 	private String partition = "\\W|_";
+	private HashMap<String, Integer> termMap = new HashMap<String, Integer>(); //termMap保存了一个词（String）以及该词出现的次数（Integer）
 	
 	public void setProjectDir(String projectDir) {
 		this.projectDir = projectDir;
 	}
-	public DocumentDescriptor analyze(IType element) throws JavaModelException {
+	public HashMap<String, Integer> analyze(IType element) throws JavaModelException {
 		int index = element.getPath().toOSString().indexOf("\\", 1);
 		String location = element.getPath().toOSString().substring(index);
 		String javaFileName = projectDir + location;
@@ -45,9 +49,84 @@ public class JavaCodeParser {
 		
 //		docDescriptor = new DocumentDescriptor(Constant.globalCategoryID, className, javaFileName);
 		parseClass(element);
-		
-		
-		return new DocumentDescriptor();
+		// 将代码中的标识符和注释进行分词和翻译，保存分词结果到文件中
+		createTerms();
+		Set<String> terms = termMap.keySet();
+		Iterator<String> t_it = terms.iterator();
+		System.out.println("%%%%%%%%%%%%% 输出代码中的词  %%%%%%%%%%%");
+		while(t_it.hasNext()) {
+			String term = t_it.next();
+			System.out.println("\t\t term = " + term + " ; frequency = " + termMap.get(term));
+		}
+		return termMap;
+	}
+	/**
+	 * 
+	 *
+	 */
+	private void createTerms() {
+		/* 由于body中已经包含了方法名和属性名，所以不需要单独去处理它们 */
+//		// 将代码中的属性名和方法名分词处理
+//		LinkedList<String> fieldsName = codeExtractElement.getFieldsName();
+//		Iterator<String> f_it = fieldsName.iterator();
+//		String fn_content = ""; // 保存所有fieldName的分词结果
+//		while(f_it.hasNext()) {
+//			String fieldName = f_it.next();
+//			fn_content += splitCamelCaseIdentifier(fieldName) + " ";
+//		}
+//		LinkedList<String> methodsName = codeExtractElement.getMethodsName();
+//		Iterator<String> m_it = methodsName.iterator();
+//		String mn_content = ""; // 保存所有methodName的分词结果
+//		while(m_it.hasNext()) {
+//			String methodName = m_it.next();
+//			mn_content += splitCamelCaseIdentifier(methodName) + " ";
+//		}
+//		// fields
+//		getTermsFromString(fn_content);
+//		// methods
+//		getTermsFromString(mn_content);
+		// otherComments
+		getTermsFromString(codeExtractElement.getOtherComments());
+		// classComments
+		getTermsFromString(codeExtractElement.getClassComments());
+		// methodComments
+		getTermsFromString(codeExtractElement.getMethodComments());
+		// body
+		getTermsFromString(codeExtractElement.getBody());
+	}
+	/**
+	 * 从String中提取term
+	 * @param content 待分析的String
+	 */
+//	1. 修改UI 中的 Data Dict，让它可以选择文件、而不是文件夹
+//	2. 继续利用数据词典和词典进行英文到中文的翻译
+	private void getTermsFromString(String content) {
+		if(!content.equals("")) {
+			try {
+				if (SegTran.analyzer == null)
+					SegTran.init();
+				System.out.println("&&&&&&&  翻以前  &&&&&&");
+				System.out.println(" content = " + content);
+				content=SegTran.ChiEng2Chi(content);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(!content.equals(""))
+		{
+		    String[] words = content.split(" ");
+			for(int i = 0; i < words.length; ++i) {
+				//if(words[i].length() > 2) {
+					if(termMap.containsKey(words[i])) {
+						int wordNum = termMap.get(words[i]);
+						termMap.put(words[i], wordNum + 1);
+					} else {
+						termMap.put(words[i], 1);
+					}
+				//}
+			}
+		}
 	}
 	
 	private void parseClass(IType javaClass) throws JavaModelException {
@@ -82,12 +161,12 @@ public class JavaCodeParser {
 		System.out.println("--------------> Fields:");
 		for (IField field : fields) {
 			fieldList.add(field.getElementName()); // 获得所有的属性名
-			System.out.println("\t\t" + field);
+			System.out.println("\t\t" + field.getElementName());
 		}
 		System.out.println("--------------> Methods:");
 		for (IMethod method : methods) {
 			methodList.add(method.getElementName()); // 获得所有的方法名
-			System.out.println("\t\t" + method);
+			System.out.println("\t\t" + method.getElementName());
 		}
 		if (codeExtractElement == null)
 			codeExtractElement = new CodeExtractElement();
@@ -146,7 +225,7 @@ public class JavaCodeParser {
 		while(matcher.find()) {
 			comment += matcher.group() + " ";
 		}
-		fieldBodyClean += fieldBody.replaceAll(regex, " ");
+		fieldBodyClean += fieldBody.replaceAll(regex, " "); // 去除所有的/**/注释
 
 		// 匹配以"//"形式编写的注释
 		regex = "//.*";
@@ -156,20 +235,22 @@ public class JavaCodeParser {
 		}
 
 		// 匹配双引号里面的内容
-		fieldBodyClean = fieldBodyClean.replaceAll(regex, " ");
+		fieldBodyClean = fieldBodyClean.replaceAll(regex, " "); // 去除所有的//注释
 
-		body += splitCamelCaseIdentifier(fieldBodyClean) + " ";
+		body += splitCamelCaseIdentifier(fieldBodyClean) + " "; // body对应属性字段中提取的信息，如:String a = "内容",则body将包含"内容"
 		
 		otherComments += splitCamelCaseIdentifier(comment) + " ";
-        body += fieldBodyClean + " ";
-		
-		otherComments += comment + " ";
+//        body += fieldBodyClean + " ";
+//		otherComments += comment + " ";
 	}
 	
 	private String splitCamelCaseIdentifier(String str)  {
 		//added by han 添加提取中文操作，因为原来的没有处理中文的功能，把中文过滤掉了。
 	    String result = "";
-	    if (str.contains("[\\u4E00-\\u9FA5]")) { // 判断是包含了中文
+	    String regEx = "[\\u4E00-\\u9FA5]";
+	    Pattern pattern = Pattern.compile(regEx);
+	    Matcher matcher = pattern.matcher(str);
+	    if (matcher.find()) { // 判断是包含了中文
 			try {
 				MMAnalyzer cnAnalyzer = new MMAnalyzer();
 				str = cnAnalyzer.segment(str, " ");
@@ -198,6 +279,8 @@ public class JavaCodeParser {
 	    } else {
 	    	String[] words = str.split(partition);
 	    	for (String word : words) {
+	    		if (word.equals(""))
+	    			continue;
 	    		ArrayList<String> splitWords = CommonTool.splitCamelCaseIdentifier(word);
 	    		Iterator<String> it = splitWords.iterator();
 	    		while(it.hasNext()) {

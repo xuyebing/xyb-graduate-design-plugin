@@ -7,7 +7,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Vector;
 
 import buaa.sei.xyb.analyse.document.pipeFilter.StopFilter;
@@ -72,17 +74,45 @@ public class DocumentAccess {
 						docWordsContent += lineContent + "\n"; //获得文档的全部内容
 					}
 					String filteredContent = stopFilter.filterStopWord(docWordsContent);
-					// 将过滤后的内容filteredContent写入新的文件中保存
-					// 新文件的绝对路径filteredFilePath
-					String filteredFilePath = filteredFolderPath + Constant.FILE_SEPARATOR + docWordsFile.getName();
-					File filteredFile = new File(filteredFilePath);
-					BufferedWriter bw = new BufferedWriter(new FileWriter(filteredFile));
-					bw.write(filteredContent);
-					bw.flush();
-					bw.close();
+//					// 将过滤后的内容filteredContent写入新的文件中保存
+//					// 新文件的绝对路径filteredFilePath
+//					String filteredFilePath = filteredFolderPath + Constant.FILE_SEPARATOR + docWordsFile.getName();
+//					File filteredFile = new File(filteredFilePath);
+//					BufferedWriter bw = new BufferedWriter(new FileWriter(filteredFile));
+//					bw.write(filteredContent);
+//					bw.flush();
+//					bw.close();
+					
+					// 添加properties类型的输入文档，其中每一行形式为：词语=出现频数；以该类文档作为构建LDA模型的输入
+					String fn = docWordsFile.getName();
+					int eindex = fn.lastIndexOf(".");
+					if (eindex > 0)
+						fn = fn.substring(0, eindex);
+					fn += ".properties"; // 将文件名从"abc.xxx"改为了"abc.properties"
+					HashMap<String, Integer> wordsMap = new HashMap<String, Integer>();
+					String[] words = filteredContent.split("\\s");
+					for (String word : words) {
+						if (wordsMap.containsKey(word)) {
+							wordsMap.put(word, wordsMap.get(word)+1);
+						} else {
+							wordsMap.put(word, 1);
+						}
+					}
+					String propertiesContent = "";
+					for (Entry<String, Integer> entry : wordsMap.entrySet()) {
+						propertiesContent += entry.getKey() + "=" + entry.getValue() + "\r\n";
+					}
+					String propertiesFilePath = filteredFolderPath + Constant.FILE_SEPARATOR + fn;
+					File propertiesFile = new File(propertiesFilePath);
+					BufferedWriter bw2 = new BufferedWriter(new FileWriter(propertiesFile));
+					bw2.write(propertiesContent);
+					bw2.flush();
+					bw2.close();
 					// 产生文档段对应的文档描述符
-					createDocumentDescriptor(Constant.globalCategoryID, docWordsFile.getName(),
-							                 filteredFilePath);
+//					createDocumentDescriptor(Constant.globalCategoryID, docWordsFile.getName(),
+//							                 filteredFilePath);
+					createDocumentDescriptor(Constant.globalCategoryID, fn,
+							propertiesFilePath);
 				}
 			}
 		}

@@ -32,7 +32,7 @@ import org.kohsuke.args4j.*;
 
 public class LDA {
 	/**
-	 * JAVA LDA è¿è¡Œå‚æ•°å¦‚ä¸‹ï¼š
+	 * JAVA LDA ÃüÁîĞĞ²ÎÊı
 	 *   -est -alpha 0.5 -beta 0.1 -ntopics 100 -niters 1000 -savestep 100 -twords 20 
 	 *   -dir C:\Users\sos\Downloads\JGibbLDA-v.1.0\JGibbLDA-v.1.0\models\case\ -dfile trndocs.dat
 	 */

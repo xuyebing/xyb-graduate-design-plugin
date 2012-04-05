@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 /**
@@ -58,5 +59,19 @@ public class StopFilter {
         filteredContent += word + " ";
     }
     return filteredContent.trim();
+  }
+  /**
+   * 用于CodeAccess类中，对翻译后的结果进行"去停用词"的操作
+   * @param words
+   * @return 去除停用词后的集合
+   */
+  public HashMap<String, Integer> filterStopWord(HashMap<String, Integer> words) {
+	  Set<String> keys = words.keySet();
+	  for (String key : keys) {
+		// 将不是数字和符号组成的串(NumWithPunctuate)、不是停用词的词语加入filteredContent中
+	      if (NumberFilter.isNumWithPunctuate(key) || stopWordSet.contains(key)) // 将停用词去除
+	    	  words.remove(key);
+	  }
+	  return words;
   }
 }

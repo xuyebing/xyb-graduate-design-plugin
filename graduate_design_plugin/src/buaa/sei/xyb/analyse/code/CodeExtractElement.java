@@ -1,6 +1,9 @@
 package buaa.sei.xyb.analyse.code;
 
+import java.io.IOException;
 import java.util.LinkedList;
+
+import buaa.sei.xyb.common.dict.SegTran;
 
 public class CodeExtractElement {
 
@@ -48,41 +51,4 @@ public class CodeExtractElement {
 	public String getBody() { 
 		return this.body;
 	}
-	
-	/**
-	 * 从String中提取term
-	 * @param content 待分析的String
-	 */
-	1. 修改UI 中的 Data Dict，让它可以选择文件、而不是文件夹
-	2. 继续利用数据词典和词典进行英文到中文的翻译
-//	private void getTermsFromString(String content) {
-//		if(!content.equals("")) {
-//			try {
-//				content=SegTran.ChiEng2Chi(content);
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//		if(!content.equals(""))
-//		{
-//		    String[] words = content.split(" ");
-//			for(int i = 0; i < words.length; ++i) {
-//				//if(words[i].length() > 2) {
-//					if(termMap.containsKey(words[i])) {
-//						Term term = termMap.get(words[i]);
-//						if(term.getType() < type) {
-//							log.info("word: " + term.getTermName() + ". type: " + type);
-//							term.setType(type);
-//						}
-//						term.setLocalFreq(term.getLocalFreq() + 1);
-//					} else {
-//						Term term = new Term(words[i]);
-//						term.setType(type);
-//						termMap.put(words[i], term);
-//					}
-//				//}
-//			}
-//		}
-//	}
 }

@@ -11,6 +11,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabFolder;
@@ -211,7 +212,7 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 							.addSelectionListener(new SelectionAdapter() {
 								public void widgetSelected(SelectionEvent e) {
 									super.widgetSelected(e);
-										onNewDDFolder(textDataDict);
+										onNewFileFolder(textDataDict);
 								}
 							});
 							this.buttonDataDict.setBounds(432, 155, 53, 20);
@@ -229,6 +230,13 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 		String dirPath = directoryDialog.open();
 		if (dirPath != null)
 			pathText.setText(dirPath);
+	}
+	private void onNewFileFolder(Text pathText) {
+		FileDialog fileDialog = new FileDialog(this.getShell());
+		fileDialog.setText("请选择对应的文件");
+		String filePath = fileDialog.open();
+		if (filePath != null)
+			pathText.setText(filePath);
 	}
 	
 	/**

@@ -61,7 +61,7 @@ public class BuildModel {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		// 3.1 先加入文档集合
+		// 遍历文档+代码的全体文件描述符
 		for(Iterator<DocumentDescriptor> iterator = GlobalVariant.docDescriptorList.iterator();
 			iterator.hasNext(); ) {
 			DocumentDescriptor dd = iterator.next();
@@ -93,6 +93,7 @@ public class BuildModel {
 			}
 			
 		}
+//		2012-4-5继续修改，上述均成功，以获得inputMatrix，但是写入该matrix的内容还需要修改
 		
 	}
 }

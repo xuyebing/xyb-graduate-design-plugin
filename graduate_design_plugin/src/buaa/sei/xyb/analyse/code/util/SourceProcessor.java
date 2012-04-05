@@ -77,8 +77,8 @@ public class SourceProcessor {
 		}
 		processComments();
 		//changed by hxd
-		//createCleanDictionaries2();
-		//createCleanDictionaries();
+//		createCleanDictionaries2();
+		createCleanDictionaries();
 	}
 	
 	private void createCleanDictionaries2() {

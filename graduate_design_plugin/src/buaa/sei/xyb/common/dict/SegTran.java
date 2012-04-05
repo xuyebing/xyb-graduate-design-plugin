@@ -1,6 +1,7 @@
 package buaa.sei.xyb.common.dict;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import jeasy.analysis.MMAnalyzer;
 
@@ -9,6 +10,17 @@ public class SegTran {
 	public static MMAnalyzer analyzer = null;
 	public static void init() {
 		analyzer = new MMAnalyzer();
+		// 初始化字典
+		Dict d=new Dict();
+		try {
+			d.insertItemsIntoDict();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static String ChiEng2Chi(String CE) throws IOException
@@ -48,7 +60,7 @@ public class SegTran {
         		Ch+=Dict.dateDict.get(zes[i])+" ";//+" "+zhs[i]+" ";
         	} else if (Dict.dict.containsKey(zes[i])) {
         		//如果翻译的词长不大，太大有误差。如果是英文  把翻译加上  //原词也加上
-        		if(Dict.dict.get(zes[i]).length()<=15)
+        		if(Dict.dict.get(zes[i]).length()<=5) // 只保留翻译后的长度不超过5个汉字的词汇 
         			Ch+=Dict.dict.get(zes[i])+" ";//+" "+zhs[i]+" ";
         	}
         }

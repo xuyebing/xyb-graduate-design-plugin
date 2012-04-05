@@ -52,25 +52,31 @@ public class Dict {
 		 String[] str={"s","2","5"};
 		 for(int i=0;i<str.length;i++)
 		 {
-		 rs=stmt.executeQuery("select * from word"+str[i]);
-		 while(rs.next())
-		 {
-			 String eng=rs.getString("eng");
-			 String chi=rs.getString("chi");
-
-			 if(!dict.containsKey(eng))
-			      dict.put(eng, chi);
-			 else
+			 rs=stmt.executeQuery("select * from word"+str[i]);
+			 while(rs.next())
 			 {
-				 String temp=dict.get(eng);
-				 if(temp.contains(chi))
-					 continue;
-				 else if(chi.contains(temp))
-					 dict.put(eng, chi);
+				 String eng=rs.getString("eng");
+				 String chi=rs.getString("chi");
+	
+				 if(!dict.containsKey(eng))
+				      dict.put(eng, chi);
+				 else
+				 {
+					 String temp=dict.get(eng);
+//					 if(temp.contains(chi))
+//						 continue;
+//					 else if(chi.contains(temp))
+//						 dict.put(eng, chi);
+//						 else
+//							 dict.put(eng, chi+dict.get(eng));
+					 if(chi.contains(temp))
+						 continue;
+					 else if(temp.contains(chi))
+						 dict.put(eng, chi);
 					 else
 						 dict.put(eng, chi+dict.get(eng));
+				 }
 			 }
-		 }
 		 }
 	}
 	public static void main(String[] args)
