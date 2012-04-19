@@ -77,6 +77,7 @@ public class TraceableFormulaPreferencePage extends PreferencePage implements
 		String srcCodeProjectName = this.traceableFormulaPreferencesComposite.getSourceCodeProjectName();
 		String softwareDocFolder = this.traceableFormulaPreferencesComposite.getSoftDoc();
 		Constant.toolPath = this.traceableFormulaPreferencesComposite.getToolFolder();
+		Constant.workingFolder = this.traceableFormulaPreferencesComposite.getWorkingFolder();
 		
 		BuildModel buildModel = new BuildModel(softwareDocFolder, srcCodeProjectName);
 		try {

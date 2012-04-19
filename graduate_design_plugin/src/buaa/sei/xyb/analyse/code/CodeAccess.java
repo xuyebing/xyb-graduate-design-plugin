@@ -2,8 +2,10 @@ package buaa.sei.xyb.analyse.code;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,9 +55,9 @@ public class CodeAccess {
 				e.printStackTrace();
 			}
 			// 产生代码段对应的文档描述符
-			String propertiesContent = "";
+			String wdsContent = "";
 			for (Entry<String, Integer> entry : termMap.entrySet()) {
-				propertiesContent += entry.getKey() + "=" + entry.getValue() + "\r\n";
+				wdsContent += entry.getKey() + "=" + entry.getValue() + "\r\n";
 			}
 			String codeFolderPath = DocumentAccess.resultPath + Constant.FILE_SEPARATOR + Constant.CODE_DIR + Constant.FILE_SEPARATOR + Constant.globalCategoryID;
 			File codeFolder = new File(codeFolderPath);
@@ -69,16 +71,16 @@ public class CodeAccess {
 			int eindex = fn.lastIndexOf(".");
 			if (eindex > 0)
 				fn = fn.substring(0, eindex);
-			fn += ".properties";
-			String codePropertiesFilePath = codeFolderPath + Constant.FILE_SEPARATOR + fn;
-			File propertiesFile = new File(codePropertiesFilePath);
+			fn += ".wds";
+			String codeWdsFilePath = codeFolderPath + Constant.FILE_SEPARATOR + fn;
+			File wdsFile = new File(codeWdsFilePath);
 			try {
-				BufferedWriter bw = new BufferedWriter(new FileWriter(propertiesFile));
-				bw.write(propertiesContent);
+				BufferedWriter bw = new BufferedWriter(new FileWriter(wdsFile));
+				bw.write(wdsContent);
 				bw.flush();
 				bw.close();
 				createDocumentDescriptor(Constant.globalCategoryID, fn,
-						codePropertiesFilePath);
+						codeWdsFilePath);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

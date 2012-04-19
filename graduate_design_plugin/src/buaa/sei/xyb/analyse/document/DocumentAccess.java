@@ -83,12 +83,12 @@ public class DocumentAccess {
 //					bw.flush();
 //					bw.close();
 					
-					// 添加properties类型的输入文档，其中每一行形式为：词语=出现频数；以该类文档作为构建LDA模型的输入
+					// 添加wds类型的输入文档，其中每一行形式为：词语=出现频数；以该类文档作为构建LDA模型的输入
 					String fn = docWordsFile.getName();
 					int eindex = fn.lastIndexOf(".");
 					if (eindex > 0)
 						fn = fn.substring(0, eindex);
-					fn += ".properties"; // 将文件名从"abc.xxx"改为了"abc.properties"
+					fn += ".wds"; // 将文件名从"abc.xxx"改为了"abc.wds"
 					HashMap<String, Integer> wordsMap = new HashMap<String, Integer>();
 					String[] words = filteredContent.split("\\s");
 					for (String word : words) {
@@ -98,21 +98,21 @@ public class DocumentAccess {
 							wordsMap.put(word, 1);
 						}
 					}
-					String propertiesContent = "";
+					String wdsContent = "";
 					for (Entry<String, Integer> entry : wordsMap.entrySet()) {
-						propertiesContent += entry.getKey() + "=" + entry.getValue() + "\r\n";
+						wdsContent += entry.getKey() + "=" + entry.getValue() + "\r\n";
 					}
-					String propertiesFilePath = filteredFolderPath + Constant.FILE_SEPARATOR + fn;
-					File propertiesFile = new File(propertiesFilePath);
-					BufferedWriter bw2 = new BufferedWriter(new FileWriter(propertiesFile));
-					bw2.write(propertiesContent);
+					String wdsFilePath = filteredFolderPath + Constant.FILE_SEPARATOR + fn;
+					File wdsFile = new File(wdsFilePath);
+					BufferedWriter bw2 = new BufferedWriter(new FileWriter(wdsFile));
+					bw2.write(wdsContent);
 					bw2.flush();
 					bw2.close();
 					// 产生文档段对应的文档描述符
 //					createDocumentDescriptor(Constant.globalCategoryID, docWordsFile.getName(),
 //							                 filteredFilePath);
 					createDocumentDescriptor(Constant.globalCategoryID, fn,
-							propertiesFilePath);
+							wdsFilePath);
 				}
 			}
 		}

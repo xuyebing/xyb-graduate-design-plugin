@@ -3,10 +3,19 @@ package buaa.sei.xyb.analyse.modelcontrol;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.eclipse.jdt.core.JavaModelException;
 
@@ -15,14 +24,19 @@ import buaa.sei.xyb.analyse.document.DocumentAccess;
 import buaa.sei.xyb.common.Constant;
 import buaa.sei.xyb.common.DocumentDescriptor;
 import buaa.sei.xyb.common.GlobalVariant;
+import buaa.sei.xyb.lda.jgibblda.LDA;
+import buaa.sei.xyb.process.irmodel.VSMProcess;
 
 public class BuildModel {
 
-	public static int matrixIndex = 0; // 用于记录创建矩阵时，每个文档所对应的矩阵的行号
+	public static int matrixIndex = 0; // 用于记录创建矩阵时，每个文档所对应的矩阵的行号,从0开始计数
 	public static final String matrixFileName = "inputMatrix.txt"; // 矩阵文件名
+	public static final String matrixWordoc = "model-final.wordoc"; // LDA模型计算后得到的"词-文档"概率分布，用于计算"香农信息"
+	public static final String matrixShannonInfo = "shannonInfo.txt"; // 保存香农信息的文件名
+	public static final String matrixShannonWords = "shannonWords.txt"; // 按香农信息值降序保存每个文档中的主题单词
+	public static final String matrixWordMap = "wordmap.txt";
 	public static String matrixFilePath = ""; // 保存矩阵文件的路径(不包含文件名)
 	private static int docNums = 0;  // 用于计算inputMatrix共有多少行（LDA的输入文件第一行的内容是行数）
-	private static int codeNums = 0;
 	private String folderSet; // 包含所有待分析软件文档的文件夹绝对路径
 	private String projectName; // 待分析的项目名称
 	
@@ -49,8 +63,7 @@ public class BuildModel {
 			matrixFile.delete(); // 如果原来matrixFile文件已存在，则先删除原有的文件
 		}
 		docNums = GlobalVariant.docDescriptorList.size();
-		// codeNums = GlobalVariant.codeDescriptorList.size() //留待补全
-		int sumNum = docNums + codeNums;
+		int sumNum = docNums;
 		try {
 			BufferedWriter ibw = new BufferedWriter(new FileWriter(matrixFile, true));
 			String firstLine = sumNum + "\r\n";
@@ -67,21 +80,31 @@ public class BuildModel {
 			DocumentDescriptor dd = iterator.next();
 			String filePath = dd.getPath();
 			File file = new File(filePath);
-			if (file.exists()) {
+			if (file.exists() && file.getName().endsWith(".wds")) {
 				try {
-					BufferedReader br = new BufferedReader(new FileReader(file));
-					String line;
 					String content = "";
+					BufferedReader br = new BufferedReader(new FileReader(file));
+					String line = "";
 					while ((line = br.readLine()) != null) {
-						content += line + "\n";
+						String[] keyValue = line.split("=");
+						if (keyValue.length != 2) {
+							System.out.println(">>>> Error: Read wds file fail!");
+							return;
+						}
+						int value = Integer.valueOf(keyValue[1]);
+						for (int i = 0; i < value; i++) {
+							content += keyValue[0] + " ";
+						}
 					}
-					br.close();
-					content = content.replaceAll("\\s", " "); // 把内容转换为一行以空格隔开的词语
+					///////////////
+					content = content.replaceAll("\\s+", " "); // 把内容转换为一行以空格隔开的词语
 					content = content.trim();
 					content += "\r\n";
 					// write into the matrixFile
-					BufferedWriter bw = new BufferedWriter(new FileWriter(matrixFile, true)); // FileWriter的第二个参数(boolean值)为true
-					                                                                          // 表示以 追加的方式写入
+//					BufferedWriter bw = new BufferedWriter(new FileWriter(matrixFile, true)); // FileWriter的第二个参数(boolean值)为true
+//					                                                                          // 表示以 追加的方式写入
+					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
+							new FileOutputStream(matrixFile, true), "UTF-8"));
 					bw.write(content);
 					bw.flush();
 					bw.close();
@@ -93,7 +116,204 @@ public class BuildModel {
 			}
 			
 		}
-//		2012-4-5继续修改，上述均成功，以获得inputMatrix，但是写入该matrix的内容还需要修改
+//		2012-4-6 写inputMatrix.txt成功，继续工作，将其加入到LDA模型中
+		String argStr = "-est -alpha 0.5 -beta 0.1 -ntopics 50 -niters 500 -savestep 100 -twords 20 " +
+                        "-dir " + this.matrixFilePath + " -dfile " + this.matrixFileName;
+		String[] args = argStr.split(" ");
+		LDA.main(args);
+		// 继续， 计算每个词汇在每个文档段中的香农信息值
+		computeShannonInfo();
+//		继续 2012-04-09, 得到文档段-单词-香农值文件
+		createShannonWordsFile();
+//		使用VSM模型计算相关性
+		VSMProcess vsmProcess = new VSMProcess();
+		vsmProcess.init();
+		// 计算相似度
+		vsmProcess.compute();
 		
+	}
+	
+	class SwPair implements Comparable {
+		private String word;
+		private double shannonValue;
+		
+		public SwPair (String word, double shannonValue) {
+			this.word = word;
+			this.shannonValue = shannonValue;
+		}
+
+		/**
+		 * compareTo用来比较，比较结果是逆序的（大的元素排前面）
+		 */
+		@Override
+		public int compareTo(Object arg0) {
+			// TODO Auto-generated method stub
+			if (arg0 instanceof SwPair) {
+				SwPair b = (SwPair)arg0;
+				if (this.shannonValue > b.shannonValue)
+					return  -1;
+				else if (this.shannonValue == b.shannonValue)
+					return 0;
+				else
+					return 1;
+			}
+			return 0;
+		}
+	}
+	
+	private void createShannonWordsFile() {
+		// 读入wordmap.txt
+		HashMap<Integer, String> wordMap = getWordMap();
+		String shannonInfoFile = this.matrixFilePath + Constant.FILE_SEPARATOR + this.matrixShannonInfo;
+		String shannonWordsFile = this.matrixFilePath + Constant.FILE_SEPARATOR + this.matrixShannonWords;
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(shannonWordsFile));
+			BufferedReader br = new BufferedReader(new FileReader(shannonInfoFile));
+			String line = "";
+			int matrixNo = 0;
+			while ((line = br.readLine()) != null) {
+				DocumentDescriptor dd = getDD(matrixNo);
+				bw.write(dd.getName() + " "); // 写入文档段名称
+				String[] splits = line.split("\\s+");
+				int len = splits.length;
+				Set<SwPair> shannonWordSet = new TreeSet<SwPair>();
+				for (int i = 0; i < len; i++) {
+					double value = Double.valueOf(splits[i]);
+					if (value == 0.0)
+						continue;
+					String word = wordMap.get(i); // 获得对应的单词
+					shannonWordSet.add(new SwPair(word, value));
+				}
+				for (Iterator<SwPair> it = shannonWordSet.iterator(); 
+						it.hasNext(); ) {
+					SwPair swPair = it.next();
+					bw.write(swPair.word + ":" + swPair.shannonValue + " ");
+				}
+				bw.write("\n");
+				matrixNo++;
+			}
+			br.close();
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void computeShannonInfo() {
+		// 读入wordmap.txt
+		HashMap<Integer, String> wordMap = getWordMap();
+		// read the "model-final.wordoc"
+		String finalWordoc = this.matrixFilePath + Constant.FILE_SEPARATOR + this.matrixWordoc;
+		String shannonInfoFile = this.matrixFilePath + Constant.FILE_SEPARATOR + this.matrixShannonInfo;
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(shannonInfoFile));
+			//////////////////
+			BufferedReader br = new BufferedReader(new FileReader(finalWordoc));
+			String line = "";
+			int matrixNo = 0;
+			while ((line = br.readLine()) != null) {
+				HashMap<String, Integer> ddWordMap = getDDWordMap(matrixNo);
+				String[] splits = line.split("\\s+");
+				int len = splits.length;
+				Map<Integer, String> shannonWordTreeMap = new TreeMap<Integer, String>();
+				for (int i = 0; i < len; i++) {
+					double value = Double.valueOf(splits[i]);
+					int freq = getFrequency(i, wordMap, ddWordMap);
+					// shannon information expression
+					double I = freq * Math.log(value) * (-1);
+					// write I into the shannon info file
+					bw.write(String.valueOf(I) + " ");
+					//// 记录每个文档段对应的词和相应的香农信息值
+					
+				}
+				bw.write("\n");
+				matrixNo++;
+			}
+			br.close();
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	private HashMap<Integer, String> getWordMap() {
+		HashMap<Integer, String> wordMap = new HashMap<Integer, String>();
+		String wordMapPath = this.matrixFilePath + Constant.FILE_SEPARATOR + this.matrixWordMap;
+		try {
+//			BufferedReader br = new BufferedReader(new FileReader(wordMapPath));
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					new FileInputStream(wordMapPath), "UTF-8"));
+			String line = "";
+			while ((line = br.readLine()) != null) {
+				String[] res = line.split("\\s+");
+				if (res.length == 2) {
+					wordMap.put(Integer.valueOf(res[1]), res[0]);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+		return wordMap;
+	}
+	/**
+	 * 获得每个文档段包含的词集（词+词的出现频数）
+	 * @param matrixRowNo
+	 * @return 文档段包含的词集（词  + 词频）
+	 */
+	private HashMap<String, Integer> getDDWordMap(int matrixRowNo) {
+		HashMap<String, Integer> ddWordMap = new HashMap<String, Integer>();
+		DocumentDescriptor dd = getDD(matrixRowNo);
+		if (dd != null) {
+			String file = dd.getPath();
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(file));
+	//					BufferedReader br = new BufferedReader(new InputStreamReader(
+	//							new FileInputStream(file), "UTF-8"));
+				String line = "";
+				while ((line = br.readLine()) != null) {
+					String[] res = line.split("=");
+					if (res.length == 2) {
+						ddWordMap.put(res[0], Integer.valueOf(res[1]));
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return ddWordMap;
+	}
+	/**
+	 * 根据矩阵中的行号获得对应的DocumentDescriptor对象
+	 */
+	private DocumentDescriptor getDD(int matrixRowNo) {
+		DocumentDescriptor retDd = null;
+		for (Iterator<DocumentDescriptor> iterator = GlobalVariant.docDescriptorList.iterator();
+				iterator.hasNext(); ) {
+			DocumentDescriptor dd = iterator.next();
+			if (dd.getMatrixIndex() == matrixRowNo) {
+				retDd = dd;
+			}
+		}
+		return retDd;
+	}
+	/**
+	 * @param wordId: 单词在wordmap.txt中的序号
+	 * @param wordMap: 依据wordmap.txt建立的“序号-词”的 哈希映射
+	 * @param matrixRowNo: 矩阵中的行号，依据这个编号找到对应的文档段，获得该文档段包含的词集
+	 * @return
+	 */
+	private int getFrequency(int wordId, HashMap<Integer, String> wordMap, HashMap<String, Integer> ddWordMap) {
+		// 根据wordId在wordmap.txt中找到对应的单词
+		if (wordMap.containsKey(wordId)) {
+			String word = wordMap.get(wordId); // 找到对应的单词word
+			// 去每个文档中查找该单词出现的频数
+			if (ddWordMap.containsKey(word)) {
+				return ddWordMap.get(word);
+			} else {
+				return 0;
+			}
+		}
+		return 0;
 	}
 }

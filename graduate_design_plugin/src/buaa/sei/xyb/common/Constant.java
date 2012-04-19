@@ -9,9 +9,10 @@ public class Constant {
   public static final String SEGMENT_DIR = "je"; // 保存每个文档段的分词结果的文件夹
   public static final String FILTERED_DIR = "filtered"; // 保存过滤后的文本段词语集合的目录
   public static final String CODE_DIR = "code"; // 保存代码段提取出的词汇的文件夹名称
-  public static final String MATRIX_DIR = "matrix";
+  public static final String MATRIX_DIR = "matrix"; // LDA模型输出结果
   public static int globalCategoryID = 0; // 用于生成每个文档所属的类别
   public static String toolPath = null; 
+  public static String workingFolder = null; // 用于保存相似度计算结果的文件夹路径
   public static boolean doExpansion = true;
   
   public static String getDictPath() {

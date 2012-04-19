@@ -55,6 +55,8 @@ public class Model {
 	public static String othersSuffix; 	//suffix for containing other parameters
 	public static String twordsSuffix;		//suffix for file containing words-per-topics
 	
+	public static String wordocSuffix; // suffix for word - document distribution file
+	
 	//---------------------------------------------------------------
 	//	Model Parameters and Variables
 	//---------------------------------------------------------------
@@ -111,6 +113,7 @@ public class Model {
 		phiSuffix = ".phi";
 		othersSuffix = ".others";
 		twordsSuffix = ".twords";
+		wordocSuffix = ".wordoc";
 		
 		dir = "./";
 		dfile = "trndocs.dat";
@@ -392,7 +395,8 @@ public class Model {
 					}
 				}
 			} //end foreach topic			
-						
+				
+			writer.flush();
 			writer.close();
 		}
 		catch(Exception e){
@@ -402,7 +406,29 @@ public class Model {
 		}
 		return true;
 	}
-	
+	/**
+	 * Added by Xu Yebing
+	 * 增加计算“词-文档”的矩阵
+	 */
+	public boolean saveModelWordoc(String filename){
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+			double[][] mulMatrix = MatrixMultiplication.matrixMultiple(theta, phi, M, V, K);
+			for (int i = 0; i < M; i++){
+				for (int j = 0; j < V; j++){
+					writer.write(mulMatrix[i][j] + " ");
+				}
+				writer.write("\n");
+			}
+			writer.close();
+		}
+		catch (Exception e){
+			System.out.println("Error while saving word-doc distribution:" + e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 	/**
 	 * Save model
 	 */
@@ -420,6 +446,10 @@ public class Model {
 		}
 		
 		if (!saveModelPhi(dir + File.separator + modelName + phiSuffix)){
+			return false;
+		}
+		// Added by Xu Yebing, 保存“词-文档段”矩阵
+		if (!saveModelWordoc(dir + File.separator + modelName + wordocSuffix)) {
 			return false;
 		}
 		

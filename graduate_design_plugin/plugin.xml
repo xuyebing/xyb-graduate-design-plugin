@@ -9,5 +9,41 @@
             name="TraceableFormula">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="buaa.sei.xyb.ViewObjectContribution"
+            nameFilter="*.java"
+            objectClass="org.eclipse.jdt.core.IJavaElement">
+         <menu
+               icon="icons/document_copy.png"
+               id="buaa.sei.xyb.ViewMenu"
+               label="Show Related Documentations"
+               path="additions">
+         </menu>
+         <action
+               class="buaa.sei.xyb.actions.ShowRelatedDocVSMAction"
+               icon="icons/document_a4_marked.png"
+               id="buaa.sei.xyb.ShowRelatedDocumentsVSMAction"
+               label="Show Related Doc(VSM)"
+               menubarPath="buaa.sei.xyb.ViewMenu/show">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="TraceableFormulaView"
+            name="TraceableFormulaView">
+      </category>
+      <view
+            class="buaa.sei.xyb.views.TreeTableVSM"
+            icon="icons/documents_new.png"
+            id="buaa.sei.xyb.RelatedDocsResultViewVSM"
+            name="Related Docs View(VSM)"
+            restorable="true">
+      </view>
+   </extension>
 
 </plugin>
