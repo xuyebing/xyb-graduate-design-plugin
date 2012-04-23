@@ -4,8 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Vector;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -13,13 +16,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -38,6 +38,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import buaa.sei.xyb.actions.ShowRelatedDocVSMAction;
 import buaa.sei.xyb.common.Constant;
+import buaa.sei.xyb.lda.jgibblda.Pair;
 
 public class TreeTableVSM extends ViewPart {
 
@@ -211,6 +212,7 @@ public class TreeTableVSM extends ViewPart {
 				FileReader fr=new FileReader(resultFiles[i]);
 				BufferedReader br=new BufferedReader(fr);
 				String line=null;
+				List<Pair> resultList = new ArrayList<Pair>();
 				while((line=br.readLine())!=null)
 				{
 					String[] r=line.split("\t");
@@ -219,14 +221,28 @@ public class TreeTableVSM extends ViewPart {
 							ShowRelatedDocVSMAction.javaFile.lastIndexOf("."));
 					if(r[1].contains(javaFileName))
 					{
+						// 将与该代码段相关的记录加入到resultList中
+						resultList.add(new Pair(r[0], Double.valueOf(r[2])));
 						
 			    		//String f=r[1];
-						TreeItem  ti00=new TreeItem(ti0,SWT.NONE);
-		    			ti00.setText(new String[]{"doc"+(j++)+"="+r[0].substring(r[0].lastIndexOf("\\")+1),r[2]});
-		    		    ti00.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE));
-		    		    map.put(ti00, r[0]);
+//						TreeItem  ti00=new TreeItem(ti0,SWT.NONE);
+//		    			ti00.setText(new String[]{"doc"+(j++)+"="+r[0].substring(r[0].lastIndexOf("\\")+1),r[2]});
+//		    		    ti00.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE));
+//		    		    map.put(ti00, r[0]);
 					}
 					
+				}
+				// 对resultList排序
+				Collections.sort(resultList);
+				for (Iterator<Pair> iterator = resultList.iterator(); iterator.hasNext(); ) {
+					Pair oneResult = iterator.next();
+					String r0 = oneResult.first.toString();
+					String relateValue = oneResult.second.toString();
+					
+					TreeItem ti00 = new TreeItem(ti0, SWT.NONE);
+					ti00.setText(new String[]{"doc"+(j++)+"="+r0.substring(r0.lastIndexOf("\\")+1), relateValue});
+					ti00.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE));
+					map.put(ti00, r0);
 				}
 			}
 			
@@ -244,7 +260,7 @@ public class TreeTableVSM extends ViewPart {
             TreeColumn value = new TreeColumn(tree, SWT.LEFT); 
             value.setResizable(true); 
             value.setText("VSM相关度值"); 
-            value.setWidth(100); 
+            value.setWidth(200); 
             
 //            TreeColumn parent = new TreeColumn(tree, SWT.CENTER); 
 //            parent.setResizable(true); 
