@@ -58,34 +58,64 @@ public class TraceableFormulaPreferencePage extends PreferencePage implements
 		IPreferenceStore preferenceStore = getPreferenceStore();
 		PreferenceValue preferenceValue = this.traceableFormulaPreferencesComposite.getPreferenceValue();
 		
-		// 保存首选项中的值
+		// 保存Artefact Configuration首选项中的值
 		preferenceStore.setValue(PreferenceConstant.SRC_CODE_PROJ_NAME, 
 				preferenceValue.getSrcCodeProjectName());
 		preferenceStore.setValue(PreferenceConstant.WORKING_FOLDER,
 				preferenceValue.getWorkingFolder());
 		preferenceStore.setValue(PreferenceConstant.SOFTWARE_DOCUMENT,
 				preferenceValue.getSoftDoc());
+		preferenceStore.setValue(PreferenceConstant.TEMP_FOLDER, 
+				preferenceValue.getTempFolder());
 		preferenceStore.setValue(PreferenceConstant.TOOL_FOLDER,
 				preferenceValue.getToolFolder());
 		preferenceStore.setValue(PreferenceConstant.DATA_DICT,
 				preferenceValue.getDataDict());
-		// 进行preference更新
-		Activator.getDefault().preferencesUpdate();
+		
+		// 保存LDA est arguments组中的值
+		preferenceStore.setValue(PreferenceConstant.LDA_EST_ARG_ALPHA,
+				preferenceValue.getLDAEstArgumentsAlpha());
+		preferenceStore.setValue(PreferenceConstant.LDA_EST_ARG_BETA,
+				preferenceValue.getLDAEstArgumentsBeta());
+		preferenceStore.setValue(PreferenceConstant.LDA_EST_ARG_NTOPICS,
+				preferenceValue.getLDAEstArgumentsNtopics());
+		preferenceStore.setValue(PreferenceConstant.LDA_EST_ARG_NITERS,
+				preferenceValue.getLDAEstArgumentsNiters());
+		preferenceStore.setValue(PreferenceConstant.LDA_EST_ARG_SAVESTEP,
+				preferenceValue.getLDAEstArgumentsSavestep());
+		preferenceStore.setValue(PreferenceConstant.LDA_EST_ARG_TWORDS,
+				preferenceValue.getLDAEstArgumentsTwords());
+		
 		
 		// GlobalVariant.sourceCodeProjectName = this.traceableFormulaPreferencesComposite.getsourceCodeProjectName();
 		// GlobalVariant.softwareDocFolder = this.traceableFormulaPreferencesComposite.getSoftDoc();
-		String srcCodeProjectName = this.traceableFormulaPreferencesComposite.getSourceCodeProjectName();
-		String softwareDocFolder = this.traceableFormulaPreferencesComposite.getSoftDoc();
+		
+		// 保存Artefact Configuration首选项中的值 到 Constant
+		Constant.srcCodeProjectName = this.traceableFormulaPreferencesComposite.getSourceCodeProjectName();
+		Constant.softwareDocFolder = this.traceableFormulaPreferencesComposite.getSoftDoc();
+		Constant.tempFolder = this.traceableFormulaPreferencesComposite.getTempFolder();
 		Constant.toolPath = this.traceableFormulaPreferencesComposite.getToolFolder();
 		Constant.workingFolder = this.traceableFormulaPreferencesComposite.getWorkingFolder();
 		
-		BuildModel buildModel = new BuildModel(softwareDocFolder, srcCodeProjectName);
-		try {
-			buildModel.build();
-		} catch (JavaModelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// 保存LDA est arguments组中的值 到 Constant
+		Constant.estAlpha = Double.valueOf(this.traceableFormulaPreferencesComposite.getLDAEstArgumentsAlpha());
+		Constant.estBeta = Double.valueOf(this.traceableFormulaPreferencesComposite.getLDAEstArgumentsBeta());
+		Constant.estNtopics = Integer.valueOf(this.traceableFormulaPreferencesComposite.getLDAEstArgumentsNtopics());
+		Constant.estNiters = Integer.valueOf(this.traceableFormulaPreferencesComposite.getLDAEstArgumentsNiters());
+		Constant.estSavestep = Integer.valueOf(this.traceableFormulaPreferencesComposite.getLDAEstArgumentsSavestep());
+		Constant.estTwords = Integer.valueOf(this.traceableFormulaPreferencesComposite.getLDAEstArgumentsTwords());
+		
+		// 进行preference更新
+		Activator.getDefault().preferencesUpdate();
+		
+//		// 以下部分需要移动到view中，从view中启动工具分析
+//		BuildModel buildModel = new BuildModel(Constant.softwareDocFolder, Constant.srcCodeProjectName);
+//		try {
+//			buildModel.build();
+//		} catch (JavaModelException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		return true;
 	}
 

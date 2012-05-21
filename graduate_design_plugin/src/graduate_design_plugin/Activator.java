@@ -1,7 +1,11 @@
 package graduate_design_plugin;
 
+import graduate_design_plugin.resource.ImageNames;
+
 import java.util.Vector;
 
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -62,6 +66,17 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
+	}
+	
+	/**
+	 * 为项目注册需要使用的图片
+	 */
+	public static ImageDescriptor getImageDescriptor(String path) {
+		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+	}
+	protected void initializeImageRegistry(ImageRegistry reg) {
+		reg.put(ImageNames.ICON_START,
+				getImageDescriptor("icons/start_button.jpg"));
 	}
 
 }

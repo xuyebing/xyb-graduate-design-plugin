@@ -60,6 +60,15 @@ public class WordDocParser {
 			String str=subPartsIt.next();
 			writer.write(str);
 			writer.close();
+			
+			DocInfo di = new DocInfo();
+			di.absPath = outPutName;
+			di.offset = offset;
+			di.length = str.length();
+			di.parentName = docFile;
+			
+			DocumentAccess.docLocationMap.put(docName + "_" + filePointer, di); // 将文档段信息添加到docLocationMap中，便于双击查看时(show related docs)使用
+			
 			System.out.println(outPutName + "; fatherFile = " + docFile + "; offset =  " + offset + "; docPart.length = " + str.length());
 			offset += str.length();
 			// 调用分词类进行分词

@@ -10,6 +10,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -117,8 +119,14 @@ public class BuildModel {
 			
 		}
 //		2012-4-6 写inputMatrix.txt成功，继续工作，将其加入到LDA模型中
-		String argStr = "-est -alpha 0.5 -beta 0.1 -ntopics 50 -niters 500 -savestep 100 -twords 20 " +
-                        "-dir " + this.matrixFilePath + " -dfile " + this.matrixFileName;
+		String argStr = "-est -alpha " + Constant.estAlpha +
+				            " -beta " + Constant.estBeta +
+				            " -ntopics " + Constant.estNtopics +
+				            " -niters " + Constant.estNiters +
+				            " -savestep " + Constant.estSavestep +
+				            " -twords " + Constant.estTwords + " " +
+                            "-dir " + this.matrixFilePath +
+                            " -dfile " + this.matrixFileName;
 		String[] args = argStr.split(" ");
 		LDA.main(args);
 		// 继续， 计算每个词汇在每个文档段中的香农信息值

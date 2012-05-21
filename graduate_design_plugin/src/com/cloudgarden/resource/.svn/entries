@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="85"
+   name=""
+   committed-date="2008-07-08T07:20:28.454356Z"
+   url="svn://192.168.109.226/sei.buaa.linktracer/src/com/cloudgarden/resource"
+   last-author="lai"
+   kind="dir"
+   uuid="56b62baf-62cc-4149-8dc1-8872d217dc30"
+   repos="svn://192.168.109.226"
+   revision="240"/>
+<entry
+   committed-rev="85"
+   name="SWTResourceManager.java"
+   text-time="2008-12-15T12:40:29.593750Z"
+   committed-date="2008-07-08T07:20:28.454356Z"
+   checksum="04e5681150fec1351cc72183b3783080"
+   last-author="lai"
+   kind="file"
+   prop-time="2008-12-15T12:40:29.578125Z"/>
+</wc-entries>

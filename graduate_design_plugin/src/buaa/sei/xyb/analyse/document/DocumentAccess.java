@@ -37,9 +37,11 @@ public class DocumentAccess {
 	public static Vector<Integer> tableStartIndex = new Vector<Integer>();
 	// foldersToAnalyze 待分析文档的目录集合，分析顺序是先进先出
 	public static List<String> foldersToAnalyze;
+	// docLocationMap 用于保存文档段及其对应的信息（文档段的位置、大小、偏移、父文档名）
+	public static HashMap<String, DocInfo> docLocationMap = new HashMap<String, DocInfo>();
 	
-	public static String resultPath = "D:\\ttmp_1"; // 保存分析结果的路径
-	public static String toolPath = "D:\\tool"; // 包含有用的文件（词典、数据词典、停用词文件等）的文件夹（绝对路径）
+	public static String resultPath = Constant.tempFolder; // 保存分析结果的路径
+	public static String toolPath = Constant.toolPath; // 包含有用的文件（词典、数据词典、停用词文件等）的文件夹（绝对路径）
 	
 	public static String stopWordFilePath = "D:\\硕士开题\\中文停用词\\stopword1.txt"; // 临时使用
 	/**
