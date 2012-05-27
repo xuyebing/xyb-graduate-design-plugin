@@ -89,7 +89,14 @@ public class WordSegmentation {
 //    String docPara = "据路透社报道，印度尼西亚社会事务部一官员星期二(29日)表示，"  
 //                 "日惹市附近当地时间27日晨5时53分发生的里氏6.2级地震已经造成至少5427人死亡，"  
 //                 "20000余人受伤，近20万人无家可归。";
-    String docPara = "6/";
-    ws.segmentWord(docPara);
+//    String docPara = "6/";
+    String docPara = "类图中的(Dispatch)类和ActiveXComponent类就是该Jar包中的类";
+    String[] enStrs = docPara.split("[\\u4E00-\\u9FA5\\s]+");
+    int id = 0;
+    for (String str : enStrs) {
+    	if (!str.isEmpty())
+    		System.out.println(id++ + " str = " + str);
+    }
+//    ws.segmentWord(docPara);
   }
 }

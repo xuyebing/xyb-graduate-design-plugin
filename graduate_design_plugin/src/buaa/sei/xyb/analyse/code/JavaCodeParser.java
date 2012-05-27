@@ -105,7 +105,7 @@ public class JavaCodeParser {
 			try {
 				if (SegTran.analyzer == null)
 					SegTran.init();
-				System.out.println("&&&&&&&  ∑≠“‘«∞  &&&&&&");
+				System.out.println("&&&&&&&  ∑≠“Î«∞  &&&&&&");
 				System.out.println(" content = " + content);
 				content=SegTran.ChiEng2Chi(content);
 			} catch (IOException e) {

@@ -151,7 +151,6 @@ public class DocumentAccess {
 			WordDocParser wdp = new WordDocParser(); 
 			try {
 				// 1. 文档段分割，同时对每个文档段进行分词操作 [本阶段的输出包括：1.划分好的文档段集合。 2.每个文档段对应的词语集合]
-				// 目前第一阶段已完成
 				Constant.globalCategoryID ++; // 每分析一个软件文档，全局类别索引加1.
 				
 				wdp.analyze(docPath, resultPath);

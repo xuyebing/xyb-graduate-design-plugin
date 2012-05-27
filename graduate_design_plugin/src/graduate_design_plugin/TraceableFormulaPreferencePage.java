@@ -96,6 +96,7 @@ public class TraceableFormulaPreferencePage extends PreferencePage implements
 		Constant.tempFolder = this.traceableFormulaPreferencesComposite.getTempFolder();
 		Constant.toolPath = this.traceableFormulaPreferencesComposite.getToolFolder();
 		Constant.workingFolder = this.traceableFormulaPreferencesComposite.getWorkingFolder();
+		Constant.dataDictPath = this.traceableFormulaPreferencesComposite.getDataDict();
 		
 		// 保存LDA est arguments组中的值 到 Constant
 		Constant.estAlpha = Double.valueOf(this.traceableFormulaPreferencesComposite.getLDAEstArgumentsAlpha());

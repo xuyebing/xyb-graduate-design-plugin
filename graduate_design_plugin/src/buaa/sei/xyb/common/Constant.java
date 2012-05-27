@@ -17,6 +17,7 @@ public class Constant {
   public static String toolPath = null; 
   public static String workingFolder = null; // 用于保存相似度计算结果的文件夹路径
   public static boolean doExpansion = true;
+  public static String dataDictPath = null; // 保存数据词典的绝对路径
   
   // LDA Est Arguments constant variant
   public static double estAlpha = 0.5;

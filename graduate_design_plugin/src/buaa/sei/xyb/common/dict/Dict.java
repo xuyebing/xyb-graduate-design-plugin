@@ -19,7 +19,7 @@ import buaa.sei.xyb.common.Constant;
 public class Dict {
 
 	public static HashMap<String,String> dict=new HashMap();
-	public static HashMap<String,String> dateDict=new HashMap();
+	public static HashMap<String,String> dataDict=new HashMap();
 	public static void insertItemsIntoDateDict(String dateDictFile) throws IOException
 	{
 		FileReader rd=new FileReader(dateDictFile);
@@ -28,14 +28,14 @@ public class Dict {
 		while((line=br.readLine())!=null)
 		{
 			String[] item=line.split("=");
-			if(dateDict.containsKey(item[0]))
+			if(dataDict.containsKey(item[0]))
 			{
-				String v=dateDict.get(item[0]);
+				String v=dataDict.get(item[0]);
 				v+=" "+item[1];
-				dateDict.put(item[0], v);
+				dataDict.put(item[0], v);
 			}
 			else
-			dateDict.put(item[0], item[1]);
+			dataDict.put(item[0], item[1]);
 		}
 	}
 	public static void insertItemsIntoDict() throws ClassNotFoundException, SQLException  //向字典或者分词词典中添加条目吧

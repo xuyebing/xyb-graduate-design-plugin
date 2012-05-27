@@ -85,6 +85,10 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 	public String getToolFolder() {
 		return this.textToolFolder.getText();
 	}
+	public String getDataDict() {
+		return this.textDataDict.getText();
+	}
+	
 	// LDA Est Arguments
 	public String getLDAEstArgumentsAlpha() {
 		return this.alphaText.getText();

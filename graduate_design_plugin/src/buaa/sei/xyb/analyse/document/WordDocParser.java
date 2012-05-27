@@ -80,6 +80,8 @@ public class WordDocParser {
 			writer.write(words);
 			writer.close();
 			
+			在这里创建数据表，保存文档段中出现的英文单词，以及其所对应的上下文中文词
+			
 			filePointer++;
 		}
 		System.out.println(" >>>> one file splited successful!");
