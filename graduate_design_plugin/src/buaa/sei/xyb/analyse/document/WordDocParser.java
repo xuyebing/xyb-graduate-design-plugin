@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import buaa.sei.xyb.common.Constant;
+import buaa.sei.xyb.database.DataBaseOperation;
 
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.Dispatch;
@@ -80,11 +81,132 @@ public class WordDocParser {
 			writer.write(words);
 			writer.close();
 			
-			在这里创建数据表，保存文档段中出现的英文单词，以及其所对应的上下文中文词
+			// 在这里创建数据表，保存文档段中出现的英文单词，以及其所对应的上下文中文词
+			// 1. 将文档段str按照中文进行划分，得到非中文字符组成的串，从中抽取出英文串（保留大小写信息），将该英文串作为数据表的主键，将该文档段中的其他中文词作为它的可能解释，放入对应的“中文词串”表项中
+			//   （进行上述步骤的原因：je工具分词后，将英文字符串全部转换为小写，丢失了进行驼峰标记法分词的信息）
+			String[] nonCnWords = str.split("[\\u4E00-\\u9FA5\\s]+");
+			for (String nonCnWord : nonCnWords) {
+				if (nonCnWord.matches("[\\w.]+")) {
+					// 将该英文串加入数据表中
+					StringBuilder tableFields = new StringBuilder(nonCnWord + ", ");
+					// 构造中文词串
+					String cnStr = constructCNStr(str, nonCnWord);
+					// 检查英文词前后是否包含括号
+					int isSurroundWithParenthesis = surroundWithParenthesis(str, nonCnWord);
+					// 若包含括号，则同时获得紧挨的前一个中文词（没有前一个紧挨的中文词，则返回后一个紧挨的中文词）
+					String previousCnWord = "";
+					if (isSurroundWithParenthesis == 1) {
+						previousCnWord = getPreviousCnWord(words, nonCnWord);
+					}
+					// 开始insert
+					tableFields.append(cnStr + ", " + isSurroundWithParenthesis);
+					if (!previousCnWord.isEmpty())
+						tableFields.append(", " + previousCnWord);
+					boolean insertSuccess = DataBaseOperation.insertTable(DataBaseOperation.translate_table_name, tableFields.toString());
+					if (insertSuccess)
+						System.out.println("---- >> 写数据成功： " + tableFields.toString());
+				}
+			}
 			
 			filePointer++;
 		}
 		System.out.println(" >>>> one file splited successful!");
+	}
+	/**
+	 * surroundWithParenthesis 用来判断英文词enWord是否被包含在括号中
+	 * @param para
+	 * @param enWord
+	 * @return 1: 被括号包围. 0: 没有被括号包围
+	 */
+	private int surroundWithParenthesis(String para, String enWord) {
+		para = para.trim();
+		String[] A = para.split(enWord, 2);
+		if (A.length == 2) {
+			String first = A[0].trim();
+			String second = A[1].trim();
+			if ((first.endsWith("(") || first.endsWith("（")) && (second.startsWith(")") || second.startsWith("）"))) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+	/**
+	 * getPreviousCnWord 在文本段分词结果 words中获得英文词enWord紧挨的前一个中文词(如果没有前一个词，则返回紧挨的后一个词)
+	 * @param words 文本段的分词结果，各个单词之间以空格分隔
+	 * @param enWord
+	 * @return 前一个紧挨的中文词
+	 */
+	private String getPreviousCnWord(String words, String enWord) {
+		String retCnWord = "";
+		words = words.trim();
+		String[] A = words.split(enWord, 2);
+		if (A.length == 2) {
+			// 获得前半部分中最后一个中文词
+			String first = A[0].trim();
+			String[] subWords = first.split("\\s+");
+			retCnWord = subWords[subWords.length-1];
+		} else if (A.length == 1) {
+			if (words.endsWith(enWord)) {
+				String first = A[0].trim();
+				String[] subWords = first.split("\\s+");
+				retCnWord = subWords[subWords.length-1];
+			} else if (words.startsWith(enWord)) {
+				// 没有紧挨的前一个中文词，则返回紧挨的后一个中文词
+				String second = A[0].trim();
+				String[] subWords = second.split("\\s+");
+				retCnWord = subWords[0];
+			}
+		}
+		if (!retCnWord.isEmpty() && retCnWord.matches("[\\u4E00-\\u9FA5]+"))
+			return retCnWord;
+		else
+			return "";
+	}
+	
+	/**
+	 * constructCNStr 方法用于构造中文词串
+	 * 原理: 以该英文单词为界，将文档段划分为两个子串A1, A2. 
+	 *      从A1中提取从最后一个句号"。"开始到A1结尾的子串str1；
+	 * 		从A2中提取从A2开头开始到第一个句号“。”的子串str2.
+	 * 		str1 和 str2 组合构成了"中文词串"。
+     * 		注： 若没有找到相应的句号“。”，则将整个A1或A2子串作为str1或str2.
+     * @param para 待分析的文档段
+     * @param enWord 英文词
+     */
+	private String constructCNStr(String para, String enWord) {
+		para = para.trim();
+		String[] A = para.split(enWord, 2);
+		String first = "";
+		String second = "";
+		String str1 = "";
+		String str2 = "";
+		if (A.length == 2) {
+			first = A[0];
+			second = A[1];
+		} else if (A.length == 1) {
+			if (para.endsWith(enWord)) {
+				first = A[0];
+			} else if (para.startsWith(enWord)) {
+				second = A[0];
+			}
+		}
+		if (!first.isEmpty()) {
+			int id1 = first.lastIndexOf("。");
+			if (id1 > 0) {
+				str1 = first.substring(id1+1);
+			} else {
+				str1 = first;
+			}
+		}
+		if (!second.isEmpty()) {
+			int id2 = second.indexOf("。");
+			if (id2 > 0) {
+				str2 = second.substring(0, id2+1);
+			} else {
+				str2 = second;
+			}
+		}
+		return str1 + str2;
 	}
 	/**
 	 * spiltFile 将文档分割成若干个片段

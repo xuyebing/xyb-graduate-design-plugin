@@ -26,6 +26,7 @@ import buaa.sei.xyb.analyse.document.DocumentAccess;
 import buaa.sei.xyb.common.Constant;
 import buaa.sei.xyb.common.DocumentDescriptor;
 import buaa.sei.xyb.common.GlobalVariant;
+import buaa.sei.xyb.database.DataBaseOperation;
 import buaa.sei.xyb.lda.jgibblda.LDA;
 import buaa.sei.xyb.process.irmodel.VSMProcess;
 
@@ -47,9 +48,24 @@ public class BuildModel {
 		this.projectName = projectName;
 	}
 	
+	/**
+	 * 创建数据库中的英文翻译表
+	 */
+	public void createDataBase() {
+		DataBaseOperation dbo = new DataBaseOperation();
+		dbo.createDataBase();
+		StringBuilder tableFields = new StringBuilder(DataBaseOperation.keyForTable + " VARCHAR(200) NOT NULL,");
+		tableFields.append("cn_words TEXT,");
+		tableFields.append("in_parenthesis TINYINT default \'0\',");
+		tableFields.append("previous_cn_word TEXT,");
+		tableFields.append(" PRIMARY KEY (" + DataBaseOperation.keyForTable + ")");
+		
+		dbo.createTable(DataBaseOperation.translate_table_name, tableFields.toString());
+	}
 	
 	public void build() throws JavaModelException {
 		// 1. 文档段处理
+		createDataBase();
 		// String folderSet = "D:\\毕设用例"; // 包含所有待分析软件文档的文件夹绝对路径
 		DocumentAccess.docProcess(folderSet);
 		// 2. 代码段处理

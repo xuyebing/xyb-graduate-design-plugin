@@ -21,7 +21,6 @@ public class DataBaseOperation {
 	private static String driverClassName = "com.mysql.jdbc.Driver";
 	private static String url = "";
 	private static String db_name = "traceableformulaDB";
-	private static String translate_table_name = "translateTable";
 	
 	//
 	private static String serverHost = "127.0.0.1";
@@ -29,6 +28,7 @@ public class DataBaseOperation {
 	private static String userName = "root";
 	private static String password = "123456";
 
+	public static String translate_table_name = "translateTable";
 	// 英文翻译表，用来根据文档中出现的英文词进行翻译
 	public static final String[][] translate_table_fields_map = {
 									{"英文", "en_word"},
@@ -36,6 +36,7 @@ public class DataBaseOperation {
 									{"含括号", "in_parenthesis"},
 									{"前一个中文词", "previous_cn_word"}
 								};
+	public static String keyForTable = "en_word";
 	/**
 	 * 获得数据库连接
 	 */
@@ -64,7 +65,7 @@ public class DataBaseOperation {
 		Statement st = null;
 		try {
 			st = conn.createStatement();
-			String createDBSql = "CREATE DATABASE IF NOT EXSITS " + db_name +
+			String createDBSql = "CREATE DATABASE IF NOT EXISTS " + db_name +
 					" CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';";
 			st.execute(createDBSql);
 		} catch (SQLException e) {
@@ -101,6 +102,25 @@ public class DataBaseOperation {
 			e.printStackTrace();
 			warningWhenCatchException(e);
 			return false;
+		}
+		releaseConnAndStat(conn, st);
+		return true;
+	}
+	/**
+	 * insertTable 向指定的表tableName中插入相应的值（insertValue）
+	 */
+	public static boolean insertTable(String tableName, String insertValue) {
+		Connection conn = DataBaseOperation.getConn(db_name);
+		if (!checkDBConnection(conn)) {
+			return false;
+		}
+		Statement st = null;
+		try {
+			st = conn.createStatement();
+			String insertSql = "insert into " + tableName + " values (" + insertValue + ")";
+			st.execute(insertSql);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		releaseConnAndStat(conn, st);
 		return true;

@@ -97,6 +97,14 @@ public class WordSegmentation {
     	if (!str.isEmpty())
     		System.out.println(id++ + " str = " + str);
     }
+    
+    String aStr = "WordSegment.java等于_WordSegment._java等于word.java.java等于_.等于_abc.等于_abc.a";
+    String[] enWords = aStr.split("[\\u4E00-\\u9FA5\\s]+");
+    for (String word : enWords) {
+    	if (word.matches("[\\w.]+"))
+    		System.out.println(word);
+    }
+    
 //    ws.segmentWord(docPara);
   }
 }
