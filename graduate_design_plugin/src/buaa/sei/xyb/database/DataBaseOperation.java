@@ -117,7 +117,8 @@ public class DataBaseOperation {
 		Statement st = null;
 		try {
 			st = conn.createStatement();
-			String insertSql = "insert into " + tableName + " values (" + insertValue + ")";
+			String columnStr = "en_word, cn_words, in_parenthesis, previous_cn_word";
+			String insertSql = "insert ignore into " + tableName + "(" + columnStr + ") " + " values (" + insertValue + ");";
 			st.execute(insertSql);
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -84,11 +84,11 @@ public class WordDocParser {
 			// 在这里创建数据表，保存文档段中出现的英文单词，以及其所对应的上下文中文词
 			// 1. 将文档段str按照中文进行划分，得到非中文字符组成的串，从中抽取出英文串（保留大小写信息），将该英文串作为数据表的主键，将该文档段中的其他中文词作为它的可能解释，放入对应的“中文词串”表项中
 			//   （进行上述步骤的原因：je工具分词后，将英文字符串全部转换为小写，丢失了进行驼峰标记法分词的信息）
-			String[] nonCnWords = str.split("[\\u4E00-\\u9FA5\\s]+");
+			String[] nonCnWords = str.split("[\\u4E00-\\u9FA5]+");
 			for (String nonCnWord : nonCnWords) {
-				if (nonCnWord.matches("[\\w.]+")) {
+				if (nonCnWord.matches("[a-zA-Z_][\\w]+\\.?[\\w]*")) {
 					// 将该英文串加入数据表中
-					StringBuilder tableFields = new StringBuilder(nonCnWord + ", ");
+					StringBuilder tableFields = new StringBuilder("'" + nonCnWord + "', ");
 					// 构造中文词串
 					String cnStr = constructCNStr(str, nonCnWord);
 					// 检查英文词前后是否包含括号
@@ -99,9 +99,8 @@ public class WordDocParser {
 						previousCnWord = getPreviousCnWord(words, nonCnWord);
 					}
 					// 开始insert
-					tableFields.append(cnStr + ", " + isSurroundWithParenthesis);
-					if (!previousCnWord.isEmpty())
-						tableFields.append(", " + previousCnWord);
+					tableFields.append( "'" + cnStr + "', '" + isSurroundWithParenthesis + "'");
+					tableFields.append(", '" + previousCnWord + "'");
 					boolean insertSuccess = DataBaseOperation.insertTable(DataBaseOperation.translate_table_name, tableFields.toString());
 					if (insertSuccess)
 						System.out.println("---- >> 写数据成功： " + tableFields.toString());
@@ -175,6 +174,7 @@ public class WordDocParser {
      */
 	private String constructCNStr(String para, String enWord) {
 		para = para.trim();
+		System.out.println(">>>> enword = " + enWord);
 		String[] A = para.split(enWord, 2);
 		String first = "";
 		String second = "";
