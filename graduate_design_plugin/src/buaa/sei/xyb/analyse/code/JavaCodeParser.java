@@ -192,10 +192,10 @@ public class JavaCodeParser {
 	private void parseMethod(IMethod method) {
 		SourceProcessor methodParser = new SourceProcessor(method);
 
-		//otherComments += methodParser.getInternalCommentsClean();
-		//otherComments += methodParser.getStringLiteralsCleanNoStop();
-		otherComments += methodParser.getInternalComments();
-		otherComments += methodParser.getStringLiterals();
+		otherComments += methodParser.getInternalCommentsClean();
+		otherComments += methodParser.getStringLiteralsCleanNoStop();
+//		otherComments += methodParser.getInternalComments();
+//		otherComments += methodParser.getStringLiterals();
 
 		if(method.getElementName().equals(className)) // 说明是构造方法
 			//classComments += methodParser.getLeadingCommentsCleanSplit();

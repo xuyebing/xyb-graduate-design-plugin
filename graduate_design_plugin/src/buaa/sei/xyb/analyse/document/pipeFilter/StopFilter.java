@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 /**
  * 
@@ -66,11 +67,14 @@ public class StopFilter {
    * @return 去除停用词后的集合
    */
   public HashMap<String, Integer> filterStopWord(HashMap<String, Integer> words) {
-	  Set<String> keys = words.keySet();
-	  for (String key : keys) {
+	  Iterator<String> iterator = words.keySet().iterator();
+	  while (iterator.hasNext()) {
+		  String key = iterator.next();
 		// 将不是数字和符号组成的串(NumWithPunctuate)、不是停用词的词语加入filteredContent中
-	      if (NumberFilter.isNumWithPunctuate(key) || stopWordSet.contains(key)) // 将停用词去除
+	      if (NumberFilter.isNumWithPunctuate(key) || stopWordSet.contains(key)) { // 将停用词去除
+	    	  iterator.remove();
 	    	  words.remove(key);
+	      }
 	  }
 	  return words;
   }

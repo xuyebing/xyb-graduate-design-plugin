@@ -84,7 +84,9 @@ public class WordDocParser {
 			// 在这里创建数据表，保存文档段中出现的英文单词，以及其所对应的上下文中文词
 			// 1. 将文档段str按照中文进行划分，得到非中文字符组成的串，从中抽取出英文串（保留大小写信息），将该英文串作为数据表的主键，将该文档段中的其他中文词作为它的可能解释，放入对应的“中文词串”表项中
 			//   （进行上述步骤的原因：je工具分词后，将英文字符串全部转换为小写，丢失了进行驼峰标记法分词的信息）
-			String[] nonCnWords = str.split("[\\u4E00-\\u9FA5]+");
+			char bel = 7;
+			str = str.replace(bel, ' ');
+			String[] nonCnWords = str.split("[\\u4E00-\\u9FA5\\s]+");
 			for (String nonCnWord : nonCnWords) {
 				if (nonCnWord.matches("[a-zA-Z_][\\w]+\\.?[\\w]*")) {
 					// 将该英文串加入数据表中
@@ -475,7 +477,12 @@ public class WordDocParser {
 				{
 				   paragraph = Dispatch.call(paragraphs,"Item",new Variant(j)).toDispatch();
 				   Dispatch range = Dispatch.get(paragraph,"Range").toDispatch();
-				   str = str + Dispatch.get(range,"Text").toString();
+				   String tempStr = Dispatch.get(range,"Text").toString();
+				   tempStr = tempStr.replaceAll("\\s+", "");
+				   char bel = 7;
+				   tempStr = tempStr.replace(bel, ' ');
+				   byte[] bt = tempStr.getBytes();
+				   str += tempStr;
 				}
 				str = str.trim();//去除string首尾的空格
 				//重新保存表格文档

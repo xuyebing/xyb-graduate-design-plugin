@@ -145,15 +145,21 @@ public class BuildModel {
                             " -dfile " + this.matrixFileName;
 		String[] args = argStr.split(" ");
 		LDA.main(args);
+		System.out.println("============>> LDA 模型执行完毕 <<================");
 		// 继续， 计算每个词汇在每个文档段中的香农信息值
 		computeShannonInfo();
+		System.out.println("============>> ShannonInfo 计算完毕 <<================");
 //		继续 2012-04-09, 得到文档段-单词-香农值文件
 		createShannonWordsFile();
+		System.out.println("============>> \"文档段-单词-香农值文件\"生成完毕 <<================");
 //		使用VSM模型计算相关性
 		VSMProcess vsmProcess = new VSMProcess();
+		System.out.println("============>> \"开始VSM计算\"生成完毕 <<================");
 		vsmProcess.init();
+		System.out.println("============>> VSM 初始化完毕 <<================");
 		// 计算相似度
 		vsmProcess.compute();
+		System.out.println("============>> !VSM 计算完毕， 整个工具的分析过程结束! <<================");
 		
 	}
 	
