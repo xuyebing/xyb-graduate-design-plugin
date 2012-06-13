@@ -1,6 +1,7 @@
 package buaa.sei.xyb.common;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GlobalVariant {
 
@@ -10,4 +11,7 @@ public class GlobalVariant {
 	//public static String sourceCodeProjectName = null;
 	// 保存待分析的软件文档集合
 	//public static String softwareDocFolder = null;
+	// tablePathMap保存当前分析的文档中全部的表格所对应的word文档的路径信息
+	// 例： tablePathMap.add("概要设计_100", "D:\\abc\\设计文档_table_1.doc")
+	public static HashMap<String, String> tablePathMap = null;
 }

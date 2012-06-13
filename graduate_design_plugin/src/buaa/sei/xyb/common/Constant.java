@@ -26,7 +26,9 @@ public class Constant {
   public static int estNiters = 500;
   public static int estSavestep = 100;
   public static int estTwords = 20;
-  //
+  // LSI 模型相关参数
+  public static final String LSIRESULTOUTPUTFILEPREFIX = "lsiresult_";
+  public static final String LSIOUTPUTMATRIXFILENAME = "LSI-output.txt";
   
   public static String getDictPath() {
 	  if (toolPath == null)

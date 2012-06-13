@@ -359,15 +359,15 @@ public class WordDocParser {
 		String[] para = null;//保存文档中的每个段落
 		pOutlineLevel.removeAllElements();//清空pOutlineLevel防止前一个文件的影响。
 		tableAtDoc.removeAllElements();//同上
+		app.setProperty("Visible",new Variant(false));//设置word不可见
+		Dispatch docs = app.getProperty("Documents").toDispatch();
+		Dispatch document = Dispatch.invoke(docs,"Open",Dispatch.Method,
+				new Object[]{filename,new Variant(false),new Variant(false)},
+				new int[1]).toDispatch();
+		Dispatch activeDocument = app.getProperty("ActiveDocument").toDispatch();
+		Dispatch paragraphs = Dispatch.get(activeDocument,"Paragraphs").toDispatch();
+		int paragraphCount = Dispatch.get(paragraphs,"Count").toInt();
 		try{
-			app.setProperty("Visible",new Variant(false));//设置word不可见
-			Dispatch docs = app.getProperty("Documents").toDispatch();
-			Dispatch document = Dispatch.invoke(docs,"Open",Dispatch.Method,
-					new Object[]{filename,new Variant(false),new Variant(false)},
-					new int[1]).toDispatch();
-			Dispatch activeDocument = app.getProperty("ActiveDocument").toDispatch();
-			Dispatch paragraphs = Dispatch.get(activeDocument,"Paragraphs").toDispatch();
-			int paragraphCount = Dispatch.get(paragraphs,"Count").toInt();
 			if(paragraphCount == 0)
 				System.out.println("Doc have no paragraphs!");
 			else{
@@ -397,6 +397,10 @@ public class WordDocParser {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
+			if (document != null) {
+				Dispatch.call(document, "Save");
+				Dispatch.call(document, "Close", new Variant(true));
+			}
 			app.invoke("Quit",new Variant[]{});
 			app.safeRelease();
 		}
@@ -487,7 +491,10 @@ public class WordDocParser {
 				str = str.trim();//去除string首尾的空格
 				//重新保存表格文档
 				Dispatch.call(doc,"SaveAs",new Variant(tableSavePath[i]));
-				tableString.add(str);		  
+				tableString.add(str);
+				if (doc != null) {
+					Dispatch.call(doc, "Close", new Variant(true));
+				}
 			} catch(Exception e) {
 				  e.printStackTrace();
 		    }

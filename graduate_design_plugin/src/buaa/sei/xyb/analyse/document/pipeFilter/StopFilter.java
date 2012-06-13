@@ -56,8 +56,12 @@ public class StopFilter {
     String[] docWords = docWordsContent.split("\\s");
     for (String word : docWords) {
       // 将不是数字和符号组成的串(NumWithPunctuate)、不是停用词的词语加入filteredContent中
-      if (!NumberFilter.isNumWithPunctuate(word) && !stopWordSet.contains(word)) 
-        filteredContent += word + " ";
+      if (!NumberFilter.isNumWithPunctuate(word) && !stopWordSet.contains(word)) {
+    	  // 移除word中的数字，例如："1.1.1类", 处理后:"类"
+    	  if (word.matches("^[0-9\\.]+.*"))
+    		  word = word.replaceAll("[0-9\\.]+", "");
+    	  filteredContent += word + " ";
+      }
     }
     return filteredContent.trim();
   }

@@ -28,6 +28,7 @@ import buaa.sei.xyb.common.DocumentDescriptor;
 import buaa.sei.xyb.common.GlobalVariant;
 import buaa.sei.xyb.database.DataBaseOperation;
 import buaa.sei.xyb.lda.jgibblda.LDA;
+import buaa.sei.xyb.process.irmodel.LSIProcess;
 import buaa.sei.xyb.process.irmodel.VSMProcess;
 
 public class BuildModel {
@@ -36,6 +37,7 @@ public class BuildModel {
 	public static final String matrixFileName = "inputMatrix.txt"; // 矩阵文件名
 	public static final String matrixWordoc = "model-final.wordoc"; // LDA模型计算后得到的"词-文档"概率分布，用于计算"香农信息"
 	public static final String matrixShannonInfo = "shannonInfo.txt"; // 保存香农信息的文件名
+	public static final String matrixLSI = "LSI-Matrix.txt"; // 保存“文档-词”矩阵，其中矩阵中的每一项A[i][j]表示j词在i文档中的词频(该矩阵用于LSI模型)
 	public static final String matrixShannonWords = "shannonWords.txt"; // 按香农信息值降序保存每个文档中的主题单词
 	public static final String matrixWordMap = "wordmap.txt";
 	public static String matrixFilePath = ""; // 保存矩阵文件的路径(不包含文件名)
@@ -148,6 +150,9 @@ public class BuildModel {
 		System.out.println("============>> LDA 模型执行完毕 <<================");
 		// 继续， 计算每个词汇在每个文档段中的香农信息值
 		computeShannonInfo();
+		// 构建“文档-词”矩阵，矩阵中保存的值为词在文档中出现的词频
+		buildMatrixForLSI();
+		
 		System.out.println("============>> ShannonInfo 计算完毕 <<================");
 //		继续 2012-04-09, 得到文档段-单词-香农值文件
 		createShannonWordsFile();
@@ -159,8 +164,21 @@ public class BuildModel {
 		System.out.println("============>> VSM 初始化完毕 <<================");
 		// 计算相似度
 		vsmProcess.compute();
-		System.out.println("============>> !VSM 计算完毕， 整个工具的分析过程结束! <<================");
+		System.out.println("============>> !VSM 计算完毕! <<================");
 		
+		/** *** LSI 模型计算 *** **/
+		// 启动LSI分析过程
+		LSIProcess lsiProc = new LSIProcess();
+		lsiProc.initMatrix();
+		lsiProc.triggerLSIAnalysis();
+		
+		VSMProcess vsmProcess2 = new VSMProcess(Constant.LSIOUTPUTMATRIXFILENAME, Constant.LSIRESULTOUTPUTFILEPREFIX);
+		System.out.println("============>> \"开始LSI -> VSM计算\"生成完毕 <<================");
+		vsmProcess2.init();
+		System.out.println("============>> LSI -> VSM 初始化完毕 <<================");
+		// 计算相似度
+		vsmProcess2.compute();
+		System.out.println("============>> !LSI -> VSM 计算完毕! 整个工具分析完毕! <<================");
 	}
 	
 	class SwPair implements Comparable {
@@ -265,6 +283,45 @@ public class BuildModel {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * buildMatrixForLSI 构建词频矩阵A:一行对应一个文档，一列对应一个词;
+	 *                   A[i][j] = 第j个词在第i个文档中出现的次数
+	 * @return
+	 */
+	private void buildMatrixForLSI() {
+		// 读入wordmap.txt
+		HashMap<Integer, String> wordMap = getWordMap();
+		// read the "model-final.wordoc"
+		String finalWordoc = this.matrixFilePath + Constant.FILE_SEPARATOR + this.matrixWordoc;
+		String matrixLSI = this.matrixFilePath + Constant.FILE_SEPARATOR + this.matrixLSI;
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(matrixLSI));
+			//////////////////
+			BufferedReader br = new BufferedReader(new FileReader(finalWordoc));
+			String line = "";
+			int matrixNo = 0;
+			while ((line = br.readLine()) != null) {
+				HashMap<String, Integer> ddWordMap = getDDWordMap(matrixNo);
+				String[] splits = line.split("\\s+");
+				int len = splits.length;
+				Map<Integer, String> shannonWordTreeMap = new TreeMap<Integer, String>();
+				for (int i = 0; i < len; i++) {
+					double value = Double.valueOf(splits[i]);
+					int freq = getFrequency(i, wordMap, ddWordMap);
+					// write freq into the LSI Matrix file
+					bw.write(String.valueOf(freq) + " ");
+				}
+				bw.write("\n");
+				matrixNo++;
+			}
+			br.close();
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private HashMap<Integer, String> getWordMap() {
 		HashMap<Integer, String> wordMap = new HashMap<Integer, String>();
 		String wordMapPath = this.matrixFilePath + Constant.FILE_SEPARATOR + this.matrixWordMap;

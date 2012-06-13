@@ -38,15 +38,14 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 
-import buaa.sei.xyb.actions.ShowRelatedDocLDAVSMAction;
+import buaa.sei.xyb.actions.ShowRelatedDocLSIAction;
 import buaa.sei.xyb.analyse.document.DocInfo;
 import buaa.sei.xyb.analyse.document.DocumentAccess;
 import buaa.sei.xyb.common.Constant;
 import buaa.sei.xyb.lda.jgibblda.Pair;
 
-public class TreeTableVSM extends ViewPart {
+public class TreeTableLSI extends ViewPart {
 
-	
 	public static IViewPart view = null;
     private IEditorPart editor;
     public static Tree tree; 
@@ -63,68 +62,10 @@ public class TreeTableVSM extends ViewPart {
     	    Composite composite = new Composite(parent,SWT.NONE);
     	    composite.setLayout(new GridLayout(1,false));
     	    
-//            button1 = new Button(composite,SWT.PUSH);
-//            button1.setLayoutData(new GridData(GridData.FILL));
-//            button1.setText("反馈");
-            
-            /*tree = new Tree(parent, SWT.MULTI | SWT.FULL_SELECTION | SWT.V_SCROLL 
-                            | SWT.H_SCROLL); 
-                            */
             tree = new Tree(composite,SWT.CHECK | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL);
             tree.setLayoutData(new GridData(GridData.FILL_BOTH));
             tree.setHeaderVisible(true); 
             tree.setLinesVisible(true); 
-            
-//            button1.addSelectionListener(new SelectionAdapter(){
-//	        	public void widgetSelected(SelectionEvent e)
-//	        	{
-//	        		//MessageDialog.openInformation(null,"hurry! ","按钮被单击!");
-//	        		int tiNum = ti0.getItemCount();
-//	        		int flag = 0;//用来标记是否有选中的文件，从而开始反馈
-//	        		Vector <String> docsName = new Vector <String>();//保存选中的文件名，用于反馈
-//	        		Vector <String> nonReDocsName = new Vector <String>();//保存没有选中的文件名，用于反馈
-//	        		//String treeRoot = ti0.getText().substring(ti0.getText().indexOf('=')+1);//得到查询向量，从而进行反馈
-//	        		String treeRoot = ShowRelatedDocVSMAction.javaFile;//得到查询向量（绝对路径名），从而进行反馈
-//	        		MessageDialog.openInformation(null,"treeItemNum","treeItemNumber =" + tiNum +"\n treeRoot =" + treeRoot);
-//	        		if(tiNum > 0){
-//	        			for(int i = 0; i < tiNum ; i++){
-//	        				TreeItem tri = ti0.getItem(i);
-//	        				if(tri.getChecked())
-//	        				{
-//	        					//String filename = tri.getText().substring(tri.getText().indexOf('=')+1);
-//	        					String filename = map.get(tri);//得到绝对路径名
-//	        					System.out.println("tr_" + i +" = " + filename);
-//	        					docsName.add(filename);
-//	        					flag = 1;
-//	        				}
-//	        				else{
-//	        					String nfilename = map.get(tri);
-//	        					nonReDocsName.add(nfilename);
-//	        				}
-//	        			}
-////	        			if(flag == 0)
-////	        				MessageDialog.openInformation(null,"warning!","没有选中的文件，无法开始反馈");
-////	        			else{
-////	        				System.out.println(">>> 开始反馈  <<<");
-////	        				SingleProcess.treeRoot = treeRoot;
-////	        				SingleProcess.docsName = docsName;
-////	        				SingleProcess.nonReDocsName = nonReDocsName;
-////	        				SingleProcess.isFeedBack = true;//设置反馈标记，以便在主流程中进行判断
-////	        				                                //new idea! :反馈应该分类型，在LSI 和 VSM中分别点击反馈按钮，所以应该分类型
-////	        				SingleProcess.VSMfeedBack = 1;//表示是针对VSM的反馈
-////	        				try {
-////								SingleProcess.theLastPartProcess();//返回主流程，重新计算相似度
-////							} catch (Exception e1) {
-////								// TODO Auto-generated catch block
-////								e1.printStackTrace();
-////							}
-////	        			}
-//	        		}
-//	        		else  //tiNum == 0
-//	        			MessageDialog.openInformation(null,"warning！","没有树节点");
-//	        			
-//	        	}
-//	        });
             
             tree.addListener(SWT.MouseDoubleClick, new Listener()
             {
@@ -204,7 +145,7 @@ public class TreeTableVSM extends ViewPart {
     	if (Constant.getToolPath() != null) {
 	    	String iconsLoc=Constant.getToolPath().substring(0, Constant.getToolPath().lastIndexOf("tool"));
 	    	ti0 = new TreeItem(tree, SWT.NONE); 
-	        ti0.setText(new String[] { "class="+ShowRelatedDocLDAVSMAction.javaFile.substring(ShowRelatedDocLDAVSMAction.javaFile.lastIndexOf("\\")+1),"相关度值"}); 
+	        ti0.setText(new String[] { "class="+ShowRelatedDocLSIAction.javaFile.substring(ShowRelatedDocLSIAction.javaFile.lastIndexOf("\\")+1),"相关度值"}); 
 	        ti0.setImage(new Image(display,iconsLoc+"icons/btn_files.gif"));
 	        ti0.setData("level", "0");
 	        //MessageDialog.openInformation(null, "Inf", SingleProcess.getResultDirString());
@@ -212,7 +153,7 @@ public class TreeTableVSM extends ViewPart {
 	        int j=1;
 			for(int i=0;i<resultFiles.length;i++)
 			{
-				if(resultFiles[i].getName().toString().matches("^result_.*")){//需要得到result_开头的文件
+				if(resultFiles[i].getName().toString().matches("^" + Constant.LSIRESULTOUTPUTFILEPREFIX + ".*")){//需要得到lsiresult_开头的文件
 					FileReader fr=new FileReader(resultFiles[i]);
 					BufferedReader br=new BufferedReader(fr);
 					String line=null;
@@ -221,8 +162,8 @@ public class TreeTableVSM extends ViewPart {
 					{
 						String[] r=line.split("\t");
 						
-						String javaFileName = ShowRelatedDocLDAVSMAction.javaFile.substring(ShowRelatedDocLDAVSMAction.javaFile.lastIndexOf("\\")+1, 
-								ShowRelatedDocLDAVSMAction.javaFile.lastIndexOf("."));
+						String javaFileName = ShowRelatedDocLSIAction.javaFile.substring(ShowRelatedDocLSIAction.javaFile.lastIndexOf("\\")+1, 
+								ShowRelatedDocLSIAction.javaFile.lastIndexOf("."));
 						if(r[1].trim().matches("^" + javaFileName + "\\.wds"))
 						{
 							// 将与该代码段相关的记录加入到resultList中
@@ -263,24 +204,8 @@ public class TreeTableVSM extends ViewPart {
 
             TreeColumn value = new TreeColumn(tree, SWT.LEFT); 
             value.setResizable(true); 
-            value.setText("VSM相关度值"); 
+            value.setText("LSI相关度值"); 
             value.setWidth(200); 
-            
-//            TreeColumn parent = new TreeColumn(tree, SWT.CENTER); 
-//            parent.setResizable(true); 
-//            parent.setText("所属文档"); 
-//            parent.setWidth(500); 
-//
-//            TreeColumn offset = new TreeColumn(tree, SWT.LEFT); 
-//            offset.setResizable(true); 
-//            offset.setText("文档片段偏移量"); 
-//            offset.setWidth(100); 
-//
-//            TreeColumn length = new TreeColumn(tree, SWT.LEFT); 
-//            length.setResizable(true); 
-//            length.setText("文档段长度"); 
-//            length.setWidth(100); 
-           
     } 
 
 	private IFile getModelFileFromPath(String sf) {

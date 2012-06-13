@@ -29,6 +29,17 @@ public class VSMProcess {
 	 * 例如: <代码3, <矩阵中第9行, 矩阵中第10行, 矩阵中第11行>>
 	 */
 	private HashMap<Integer, ArrayList<Integer>> categoryMatrixIds = null; // 保存每个类
+	
+	private String inputFileName = BuildModel.matrixShannonInfo; // 输入矩阵的文件名,默认值="shannonInfo.txt"
+	private String outputFileNamePrefix = "result_"; // 输出结果文件的前缀，如："result_"(默认值), "lsiresult_"
+	
+	public VSMProcess () {
+	}
+	public VSMProcess (String inputFileName, String outputFileNamePrefix) {
+		this.inputFileName = inputFileName;
+		this.outputFileNamePrefix = outputFileNamePrefix;
+	}
+	
 	// 直接使用shannonInfo.txt文件，它已经计算夹角余弦所需的矩阵
 	// 1. 遍历文档+代码的全体文件描述符
 	public void init() {
@@ -69,7 +80,7 @@ public class VSMProcess {
 				// 计算i,j两类文档段之间的相似度
 				ArrayList<Integer> docB = categoryMatrixIds.get(j);
 				// 创建保存输出结果的文件，文件名格式如下:result_i-j.log
-				String resFile = "result_"+i+"-"+j+".log";
+				String resFile = this.outputFileNamePrefix+i+"-"+j+".log";
 				String outputPath = resultFolder + resFile;
 				try {
 					BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath));
@@ -93,9 +104,12 @@ public class VSMProcess {
 							}
 						}
 						// 将结果排序后写入result文件
+						System.out.println("\"%%%%%%%  开始排序 " + resFile + " 文件  %%%%%%%\"");
 						Collections.sort(outputList);
+						System.out.println("\"%%%%%%%  " + resFile + " 文件 排序结束  %%%%%%%\"");
 						for (int h = 0; h < outputList.size(); h++) {
 							bw.write(outputList.get(h).first.toString() + "\n");
+							System.out.println("\"------> 写入 " + outputList.get(h).first.toString() + " \"");
 						}
 					}
 					bw.close();
@@ -112,7 +126,7 @@ public class VSMProcess {
 	 */
 	private double[] getVectorWithMatrixId(int matrixId) {
 		int readId = -1;
-		String shannonInfoFile = BuildModel.matrixFilePath + Constant.FILE_SEPARATOR + BuildModel.matrixShannonInfo;
+		String shannonInfoFile = BuildModel.matrixFilePath + Constant.FILE_SEPARATOR + this.inputFileName;
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(shannonInfoFile));
 			String line = "";

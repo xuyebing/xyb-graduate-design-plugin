@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="87"
+   name=""
+   committed-date="2008-07-08T07:21:26.094981Z"
+   url="svn://192.168.109.226/sei.buaa.linktracer.IR/Jama/Jama"
+   last-author="lai"
+   kind="dir"
+   uuid="56b62baf-62cc-4149-8dc1-8872d217dc30"
+   repos="svn://192.168.109.226"
+   revision="240"/>
+<entry
+   name="test"
+   kind="dir"/>
+<entry
+   committed-rev="87"
+   name="LUDecomposition.class"
+   text-time="2008-12-15T12:40:46.015625Z"
+   committed-date="2008-07-08T07:21:26.094981Z"
+   checksum="da9402ede2dc299e6de4415c9dfe82b0"
+   last-author="lai"
+   kind="file"
+   prop-time="2008-12-15T12:40:45.750000Z"/>
+<entry
+   committed-rev="87"
+   name="CholeskyDecomposition.class"
+   text-time="2008-12-15T12:40:46.062500Z"
+   committed-date="2008-07-08T07:21:26.094981Z"
+   checksum="993346392406b8ffcef30cd270df03d6"
+   last-author="lai"
+   kind="file"
+   prop-time="2008-12-15T12:40:45.765625Z"/>
+<entry
+   committed-rev="87"
+   name="SingularValueDecomposition.class"
+   text-time="2008-12-15T12:40:46.031250Z"
+   committed-date="2008-07-08T07:21:26.094981Z"
+   checksum="ade185a83f6ddf5d336836d9f22683d4"
+   last-author="lai"
+   kind="file"
+   prop-time="2008-12-15T12:40:45.750000Z"/>
+<entry
+   committed-rev="87"
+   name="QRDecomposition.class"
+   text-time="2008-12-15T12:40:46.078125Z"
+   committed-date="2008-07-08T07:21:26.094981Z"
+   checksum="b84e877fe22f7e999e71f439f89511b1"
+   last-author="lai"
+   kind="file"
+   prop-time="2008-12-15T12:40:45.765625Z"/>
+<entry
+   committed-rev="87"
+   name="Matrix.java"
+   text-time="2008-12-15T12:40:46.078125Z"
+   committed-date="2008-07-08T07:21:26.094981Z"
+   checksum="4854f1659a800768ca77a366f9a48e5d"
+   last-author="lai"
+   kind="file"
+   prop-time="2008-12-15T12:40:45.765625Z"/>
+<entry
+   committed-rev="87"
+   name="EigenvalueDecomposition.class"
+   text-time="2008-12-15T12:40:46.078125Z"
+   committed-date="2008-07-08T07:21:26.094981Z"
+   checksum="1845f92ec359c0783b79a3952b6988a2"
+   last-author="lai"
+   kind="file"
+   prop-time="2008-12-15T12:40:45.765625Z"/>
+<entry
+   committed-rev="87"
+   name="ChangeLog"
+   text-time="2008-12-15T12:40:46.078125Z"
+   committed-date="2008-07-08T07:21:26.094981Z"
+   checksum="5cde7a5c17f02be4c76375eb0e269219"
+   last-author="lai"
+   kind="file"
+   prop-time="2008-12-15T12:40:45.765625Z"/>
+<entry
+   committed-rev="87"
+   name="LUDecomposition.java"
+   text-time="2008-12-15T12:40:46.078125Z"
+   committed-date="2008-07-08T07:21:26.094981Z"
+   checksum="3200b1deb1cd5236eb111a22e221aa0d"
+   last-author="lai"
+   kind="file"
+   prop-time="2008-12-15T12:40:45.781250Z"/>
+<entry
+   committed-rev="87"
+   name="CholeskyDecomposition.java"
+   text-time="2008-12-15T12:40:46.093750Z"
+   committed-date="2008-07-08T07:21:26.094981Z"
+   checksum="7cd63f50f99a63c34b131e4a18aa82f7"
+   last-author="lai"
+   kind="file"
+   prop-time="2008-12-15T12:40:45.796875Z"/>
+<entry
+   committed-rev="87"
+   name="SingularValueDecomposition.java"
+   text-time="2008-12-15T12:40:46.093750Z"
+   committed-date="2008-07-08T07:21:26.094981Z"
+   checksum="51b70df6b3b910f08e028a68ac0f748a"
+   last-author="lai"
+   kind="file"
+   prop-time="2008-12-15T12:40:45.781250Z"/>
+<entry
+   committed-rev="87"
+   name="QRDecomposition.java"
+   text-time="2008-12-15T12:40:46.093750Z"
+   committed-date="2008-07-08T07:21:26.094981Z"
+   checksum="e7693670da2fde403568ff919073b11f"
+   last-author="lai"
+   kind="file"
+   prop-time="2008-12-15T12:40:45.796875Z"/>
+<entry
+   committed-rev="87"
+   name="EigenvalueDecomposition.java"
+   text-time="2008-12-15T12:40:46.109375Z"
+   committed-date="2008-07-08T07:21:26.094981Z"
+   checksum="3adf50e2fc941d511106a4afe352862c"
+   last-author="lai"
+   kind="file"
+   prop-time="2008-12-15T12:40:45.796875Z"/>
+<entry
+   committed-rev="87"
+   name="Matrix.class"
+   text-time="2008-12-15T12:40:46.109375Z"
+   committed-date="2008-07-08T07:21:26.094981Z"
+   checksum="8223f36b718f80fe9c37757cd544a2c7"
+   last-author="lai"
+   kind="file"
+   prop-time="2008-12-15T12:40:45.796875Z"/>
+<entry
+   name="util"
+   kind="dir"/>
+<entry
+   name="examples"
+   kind="dir"/>
+</wc-entries>

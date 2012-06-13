@@ -144,6 +144,9 @@ public class DocumentAccess {
 			else {
 				File[] files  = docFile.listFiles();
 				for (File file : files) {
+					String fileName = file.getName();
+					if (fileName.startsWith("~$"))
+						continue;
 					docProcess(file.getAbsolutePath());
 				}
 			}
