@@ -27,8 +27,11 @@ public class Constant {
   public static int estSavestep = 100;
   public static int estTwords = 20;
   // LSI 模型相关参数
-  public static final String LSIRESULTOUTPUTFILEPREFIX = "lsiresult_";
-  public static final String LSIOUTPUTMATRIXFILENAME = "LSI-output.txt";
+  public static final String LSI_RESULT_OUTPUT_FILE_PREFIX = "lsiresult_";
+  public static final String LSI_OUTPUT_MATRIX_FILENAME = "LSI-output.txt";
+  // LDA 分析结果 使用LSI模型进行处理时的相关参数
+  public static final String LDA_LSI_RESULT_OUTPUT_FILE_PREFIX = "lda_lsi_result_";
+  public static final String LDA_LSI_OUTPUT_MATRIX_FILENAME = "LDA_LSI-output.txt";
   
   public static String getDictPath() {
 	  if (toolPath == null)

@@ -157,14 +157,30 @@ public class BuildModel {
 //		继续 2012-04-09, 得到文档段-单词-香农值文件
 		createShannonWordsFile();
 		System.out.println("============>> \"文档段-单词-香农值文件\"生成完毕 <<================");
-//		使用VSM模型计算相关性
-		VSMProcess vsmProcess = new VSMProcess();
-		System.out.println("============>> \"开始VSM计算\"生成完毕 <<================");
-		vsmProcess.init();
-		System.out.println("============>> VSM 初始化完毕 <<================");
+		
+//		/******** 使用VSM模型计算相关性 *******/
+//		VSMProcess vsmProcess = new VSMProcess();
+//		System.out.println("============>> \"开始LDA-VSM计算\"生成完毕 <<================");
+//		vsmProcess.init();
+//		System.out.println("============>> LDA-VSM 初始化完毕 <<================");
+//		// 计算相似度
+//		vsmProcess.compute();
+//		System.out.println("============>> !LDA-VSM 计算完毕! <<================");
+		
+		/***********  LDA-LSI计算  *************/
+		String matrixLdaLsi = BuildModel.matrixShannonInfo; // 和上述VSM模型的输入文件相同
+		String ldaLsiOutputName = Constant.LDA_LSI_OUTPUT_MATRIX_FILENAME;
+		LSIProcess ldaLsiProc = new LSIProcess(matrixLdaLsi, ldaLsiOutputName);
+		ldaLsiProc.initMatrix();
+		ldaLsiProc.triggerLSIAnalysis();
+		
+		VSMProcess vsmProcess1 = new VSMProcess(Constant.LDA_LSI_OUTPUT_MATRIX_FILENAME, Constant.LDA_LSI_RESULT_OUTPUT_FILE_PREFIX);
+		System.out.println("============>> \"开始LDA-LSI -> VSM计算\"生成完毕 <<================");
+		vsmProcess1.init();
+		System.out.println("============>> LDA-LSI -> VSM 初始化完毕 <<================");
 		// 计算相似度
-		vsmProcess.compute();
-		System.out.println("============>> !VSM 计算完毕! <<================");
+		vsmProcess1.compute();
+		System.out.println("============>> !LDA-LSI -> VSM 计算完毕! <<================");
 		
 		/** *** LSI 模型计算 *** **/
 		// 启动LSI分析过程
@@ -172,7 +188,7 @@ public class BuildModel {
 		lsiProc.initMatrix();
 		lsiProc.triggerLSIAnalysis();
 		
-		VSMProcess vsmProcess2 = new VSMProcess(Constant.LSIOUTPUTMATRIXFILENAME, Constant.LSIRESULTOUTPUTFILEPREFIX);
+		VSMProcess vsmProcess2 = new VSMProcess(Constant.LSI_OUTPUT_MATRIX_FILENAME, Constant.LSI_RESULT_OUTPUT_FILE_PREFIX);
 		System.out.println("============>> \"开始LSI -> VSM计算\"生成完毕 <<================");
 		vsmProcess2.init();
 		System.out.println("============>> LSI -> VSM 初始化完毕 <<================");

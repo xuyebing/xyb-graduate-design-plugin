@@ -27,13 +27,15 @@ public class LSIProcess {
 	private Matrix matrix = null;
 	public static double threshold = 0.99; // 默认的LSI 降维阈值
 	private String matrixLSI = BuildModel.matrixFilePath + Constant.FILE_SEPARATOR + BuildModel.matrixLSI; // 默认值
+	private String outputName = BuildModel.matrixFilePath + Constant.FILE_SEPARATOR + Constant.LSI_OUTPUT_MATRIX_FILENAME;
 	private boolean transposeFlag = false; // 表明是否需要对矩阵进行转置（当输入矩阵的row数 < col数时，需要转置，才能进行SVD运算）
 	
 	public LSIProcess() { // 使用matrixLSI的默认值
 	}
 	
-	public LSIProcess(String matrixLSIFilePath) {
-		this.matrixLSI = matrixLSIFilePath;
+	public LSIProcess(String matrixLSIFileName, String outputName) {
+		this.matrixLSI = BuildModel.matrixFilePath + Constant.FILE_SEPARATOR + matrixLSIFileName;
+		this.outputName =  BuildModel.matrixFilePath + Constant.FILE_SEPARATOR + outputName;
 	}
 	/**
 	 */
@@ -146,7 +148,6 @@ public class LSIProcess {
 		IMatrix matrix = this.beginSVD();
 		
 		// outputName = “matrix/LSI-output.txt”
-		String outputName = BuildModel.matrixFilePath + Constant.FILE_SEPARATOR + Constant.LSIOUTPUTMATRIXFILENAME;
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outputName));
 			int row = matrix.getRowCount();
@@ -174,7 +175,7 @@ public class LSIProcess {
 //		String fileName = "D:\\LSI_matrix.txt";
 		String fileName = "D:\\ttmp_1\\matrix\\shannonInfo.txt";
 		String outputName = "D:\\ttmp_1\\LSI-output.txt";
-		LSIProcess lsiProc = new LSIProcess(fileName);
+		LSIProcess lsiProc = new LSIProcess(fileName, outputName);
 		lsiProc.initMatrix();
 		
 		IMatrix matrix = lsiProc.beginSVD();

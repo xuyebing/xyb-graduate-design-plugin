@@ -38,13 +38,13 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 
-import buaa.sei.xyb.actions.ShowRelatedDocLSIAction;
+import buaa.sei.xyb.actions.ShowRelatedDocLDALSIAction;
 import buaa.sei.xyb.analyse.document.DocInfo;
 import buaa.sei.xyb.analyse.document.DocumentAccess;
 import buaa.sei.xyb.common.Constant;
 import buaa.sei.xyb.lda.jgibblda.Pair;
 
-public class TreeTableLSI extends ViewPart {
+public class TreeTableLDALSI extends ViewPart {
 
 	public static IViewPart view = null;
     private IEditorPart editor;
@@ -62,6 +62,13 @@ public class TreeTableLSI extends ViewPart {
     	    Composite composite = new Composite(parent,SWT.NONE);
     	    composite.setLayout(new GridLayout(1,false));
     	    
+//            button1 = new Button(composite,SWT.PUSH);
+//            button1.setLayoutData(new GridData(GridData.FILL));
+//            button1.setText("反馈");
+            
+            /*tree = new Tree(parent, SWT.MULTI | SWT.FULL_SELECTION | SWT.V_SCROLL 
+                            | SWT.H_SCROLL); 
+                            */
             tree = new Tree(composite,SWT.CHECK | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL);
             tree.setLayoutData(new GridData(GridData.FILL_BOTH));
             tree.setHeaderVisible(true); 
@@ -106,14 +113,6 @@ public class TreeTableLSI extends ViewPart {
 									MessageDialog.openError(null, "错误提示", "1：请将待分析文档放在项目路径下；\n 2：请将结果存放路径设置到项目路径下。");
 								}
 						   }
-						   /* try {
-								PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(("sei.buaa.linktracer.ShowHierarchyTree"));
-						    	//PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(("sei.buaa.linktracer.RelatedDocsResultView2"));
-							} catch (PartInitException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}*/
-							/////////////
 						   
 						   /**可以保证每次选择一个新的文档时，会自动弹出新的对应的文档层次树
 							try {
@@ -145,7 +144,7 @@ public class TreeTableLSI extends ViewPart {
     	if (Constant.getToolPath() != null) {
 	    	String iconsLoc=Constant.getToolPath().substring(0, Constant.getToolPath().lastIndexOf("tool"));
 	    	ti0 = new TreeItem(tree, SWT.NONE); 
-	        ti0.setText(new String[] { "class="+ShowRelatedDocLSIAction.javaFile.substring(ShowRelatedDocLSIAction.javaFile.lastIndexOf("\\")+1),"相关度值"}); 
+	        ti0.setText(new String[] { "class="+ShowRelatedDocLDALSIAction.javaFile.substring(ShowRelatedDocLDALSIAction.javaFile.lastIndexOf("\\")+1),"相关度值"}); 
 	        ti0.setImage(new Image(display,iconsLoc+"icons/btn_files.gif"));
 	        ti0.setData("level", "0");
 	        //MessageDialog.openInformation(null, "Inf", SingleProcess.getResultDirString());
@@ -153,7 +152,7 @@ public class TreeTableLSI extends ViewPart {
 	        int j=1;
 			for(int i=0;i<resultFiles.length;i++)
 			{
-				if(resultFiles[i].getName().toString().matches("^" + Constant.LSI_RESULT_OUTPUT_FILE_PREFIX + ".*")){//需要得到lsiresult_开头的文件
+				if(resultFiles[i].getName().toString().matches("^" + Constant.LDA_LSI_RESULT_OUTPUT_FILE_PREFIX + ".*")){//需要得到lda_lsi_result_开头的文件
 					FileReader fr=new FileReader(resultFiles[i]);
 					BufferedReader br=new BufferedReader(fr);
 					String line=null;
@@ -162,8 +161,8 @@ public class TreeTableLSI extends ViewPart {
 					{
 						String[] r=line.split("\t");
 						
-						String javaFileName = ShowRelatedDocLSIAction.javaFile.substring(ShowRelatedDocLSIAction.javaFile.lastIndexOf("\\")+1, 
-								ShowRelatedDocLSIAction.javaFile.lastIndexOf("."));
+						String javaFileName = ShowRelatedDocLDALSIAction.javaFile.substring(ShowRelatedDocLDALSIAction.javaFile.lastIndexOf("\\")+1, 
+								ShowRelatedDocLDALSIAction.javaFile.lastIndexOf("."));
 						if(r[1].trim().matches("^" + javaFileName + "\\.wds"))
 						{
 							// 将与该代码段相关的记录加入到resultList中
@@ -204,8 +203,24 @@ public class TreeTableLSI extends ViewPart {
 
             TreeColumn value = new TreeColumn(tree, SWT.LEFT); 
             value.setResizable(true); 
-            value.setText("LSI相关度值"); 
+            value.setText("VSM相关度值"); 
             value.setWidth(200); 
+            
+//            TreeColumn parent = new TreeColumn(tree, SWT.CENTER); 
+//            parent.setResizable(true); 
+//            parent.setText("所属文档"); 
+//            parent.setWidth(500); 
+//
+//            TreeColumn offset = new TreeColumn(tree, SWT.LEFT); 
+//            offset.setResizable(true); 
+//            offset.setText("文档片段偏移量"); 
+//            offset.setWidth(100); 
+//
+//            TreeColumn length = new TreeColumn(tree, SWT.LEFT); 
+//            length.setResizable(true); 
+//            length.setText("文档段长度"); 
+//            length.setWidth(100); 
+           
     } 
 
 	private IFile getModelFileFromPath(String sf) {
