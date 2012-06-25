@@ -54,21 +54,27 @@ public class BuildModel {
 	 * 创建数据库中的英文翻译表
 	 */
 	public void createDataBase() {
-		DataBaseOperation dbo = new DataBaseOperation();
-		dbo.createDataBase();
+		DataBaseOperation.createDataBase(DataBaseOperation.db_name);
 		StringBuilder tableFields = new StringBuilder(DataBaseOperation.keyForTable + " VARCHAR(200) NOT NULL,");
 		tableFields.append("cn_words TEXT,");
 		tableFields.append("in_parenthesis TINYINT default \'0\',");
 		tableFields.append("previous_cn_word TEXT,");
 		tableFields.append(" PRIMARY KEY (" + DataBaseOperation.keyForTable + ")");
 		
-		dbo.createTable(DataBaseOperation.translate_table_name, tableFields.toString());
+		DataBaseOperation.createTable(DataBaseOperation.db_name, DataBaseOperation.translate_table_name, tableFields.toString());
 	}
 	
 	public void build() throws JavaModelException {
 		// 1. 文档段处理
 		createDataBase();
 		// String folderSet = "D:\\毕设用例"; // 包含所有待分析软件文档的文件夹绝对路径
+//		File tempDir = new File(Constant.tempFolder);
+//		if (tempDir.exists() && tempDir.isDirectory()) {  // 清空tempDir目录中的临时word文件
+//			File[] files = tempDir.listFiles();
+//			for (File file : files)
+//				file.delete();
+//			tempDir.delete();
+//		}
 		DocumentAccess.docProcess(folderSet);
 		// 2. 代码段处理
 		CodeAccess.codeProcess(projectName);
@@ -166,6 +172,15 @@ public class BuildModel {
 //		// 计算相似度
 //		vsmProcess.compute();
 //		System.out.println("============>> !LDA-VSM 计算完毕! <<================");
+		
+		/**************  LDA 使用“文档-主题”分布计算相似度  *******************/
+		VSMProcess vsmProcessTopic = new VSMProcess(Constant.LDA_TOPIC_MATRIX_FILENAME, Constant.LDA_TOPIC_RESULT_OUTPUT_FILE_PREFIX);
+		System.out.println("============>> \"开始LDA-Topic -> VSM计算\"生成完毕 <<================");
+		vsmProcessTopic.init();
+		System.out.println("============>> LDA-Topic -> VSM 初始化完毕 <<================");
+		// 计算相似度
+		vsmProcessTopic.compute();
+		System.out.println("============>> !LDA-Topic -> VSM 计算完毕! <<================");
 		
 		/***********  LDA-LSI计算  *************/
 		String matrixLdaLsi = BuildModel.matrixShannonInfo; // 和上述VSM模型的输入文件相同

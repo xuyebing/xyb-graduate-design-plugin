@@ -2,6 +2,7 @@ package buaa.sei.xyb.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
@@ -20,7 +21,7 @@ public class DataBaseOperation {
 	
 	private static String driverClassName = "com.mysql.jdbc.Driver";
 	private static String url = "";
-	private static String db_name = "traceableformulaDB";
+	public static String db_name = "traceableformulaDB";
 	
 	//
 	private static String serverHost = "127.0.0.1";
@@ -57,7 +58,7 @@ public class DataBaseOperation {
 	/**
 	 * 创建数据库，db_name为要创建的数据库名称
 	 */
-	public static boolean createDataBase() {
+	public static boolean createDataBase(String databaseName) {
 		Connection conn = DataBaseOperation.getConn("");
 		if (!checkDBConnection(conn)) {
 			return false;
@@ -65,7 +66,7 @@ public class DataBaseOperation {
 		Statement st = null;
 		try {
 			st = conn.createStatement();
-			String createDBSql = "CREATE DATABASE IF NOT EXISTS " + db_name +
+			String createDBSql = "CREATE DATABASE IF NOT EXISTS " + databaseName +
 					" CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';";
 			st.execute(createDBSql);
 		} catch (SQLException e) {
@@ -81,8 +82,8 @@ public class DataBaseOperation {
 	 * @param tableName 要创建的表名
 	 * @param tableFields 表中各个列的定义语句
 	 */
-	public static boolean createTable(String tableName, String tableFields) {
-		Connection conn = DataBaseOperation.getConn(db_name);
+	public static boolean createTable(String dbName, String tableName, String tableFields) {
+		Connection conn = DataBaseOperation.getConn(dbName);
 		if (!checkDBConnection(conn)) {
 			return false;
 		}
@@ -109,7 +110,7 @@ public class DataBaseOperation {
 	/**
 	 * insertTable 向指定的表tableName中插入相应的值（insertValue）
 	 */
-	public static boolean insertTable(String tableName, String insertValue) {
+	public static boolean insertTable(String tableName, String columnStr, String insertValue) {
 		Connection conn = DataBaseOperation.getConn(db_name);
 		if (!checkDBConnection(conn)) {
 			return false;
@@ -117,7 +118,6 @@ public class DataBaseOperation {
 		Statement st = null;
 		try {
 			st = conn.createStatement();
-			String columnStr = "en_word, cn_words, in_parenthesis, previous_cn_word";
 			String insertSql = "insert ignore into " + tableName + "(" + columnStr + ") " + " values (" + insertValue + ");";
 			st.execute(insertSql);
 		} catch (SQLException e) {
@@ -125,6 +125,31 @@ public class DataBaseOperation {
 		}
 		releaseConnAndStat(conn, st);
 		return true;
+	}
+	/**
+	 * 查询给定的英文串enWd是否包含在某个主键之中，若找到，则将该主键对应的中文串返回；没找到，则将返回NULL
+	 */
+	public static String getEnWdContext(String tableName, String enWd) {
+		String retCnStrs = null;
+		Connection conn = DataBaseOperation.getConn(db_name);
+		if (!checkDBConnection(conn)) {
+			return null;
+		}
+		Statement st = null;
+		try {
+			st = conn.createStatement();
+			String findSql = "Select cn_words from " + tableName + " where " + keyForTable + "like \"%" + enWd + "%\"";
+			ResultSet rs = st.executeQuery(findSql); 
+			StringBuilder retCnStrBd = new StringBuilder("");
+			while (rs.next()) {
+				retCnStrBd.append(rs.getString(1)).append(" ");
+			}
+			retCnStrs = retCnStrBd.toString();
+			return retCnStrs;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	/**
@@ -169,4 +194,5 @@ public class DataBaseOperation {
 		}
 		return true;
 	}
+	
 }

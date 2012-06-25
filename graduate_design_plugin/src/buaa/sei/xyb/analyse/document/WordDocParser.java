@@ -103,7 +103,8 @@ public class WordDocParser {
 					// 开始insert
 					tableFields.append( "'" + cnStr + "', '" + isSurroundWithParenthesis + "'");
 					tableFields.append(", '" + previousCnWord + "'");
-					boolean insertSuccess = DataBaseOperation.insertTable(DataBaseOperation.translate_table_name, tableFields.toString());
+					String columnStr = "en_word, cn_words, in_parenthesis, previous_cn_word";
+					boolean insertSuccess = DataBaseOperation.insertTable(DataBaseOperation.translate_table_name, columnStr, tableFields.toString());
 					if (insertSuccess)
 						System.out.println("---- >> 写数据成功： " + tableFields.toString());
 				}
@@ -327,6 +328,7 @@ public class WordDocParser {
 				  //最后应该将修改后的文档再次进行保存
 				  //Dispatch.call(doc,"SaveAs",new Variant(docFile));
 				  Dispatch.call(doc,"SaveAs",new Variant(copyName));
+				  Dispatch.call(doc, "Close", new Variant(true));
 			  }	
 		  }catch(Exception e){
 			  e.printStackTrace();

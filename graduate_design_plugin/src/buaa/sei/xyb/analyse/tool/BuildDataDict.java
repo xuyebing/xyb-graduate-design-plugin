@@ -45,14 +45,26 @@ public class BuildDataDict {
 					String cnWord = Dispatch.get(cnRange, "Text").getString();
 					cnWord = cnWord.trim().replaceAll("\\s+", "");
 					
-					Dict.dataDict.put(engWord, cnWord); // 以英文词作为key，中文词作为value
+					// 由于数据词典的英文中可能包含多个以逗号‘，’分隔的英文词，考虑将它们分隔出来
+					String[] enWords = engWord.split(",");
+					for (String enWord : enWords) {
+						enWord = enWord.trim().toLowerCase(); // 所有英文词以小写形式保存在数据词典中
+						Dict.dataDict.put(enWord, cnWord); // 以英文词作为key，中文词作为value
+					}
+					System.out.println("dataDict.size = " + Dict.dataDict.size());
 				}
 			}
+			if (wordDoc != null) {
+				Dispatch.call(wordDoc, "Close", new Variant(true));
+			}
+			word.invoke("Quit", new Variant[]{});
+			word.safeRelease();
 		}
 	}
 	
 	public static void main(String[] args) {
-		String dataDictPath = "D:\\硕士开题\\师兄资料\\韩晓东\\测试集\\数据词典\\SRS数据词典.doc";
+//		String dataDictPath = "D:\\硕士开题\\师兄资料\\韩晓东\\测试集\\数据词典\\SRS数据词典.doc";
+		String dataDictPath = "D:\\ttmp_1\\CRATES数据词典.doc";
 		BuildDataDict.createDataDict(dataDictPath);
 	}
 }

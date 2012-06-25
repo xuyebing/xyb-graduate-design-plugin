@@ -27,6 +27,7 @@ public class WordSegmentation {
       System.out.println(">>>> Begin word segmentation");
       // 不考虑导入用户词典，直接根据系统词典进行分词 （看看效果）
       String splitWords = analyzer.segment(docParagraph, " ");
+      splitWords = cleanSplitWords(splitWords);
       System.out.println("---------- < 分词结果 > : \n" + splitWords);
       // 计算词频
       wordFrequency(splitWords);
@@ -37,6 +38,34 @@ public class WordSegmentation {
       e.printStackTrace();
       return null;
     }
+  }
+  /**
+   * 针对中文文档中的形如：crates_component和component.java的形式，
+   * 考虑利用"_"分词，以及去除".java"
+   */
+  private String cleanSplitWords (String splitWords) {
+	  StringBuilder retStr = new StringBuilder("");
+	  String[] words = splitWords.split("\\s+");
+	  for (String word : words) {
+		  if (word.matches("^[0-9\\.]+.*")) {
+			  word = word.replaceAll("[0-9\\.]", "");
+		  }
+		  if (word.matches("^[\\w\\.]+$")) { // 英文串
+			  word = word.replace(".*\\.java$", "");
+			  if (!word.equals("")) {
+				  String[] tmpWs = word.split("[_\\.]");
+				  for (String tmpW : tmpWs) {
+					  retStr.append(tmpW + " ");
+				  }
+			  }
+		  } else {
+			  retStr.append(word + " ");
+		  }
+	  }
+	  String retS = retStr.toString();
+	  retS = retS.replaceAll("\\s+", " ");
+	  retS = retS.trim();
+	  return retS;
   }
   /**
    * wordFrequency 统计分词结果中每个词出现的频率
@@ -51,7 +80,7 @@ public class WordSegmentation {
         if (frequency == null)
           wordsFrequencyMap.put(word, 1);
         else
-          wordsFrequencyMap.put(word, frequency);
+          wordsFrequencyMap.put(word, frequency+1);
       } else {
         wordsFrequencyMap.put(word, 1);
       }

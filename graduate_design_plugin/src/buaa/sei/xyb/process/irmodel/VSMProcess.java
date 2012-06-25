@@ -29,6 +29,7 @@ public class VSMProcess {
 	 * 例如: <代码3, <矩阵中第9行, 矩阵中第10行, 矩阵中第11行>>
 	 */
 	private HashMap<Integer, ArrayList<Integer>> categoryMatrixIds = null; // 保存每个类
+	private HashMap<Integer, Double> vecSumOfSquare = null; // 保存每个向量每一维元素平方的和
 	
 	private String inputFileName = BuildModel.matrixShannonInfo; // 输入矩阵的文件名,默认值="shannonInfo.txt"
 	private String outputFileNamePrefix = "result_"; // 输出结果文件的前缀，如："result_"(默认值), "lsiresult_"
@@ -94,7 +95,7 @@ public class VSMProcess {
 							int matrixIdB = docB.get(m);
 							double[] vecB = getVectorWithMatrixId(matrixIdB);
 							try {
-								double retCosine = calculateCosine(vecA, vecB);
+								double retCosine = calculateCosine(matrixIdA, vecA, matrixIdB, vecB);
 								String outputLine = getDocNameWithMatrixId(matrixIdA) + "\t" 
 										+ getDocNameWithMatrixId(matrixIdB) + "\t" + retCosine;
 								outputList.add(new Pair(outputLine, retCosine));
@@ -157,16 +158,33 @@ public class VSMProcess {
 	 * @return 夹角余弦值
 	 * @throws Exception 两个向量长度不等
 	 */
-	private double calculateCosine(double[] x, double[] y) throws Exception {
+	private double calculateCosine(int idx, double[] x, int idy, double[] y) throws Exception {
 		double sumX2 = 0, sumY2 = 0, sumXY = 0;
 		double denominator = 0; // 分母
 		
 		if (x.length != y.length)
 			throw new Exception("ERROR: VSM相似度计算中，两向量长度不等!");
 		int len = x.length;
+		
+		if (this.vecSumOfSquare == null)
+			this.vecSumOfSquare = new HashMap<Integer, Double>();
+		if (this.vecSumOfSquare.containsKey(idx))
+			sumX2 = this.vecSumOfSquare.get(idx);
+		else {
+			for (int i = 0; i < len; i++) {
+				sumX2 += Math.pow(x[i], 2);
+			}
+			this.vecSumOfSquare.put(idx, sumX2);
+		}
+		if (this.vecSumOfSquare.containsKey(idy))
+			sumY2 = this.vecSumOfSquare.get(idy);
+		else {
+			for (int i = 0; i < len; i++) {
+				sumY2 += Math.pow(y[i], 2);
+			}
+			this.vecSumOfSquare.put(idy, sumY2);
+		}
 		for (int i = 0; i < len; i++) {
-			sumX2 += Math.pow(x[i], 2);
-			sumY2 += Math.pow(y[i], 2);
 			sumXY += x[i] * y[i];
 		}
 		denominator = Math.sqrt(sumX2 * sumY2);

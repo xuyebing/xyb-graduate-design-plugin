@@ -32,6 +32,9 @@ public class Constant {
   // LDA 分析结果 使用LSI模型进行处理时的相关参数
   public static final String LDA_LSI_RESULT_OUTPUT_FILE_PREFIX = "lda_lsi_result_";
   public static final String LDA_LSI_OUTPUT_MATRIX_FILENAME = "LDA_LSI-output.txt";
+  // LDA 使用 “文档-主题”分布值进行相似度计算
+  public static final String LDA_TOPIC_RESULT_OUTPUT_FILE_PREFIX = "lda_topic_result_";
+  public static final String LDA_TOPIC_MATRIX_FILENAME = "model-final.theta";
   
   public static String getDictPath() {
 	  if (toolPath == null)

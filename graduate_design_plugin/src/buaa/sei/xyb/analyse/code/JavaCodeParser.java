@@ -13,6 +13,7 @@ import jeasy.analysis.MMAnalyzer;
 
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.ILocalVariable;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.ISourceRange;
 import org.eclipse.jdt.core.IType;
@@ -46,6 +47,8 @@ public class JavaCodeParser {
 		String javaFileName = projectDir + location;
 		className = element.getElementName();
 		System.out.println("==>> Parse the source code: " + javaFileName + ", class name: " + className);
+		
+		body = className.toLowerCase();
 		
 //		docDescriptor = new DocumentDescriptor(Constant.globalCategoryID, className, javaFileName);
 		parseClass(element);
@@ -143,6 +146,9 @@ public class JavaCodeParser {
 			}
 		}
 		// 打印所有分析的结果
+		otherComments = cleanComments(otherComments);
+		classComments = cleanComments(classComments);
+		methodComments = cleanComments(methodComments);
 		System.out.println("====>> otherComments : " + otherComments);
 		System.out.println("====>> classComments : " + classComments);
 		System.out.println("====>> methodComments : " + methodComments);
@@ -151,6 +157,15 @@ public class JavaCodeParser {
 		codeExtractElement.setClassComments(classComments.trim());
 		codeExtractElement.setMethodComments(methodComments.trim());
 		codeExtractElement.setBody(body);
+	}
+	private String cleanComments (String comments) {
+		// 去除eclipse自动产生的注释:"// TODO Auto-generated method stub && catch block"
+		comments = comments.replaceAll("\\b(TODO Auto-generated method stub|" +
+				                           "TODO Auto-generated catch block|" +
+				                           "TODO add action|" +
+				                           "TODO Auto-generated constructor stub" +
+				                       ")\\b", "");
+		return comments;
 	}
 	
 	private void getJavaChildren(IType javaClass) throws JavaModelException {
@@ -209,6 +224,17 @@ public class JavaCodeParser {
 		System.out.println("before body: " + methodParser.getMethodBodyCleanNoStop());
 		System.out.println("after body: " + tmp);
 		body  += tmp + " ";
+//		// 加入方法名，及方法的参数名
+//		body += method.getElementName() + " ";
+//		try {
+//			String[] params = method.getParameterNames();
+//			for (String paramName : params) {
+//				body += paramName + " ";
+//			}
+//		} catch (JavaModelException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
        }
 
 	/**
