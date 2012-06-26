@@ -23,10 +23,31 @@
                path="additions">
          </menu>
          <action
-               class="buaa.sei.xyb.actions.ShowRelatedDocVSMAction"
+               class="buaa.sei.xyb.actions.ShowRelatedDocLDAVSMAction"
                icon="icons/document_a4_marked.png"
-               id="buaa.sei.xyb.ShowRelatedDocumentsVSMAction"
-               label="Show Related Doc(VSM)"
+               id="buaa.sei.xyb.ShowRelatedDocumentsLDAVSMAction"
+               label="Show Related Doc(LDA-VSM)"
+               menubarPath="buaa.sei.xyb.ViewMenu/show">
+         </action>
+         <action
+               class="buaa.sei.xyb.actions.ShowRelatedDocLSIAction"
+               icon="icons/document_a4_new.png"
+               id="buaa.sei.xyb.ShowRelatedDocumentsLSIAction"
+               label="Show Related Doc(LSI)"
+               menubarPath="buaa.sei.xyb.ViewMenu/show">
+         </action>
+         <action
+               class="buaa.sei.xyb.actions.ShowRelatedDocLDALSIAction"
+               icon="icons/document_a4_add.png"
+               id="buaa.sei.xyb.ShowRelatedDocumentsLDALSIAction"
+               label="Show Related Doc(LDA-LSI)"
+               menubarPath="buaa.sei.xyb.ViewMenu/show">
+         </action>
+         <action
+               class="buaa.sei.xyb.actions.ShowRelatedDocLDAAction"
+               icon="icons/star_full.png"
+               id="buaa.sei.xyb.ShowRelatedDocumentsLDAAction"
+               label="Show Related Doc(LDA)"
                menubarPath="buaa.sei.xyb.ViewMenu/show">
          </action>
       </objectContribution>
@@ -34,14 +55,46 @@
    <extension
          point="org.eclipse.ui.views">
       <category
-            id="TraceableFormulaView"
-            name="TraceableFormulaView">
+            id="traceableformula"
+            name="TraceableFormula">
       </category>
       <view
+            category="traceableformula"
             class="buaa.sei.xyb.views.TreeTableVSM"
-            icon="icons/documents_new.png"
+            icon="icons/documents_edit.png"
             id="buaa.sei.xyb.RelatedDocsResultViewVSM"
-            name="Related Docs View(VSM)"
+            name="Related Docs View(LDA-VSM)"
+            restorable="true">
+      </view>
+      <view
+            category="traceableformula"
+            class="buaa.sei.xyb.views.TraceableFormulaView"
+            icon="icons/cubic.jpg"
+            id="buaa.sei.xyb.TraceableFormulaView"
+            name="TraceableFormula View">
+      </view>
+      <view
+            category="traceableformula"
+            class="buaa.sei.xyb.views.TreeTableLSI"
+            icon="icons/documents_new.png"
+            id="buaa.sei.xyb.RelatedDocsResultViewLSI"
+            name="Related Docs View(LSI)"
+            restorable="true">
+      </view>
+      <view
+            category="traceableformula"
+            class="buaa.sei.xyb.views.TreeTableLDALSI"
+            icon="icons/documents_add.png"
+            id="buaa.sei.xyb.RelatedDocsResultViewLDALSI"
+            name="Related Docs View(LDA-LSI)"
+            restorable="true">
+      </view>
+      <view
+            category="traceableformula"
+            class="buaa.sei.xyb.views.TreeTableLDA"
+            icon="icons/star_boxed_full.png"
+            id="buaa.sei.xyb.RelatedDocsResultViewLDA"
+            name="Related Docs View(LDA)"
             restorable="true">
       </view>
    </extension>

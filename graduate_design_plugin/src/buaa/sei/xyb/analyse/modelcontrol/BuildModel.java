@@ -148,8 +148,8 @@ public class BuildModel {
 				            " -ntopics " + Constant.estNtopics +
 				            " -niters " + Constant.estNiters +
 				            " -savestep " + Constant.estSavestep +
-				            " -twords " + Constant.estTwords + " " +
-                            "-dir " + this.matrixFilePath +
+				            " -twords " + Constant.estTwords +
+                            " -dir " + this.matrixFilePath +
                             " -dfile " + this.matrixFileName;
 		String[] args = argStr.split(" ");
 		LDA.main(args);

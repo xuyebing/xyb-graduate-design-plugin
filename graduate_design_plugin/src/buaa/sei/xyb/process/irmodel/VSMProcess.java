@@ -135,6 +135,7 @@ public class VSMProcess {
 				readId++;
 				line = br.readLine();
 			} while(readId < matrixId && line != null);
+			br.close();
 			if (line == null)
 				return null;
 			else {
