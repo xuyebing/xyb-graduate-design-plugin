@@ -24,6 +24,7 @@ public class CreateSynonymDict {
 	public static String synonymTableName = "synonymDict";
 	private static String keyField = "cn_word";
 	private static String lineNo = "lineNo";
+	private static Connection conn = null;
 	
 	public static void createSynonymTable() {
 		DataBaseOperation.createDataBase(dataBaseName);
@@ -31,8 +32,26 @@ public class CreateSynonymDict {
 		tableFields.append("lineNo TEXT, PRIMARY KEY (" + keyField + ")");
 		DataBaseOperation.createTable(dataBaseName, synonymTableName, tableFields.toString());
 	}
+	public static void releaseConn() {
+		if (conn != null)
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
 	public static String getLineNo(String cnWd) {
-		Connection conn = DataBaseOperation.getConn(dataBaseName);
+		if (conn == null)
+			conn = DataBaseOperation.getConn(dataBaseName);
+//		try {
+//			if (conn.isClosed()) {
+//				conn.
+//			}
+//		} catch (SQLException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 		String retStr = null;
 		Statement st = null;
 		try {
@@ -43,7 +62,6 @@ public class CreateSynonymDict {
 				retStr = rs.getString(1);
 			}
 			st.close();
-			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -78,7 +96,8 @@ public class CreateSynonymDict {
 		}
 	}
 	public static void insertSynonymTable(String filePath) {
-		Connection conn = DataBaseOperation.getConn(dataBaseName);
+		if (conn == null)
+			conn = DataBaseOperation.getConn(dataBaseName);
 		if (conn == null) {
 			Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 			UtilityTools.warning(shell, "数据库连接失败!");

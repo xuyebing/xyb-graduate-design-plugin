@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import buaa.sei.xyb.common.dict.SegTran;
+
 import jeasy.analysis.MMAnalyzer;
 
 /**
@@ -22,11 +24,13 @@ public class WordSegmentation {
    */
   public String segmentWord(String docParagraph) {
     try {
-      MMAnalyzer analyzer = new MMAnalyzer();
+    	if (SegTran.analyzer == null)
+			SegTran.init();
       String workDirPath = ".";
       System.out.println(">>>> Begin word segmentation");
-      // 不考虑导入用户词典，直接根据系统词典进行分词 （看看效果）
-      String splitWords = analyzer.segment(docParagraph, " ");
+      // 使用与代码翻译类似的处理方法
+      String splitWords = SegTran.ChiEng2Chi(docParagraph);
+      
       splitWords = cleanSplitWords(splitWords);
       System.out.println("---------- < 分词结果 > : \n" + splitWords);
       // 计算词频

@@ -38,21 +38,55 @@ public class DataBaseOperation {
 									{"前一个中文词", "previous_cn_word"}
 								};
 	public static String keyForTable = "en_word";
+	
+	// 保存两个数据库的连接，防止建立的连接数超过连接池的大小
+	private static Connection dbConn = null;
+	private static Connection syDbConn = null; // 同义词词库的连接
+	
 	/**
 	 * 获得数据库连接
 	 */
 	public static Connection getConn(String db_name) {
-		Connection conn = null;
-		try {
-			Class.forName(driverClassName);
-			url = "jdbc:mysql://" + serverHost + ":" + port + "/";
-			conn = DriverManager.getConnection(url + db_name, userName, password);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if (db_name.equals("traceableformulaDB")) {
+			if (dbConn == null) {
+				try {
+					Class.forName(driverClassName);
+					url = "jdbc:mysql://" + serverHost + ":" + port + "/";
+					dbConn = DriverManager.getConnection(url + db_name, userName, password);
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			return dbConn;
 		}
-		return conn;
+		else if (db_name.equals("SynonymDB")) {
+			if (syDbConn == null) {
+				try {
+					Class.forName(driverClassName);
+					url = "jdbc:mysql://" + serverHost + ":" + port + "/";
+					syDbConn = DriverManager.getConnection(url + db_name, userName, password);
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			return syDbConn;
+		} else {
+			Connection conn = null;
+			try {
+				Class.forName(driverClassName);
+				url = "jdbc:mysql://" + serverHost + ":" + port + "/";
+				conn = DriverManager.getConnection(url + db_name, userName, password);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return conn;
+		}
 	}
 	
 	/**
@@ -104,7 +138,7 @@ public class DataBaseOperation {
 			warningWhenCatchException(e);
 			return false;
 		}
-		releaseConnAndStat(conn, st);
+		releaseStat(st);
 		return true;
 	}
 	/**
@@ -123,7 +157,7 @@ public class DataBaseOperation {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		releaseConnAndStat(conn, st);
+		releaseStat(st);
 		return true;
 	}
 	/**
@@ -138,12 +172,13 @@ public class DataBaseOperation {
 		Statement st = null;
 		try {
 			st = conn.createStatement();
-			String findSql = "Select cn_words from " + tableName + " where " + keyForTable + "like \"%" + enWd + "%\"";
+			String findSql = "Select cn_words from " + tableName + " where " + keyForTable + " like \"%" + enWd + "%\"";
 			ResultSet rs = st.executeQuery(findSql); 
 			StringBuilder retCnStrBd = new StringBuilder("");
 			while (rs.next()) {
 				retCnStrBd.append(rs.getString(1)).append(" ");
 			}
+			st.close();
 			retCnStrs = retCnStrBd.toString();
 			return retCnStrs;
 		} catch (SQLException e) {
@@ -177,6 +212,16 @@ public class DataBaseOperation {
 		if (conn != null) {
 			try {
 				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				warningWhenCatchException(e);
+			}
+		}
+	}
+	private static void releaseStat(Statement stat) {
+		if (stat != null) {
+			try {
+				stat.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 				warningWhenCatchException(e);

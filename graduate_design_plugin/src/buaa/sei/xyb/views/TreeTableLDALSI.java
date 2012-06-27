@@ -150,13 +150,13 @@ public class TreeTableLDALSI extends ViewPart {
 	        //MessageDialog.openInformation(null, "Inf", SingleProcess.getResultDirString());
 	        File[] resultFiles=new File(Constant.workingFolder).listFiles(new ResultFileFilter(".log"));
 	        int j=1;
+	        List<Pair> resultList = new ArrayList<Pair>();
 			for(int i=0;i<resultFiles.length;i++)
 			{
 				if(resultFiles[i].getName().toString().matches("^" + Constant.LDA_LSI_RESULT_OUTPUT_FILE_PREFIX + ".*")){//需要得到lda_lsi_result_开头的文件
 					FileReader fr=new FileReader(resultFiles[i]);
 					BufferedReader br=new BufferedReader(fr);
 					String line=null;
-					List<Pair> resultList = new ArrayList<Pair>();
 					while((line=br.readLine())!=null)
 					{
 						String[] r=line.split("\t");
@@ -176,20 +176,19 @@ public class TreeTableLDALSI extends ViewPart {
 						}
 						
 					}
-					// 对resultList排序
-					Collections.sort(resultList);
-					for (Iterator<Pair> iterator = resultList.iterator(); iterator.hasNext(); ) {
-						Pair oneResult = iterator.next();
-						String r0 = oneResult.first.toString();
-						String relateValue = oneResult.second.toString();
-						
-						TreeItem ti00 = new TreeItem(ti0, SWT.NONE);
-						ti00.setText(new String[]{"doc"+(j++)+"="+r0.substring(r0.lastIndexOf("\\")+1), relateValue});
-						ti00.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE));
-						map.put(ti00, r0);
-					}
 				}
+			}
+			// 对resultList排序
+			Collections.sort(resultList);
+			for (Iterator<Pair> iterator = resultList.iterator(); iterator.hasNext(); ) {
+				Pair oneResult = iterator.next();
+				String r0 = oneResult.first.toString();
+				String relateValue = oneResult.second.toString();
 				
+				TreeItem ti00 = new TreeItem(ti0, SWT.NONE);
+				ti00.setText(new String[]{"doc"+(j++)+"="+r0.substring(r0.lastIndexOf("\\")+1), relateValue});
+				ti00.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE));
+				map.put(ti00, r0);
 			}
     	}
     } 

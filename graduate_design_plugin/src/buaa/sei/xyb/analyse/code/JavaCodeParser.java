@@ -110,7 +110,7 @@ public class JavaCodeParser {
 					SegTran.init();
 				System.out.println("&&&&&&&  ∑≠“Î«∞  &&&&&&");
 				System.out.println(" content = " + content);
-				content=SegTran.ChiEng2Chi(content);
+				content=SegTran.ChiEng2Chi_SynonymDict(content);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

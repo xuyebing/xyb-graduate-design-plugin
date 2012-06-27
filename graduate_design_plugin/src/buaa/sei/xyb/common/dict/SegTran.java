@@ -88,18 +88,18 @@ public class SegTran {
         	if(Dict.dataDict.containsKey(zes[i].toLowerCase())) // 如果当前是一个英文串，则查看数据词典中是否有相应的对照，
         	{                                     // 如果有，则将该英文串转换为对应的中文串
         		//如果数据词典有中英文对照
-        		Ch+=Dict.dataDict.get(zes[i])+" ";//+" "+zhs[i]+" ";
+        		Ch+=Dict.dataDict.get(zes[i].toLowerCase())+" ";//+" "+zhs[i]+" ";
         		continue;
         	} else {
         		for (String enWd : enWds) {
-        			if (Dict.dataDict.containsKey(enWd)) {
-        				Ch+=Dict.dataDict.get(zes[i])+" ";
+        			if (Dict.dataDict.containsKey(enWd.trim().toLowerCase())) {
+        				Ch+=Dict.dataDict.get(enWd.trim().toLowerCase())+" ";
         				continue;
         			} else if (Dict.dict.containsKey(enWd)) {
 		        		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++");
 		        		System.out.println("------------ enWord = " + enWd + " <=> cnWord = " + Dict.dict.get(enWd));
-		        		if (enWd.length() <= 3) { // 尝试排除无关词的干扰： 不翻译长度小于等于3的英文词
-		        			System.out.println("-*-*-*-*- enWord : " + enWd + " length <= 3 , 跳过该英文词的中文翻译");
+		        		if (enWd.length() <= 2) { // 尝试排除无关词的干扰： 不翻译长度小于等于2的英文词
+		        			System.out.println("-*-*-*-*- enWord : " + enWd + " length <= 2 , 跳过该英文词的中文翻译");
 		        			continue;
 		        		}
 		        		//如果翻译的词长不大，太大有误差。如果是英文  把翻译加上  //原词也加上
@@ -178,18 +178,18 @@ public class SegTran {
         	if(Dict.dataDict.containsKey(zes[i].toLowerCase())) // 如果当前是一个英文串，则查看数据词典中是否有相应的对照，
         	{                                     // 如果有，则将该英文串转换为对应的中文串
         		//如果数据词典有中英文对照
-        		Ch+=Dict.dataDict.get(zes[i])+" ";//+" "+zhs[i]+" ";
+        		Ch+=Dict.dataDict.get(zes[i].toLowerCase())+" ";//+" "+zhs[i]+" ";
         		continue;
         	} else {
         		for (String enWd : enWds) {
-        			if (Dict.dataDict.containsKey(enWd)) {
-        				Ch+=Dict.dataDict.get(zes[i])+" ";
+        			if (Dict.dataDict.containsKey(enWd.trim().toLowerCase())) {
+        				Ch+=Dict.dataDict.get(enWd.trim().toLowerCase())+" ";
         				continue;
         			} else if (Dict.dict.containsKey(enWd)) {
 		        		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++");
 		        		System.out.println("------------ enWord = " + enWd + " <=> cnWord = " + Dict.dict.get(enWd));
-		        		if (enWd.length() <= 3) { // 尝试排除无关词的干扰： 不翻译长度小于等于3的英文词
-		        			System.out.println("-*-*-*-*- enWord : " + enWd + " length <= 3 , 跳过该英文词的中文翻译");
+		        		if (enWd.length() <= 2) { // 尝试排除无关词的干扰： 不翻译长度小于等于2的英文词
+		        			System.out.println("-*-*-*-*- enWord : " + enWd + " length <= 2 , 跳过该英文词的中文翻译");
 		        			continue;
 		        		}
 		        		//如果翻译的词长不大，太大有误差。如果是英文  把翻译加上  //原词也加上
@@ -309,6 +309,7 @@ public class SegTran {
 		        		}
 		        	}
         		}
+//        		CreateSynonymDict.releaseConn(); // 释放其中的connection数据库连接
         	}
 //        	else { // 把目前不能从“数据词典”和“英汉对照词典”中翻译出来的英文词输出，找规律
 //        		Ch += zes[i] + " ";
