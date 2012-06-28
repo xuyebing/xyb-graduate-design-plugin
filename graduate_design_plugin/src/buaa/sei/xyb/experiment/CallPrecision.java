@@ -46,6 +46,7 @@ public class CallPrecision {
 				codeNameSet.add(values[0]);
 			}
 			br.close();
+			System.out.println(">>> 代码段数目: " + codeNameSet.size());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -149,10 +150,12 @@ public class CallPrecision {
 		countNumber();
 		// 输出结果
 		for (int i = 0; i < maxCutPoint; i++) {
+			System.out.print("C: " + (i+1) + " , 正确链接数=" + correctLinkNumS[i] + " , 识别的链接数=" + sumNumS[i] + "\t");
 			double callValue = (double)correctLinkNumS[i]/(double)sum_cor_num;
 			double precisionValue = (double)correctLinkNumS[i]/(double)sumNumS[i];
-//			System.out.println(" Cut = " + (i+1) + " -> call = " + callValue + "\t precision = " + precisionValue);
-			System.out.println(precisionValue + "\t" + callValue);
+			System.out.printf("call = %.4f",callValue);
+			System.out.printf("\t precision = %.4f\n" ,precisionValue);
+//			System.out.println(precisionValue + "\t" + callValue);
 		}
 		
 	}
