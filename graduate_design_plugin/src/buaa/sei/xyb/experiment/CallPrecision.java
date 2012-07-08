@@ -1,8 +1,10 @@
 package buaa.sei.xyb.experiment;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +20,7 @@ import java.util.Set;
 public class CallPrecision {
 	private HashSet<String> correctLinkSet = null; // 保存所有正确的关联链
 	private HashSet<String> codeNameSet = null; // 保存关注的代码文件的名称
+	private HashSet<String> docNameSet = null; // 保存关注的文档段的名称
 	private HashMap<String, ArrayList<HeapNode>> actualLinkMap = null; // 保存实际的关联链,key=codeName, value=与codeName相关的降序排列的关联链
 	private int maxCutPoint = 6; // Cut-Point的最大数值
 	private int[] correctLinkNumS = null; // 保存每个Cut-Point数值下找到的正确链接数
@@ -27,6 +30,7 @@ public class CallPrecision {
 	public CallPrecision (int maxCutPoint, int sumCorNum) {
 		correctLinkSet = new HashSet<String>();
 		codeNameSet = new HashSet<String>();
+		docNameSet = new HashSet<String>();
 		actualLinkMap = new HashMap<String, ArrayList<HeapNode>>();
 		this.maxCutPoint = maxCutPoint;
 		correctLinkNumS = new int[maxCutPoint];
@@ -44,9 +48,16 @@ public class CallPrecision {
 				assert(values.length == 2);
 				correctLinkSet.add(values[0] + "\t" + values[1]);
 				codeNameSet.add(values[0]);
+				docNameSet.add(values[1]);
 			}
 			br.close();
 			System.out.println(">>> 代码段数目: " + codeNameSet.size());
+			System.out.println(">>> 文档段数码：" + docNameSet.size());
+			BufferedWriter bw = new BufferedWriter(new FileWriter("D:\\exp2\\7_7.txt"));
+			for (String sDocName : docNameSet) {
+				bw.write(sDocName + "\n");
+			}
+			bw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

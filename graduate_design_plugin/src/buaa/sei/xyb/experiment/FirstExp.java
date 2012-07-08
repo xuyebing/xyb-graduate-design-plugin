@@ -25,7 +25,7 @@ public class FirstExp {
 		String argStr = "-est -alpha " + alpha +
 	            " -beta " + 0.01 +
 	            " -ntopics " + K +
-	            " -niters " + 1000 +
+	            " -niters " + 500 +
 	            " -savestep " + 100 +
 	            " -twords " + 20 +
                 " -dir " + matrixFilePath +
@@ -106,7 +106,7 @@ public class FirstExp {
 	}
 	
 	public static void main(String[] args) {
-		FirstExp.K = 400;
+		FirstExp.K = 250;
 		FirstExp.runSample();
 		double avg_cosine = FirstExp.compute();
 		System.out.println("Ö÷ÌâÊý = " + FirstExp.K + ", avg_cosine = " + avg_cosine);
