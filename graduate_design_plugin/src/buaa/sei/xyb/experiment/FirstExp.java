@@ -14,9 +14,14 @@ import buaa.sei.xyb.lda.jgibblda.LDA;
  * @author Xu Yebing
  */
 public class FirstExp {
-	public static final String matrixFileName = "inputMatrix.txt"; // 矩阵文件名
-	public static final String matrixFilePath = "D:\\exp1";
+//	public static final String matrixFileName = "inputMatrix.txt"; // 矩阵文件名
+//	public static final String matrixFilePath = "D:\\exp1";
+//	public static final String bMatrixFileName = "model-final.phi"; // 主题-词汇分布矩阵
+	
+	public static final String matrixFileName = "classes"; // 矩阵文件名
+	public static final String matrixFilePath = "D:\\MM";
 	public static final String bMatrixFileName = "model-final.phi"; // 主题-词汇分布矩阵
+	
 	private static Vector<double[]> bMatrix = new Vector<double[]>();
 	private static double[] arrayMo = null; // 保存bMatrix中每个行向量的模长（各分量平方、求和、开根号）
 	private static int K = 0;
@@ -106,7 +111,7 @@ public class FirstExp {
 	}
 	
 	public static void main(String[] args) {
-		FirstExp.K = 250;
+		FirstExp.K = 275;
 		FirstExp.runSample();
 		double avg_cosine = FirstExp.compute();
 		System.out.println("主题数 = " + FirstExp.K + ", avg_cosine = " + avg_cosine);

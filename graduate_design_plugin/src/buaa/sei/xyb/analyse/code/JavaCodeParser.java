@@ -1,5 +1,7 @@
 package buaa.sei.xyb.analyse.code;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +15,6 @@ import jeasy.analysis.MMAnalyzer;
 
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.ILocalVariable;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.ISourceRange;
 import org.eclipse.jdt.core.IType;
@@ -22,6 +23,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import buaa.sei.xyb.analyse.code.util.LongFormUtils;
 import buaa.sei.xyb.analyse.code.util.SourceProcessor;
 import buaa.sei.xyb.common.CommonTool;
+import buaa.sei.xyb.common.Constant;
 import buaa.sei.xyb.common.DocumentDescriptor;
 import buaa.sei.xyb.common.dict.SegTran;
 
@@ -133,16 +135,22 @@ public class JavaCodeParser {
 	}
 	
 	private void parseClass(IType javaClass) throws JavaModelException {
-		getJavaChildren(javaClass);
+		// 2012-08-06 添加打印log的功能
+		if (Constant.codeAnalysisLog == null) {
+			// 初始化
+			Constant.codeAnalysisLog = Constant.tempFolder + Constant.FILE_SEPARATOR + Constant.LOG_NAME;
+		}
 		
-		distillClassComments(javaClass);
-		IJavaElement[] children = javaClass.getChildren();
+		getJavaChildren(javaClass); // 获得该类的所有属性名和方法名
+		
+		distillClassComments(javaClass); // 处理注释
+		IJavaElement[] children = javaClass.getChildren(); // 又开始处理：属性名、方法名 // 考虑是否重复，需要更改！
 		for (IJavaElement child : children) {
 			if (child instanceof IMethod) {
-				parseMethod((IMethod)child);
+				parseMethod((IMethod)child); // 2012-08-06， 需要继续跟进
 			} else if (child instanceof IField) {
 				String fieldBody = ((IField)child).getSource();
-				parseField(fieldBody);
+				parseField(fieldBody);  // 2012-08-06， 需要继续跟进
 			}
 		}
 		// 打印所有分析的结果
@@ -153,6 +161,21 @@ public class JavaCodeParser {
 		System.out.println("====>> classComments : " + classComments);
 		System.out.println("====>> methodComments : " + methodComments);
 		System.out.println("====>> body : " + body);
+		
+		//2012-08-06 写日志
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(Constant.codeAnalysisLog, true));
+			bw.write("-+-+-+-+- Class : " + javaClass.getElementName() + "-+-+-+-+-+-+-+-\r\n" +
+			"====>> otherComments : " + otherComments + "\r\n" +
+			"====>> classComments : " + classComments + "\r\n" +
+			"====>> methodComments : " + methodComments + "\r\n" +
+			"====>> body : " + body + "\r\n" +
+			"---------------------------------------------------------------");
+			bw.flush();
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		codeExtractElement.setOtherComments(otherComments.trim());
 		codeExtractElement.setClassComments(classComments.trim());
 		codeExtractElement.setMethodComments(methodComments.trim());
@@ -291,12 +314,12 @@ public class JavaCodeParser {
 			    	result+=CEs[i]+" ";
 		    	    continue;
 		        }
-			    String[] words = CEs[i].split(partition);
+			    String[] words = CEs[i].split(partition); // 先将英文串按照非英文字母(\\W)和下划线(_)进行分割
 			    for(int i1 = 0; i1 < words.length; ++i1){
 				   ArrayList<String> splitWords = CommonTool.splitCamelCaseIdentifier(words[i1]);
 				   Iterator<String> it = splitWords.iterator();
 				   while(it.hasNext()) {
-					   String word = it.next().toLowerCase();
+					   String word = it.next().toLowerCase(); // 在此处将分词后的英文串转换为了小写，如果想保留原来的形式，该考虑在这里做些工作！！
 					   if(!LongFormUtils.isJavaWord(word))
 						   result += word + " ";
 				   }
@@ -310,7 +333,7 @@ public class JavaCodeParser {
 	    		ArrayList<String> splitWords = CommonTool.splitCamelCaseIdentifier(word);
 	    		Iterator<String> it = splitWords.iterator();
 	    		while(it.hasNext()) {
-	    			String iWord = it.next().toLowerCase();
+	    			String iWord = it.next().toLowerCase(); // 此处转为小写，请注意！！
 	    			if (!LongFormUtils.isJavaWord(iWord))
 	    				result += iWord + " ";
 	    		}
