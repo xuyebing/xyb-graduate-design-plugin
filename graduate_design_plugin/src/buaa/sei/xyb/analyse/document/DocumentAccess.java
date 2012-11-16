@@ -43,7 +43,7 @@ public class DocumentAccess {
 	public static String resultPath = Constant.tempFolder; // 保存分析结果的路径
 	public static String toolPath = Constant.toolPath; // 包含有用的文件（词典、数据词典、停用词文件等）的文件夹（绝对路径）
 	
-	public static String stopWordFilePath = "D:\\硕士开题\\中文停用词\\stopword1.txt"; // 临时使用
+//	public static String stopWordFilePath = "D:\\硕士开题\\中文停用词\\stopword1.txt"; // 临时使用
 	/**
 	 * executeStopFilter 执行去停用词的操作
 	 * @return 执行成功返回true，否则返回false
@@ -51,7 +51,7 @@ public class DocumentAccess {
 	 */
 	public static boolean executeStopFilter() throws IOException {
 		StopFilter stopFilter = new StopFilter();
-		stopFilter.initStopWordSet(stopWordFilePath); // 初始化停用词集合
+		stopFilter.initStopWordSet(Constant.cnStopWordsFilePath); // 初始化停用词集合
 		// 创建保存分词结果的文件夹
 		String filteredFolderPath = resultPath + Constant.FILE_SEPARATOR + Constant.FILTERED_DIR + Constant.FILE_SEPARATOR + Constant.globalCategoryID;
 		File filteredFolder = new File(filteredFolderPath);

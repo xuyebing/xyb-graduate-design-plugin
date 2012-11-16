@@ -174,13 +174,13 @@ public class BuildModel {
 //		System.out.println("============>> !LDA-VSM 计算完毕! <<================");
 		
 		/**************  LDA 使用“文档-主题”分布计算相似度  *******************/
-		VSMProcess vsmProcessTopic = new VSMProcess(Constant.LDA_TOPIC_MATRIX_FILENAME, Constant.LDA_TOPIC_RESULT_OUTPUT_FILE_PREFIX);
-		System.out.println("============>> \"开始LDA-Topic -> VSM计算\"生成完毕 <<================");
-		vsmProcessTopic.init();
-		System.out.println("============>> LDA-Topic -> VSM 初始化完毕 <<================");
-		// 计算相似度
-		vsmProcessTopic.compute();
-		System.out.println("============>> !LDA-Topic -> VSM 计算完毕! <<================");
+//		VSMProcess vsmProcessTopic = new VSMProcess(Constant.LDA_TOPIC_MATRIX_FILENAME, Constant.LDA_TOPIC_RESULT_OUTPUT_FILE_PREFIX);
+//		System.out.println("============>> \"开始LDA-Topic -> VSM计算\"生成完毕 <<================");
+//		vsmProcessTopic.init();
+//		System.out.println("============>> LDA-Topic -> VSM 初始化完毕 <<================");
+//		// 计算相似度
+//		vsmProcessTopic.compute();
+//		System.out.println("============>> !LDA-Topic -> VSM 计算完毕! <<================");
 		
 		/***********  LDA-LSI计算  *************/
 		String matrixLdaLsi = BuildModel.matrixShannonInfo; // 和上述VSM模型的输入文件相同
@@ -418,7 +418,7 @@ public class BuildModel {
 	/**
 	 * @param wordId: 单词在wordmap.txt中的序号
 	 * @param wordMap: 依据wordmap.txt建立的“序号-词”的 哈希映射
-	 * @param matrixRowNo: 矩阵中的行号，依据这个编号找到对应的文档段，获得该文档段包含的词集
+	 * @param ddWordMap: 每个文档段包含的词集（词+词的出现频数）
 	 * @return
 	 */
 	private int getFrequency(int wordId, HashMap<Integer, String> wordMap, HashMap<String, Integer> ddWordMap) {

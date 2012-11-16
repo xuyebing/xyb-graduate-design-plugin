@@ -71,6 +71,8 @@ public class TraceableFormulaPreferencePage extends PreferencePage implements
 				preferenceValue.getToolFolder());
 		preferenceStore.setValue(PreferenceConstant.DATA_DICT,
 				preferenceValue.getDataDict());
+		preferenceStore.setValue(PreferenceConstant.CN_STOP_WORDS,
+				preferenceValue.getCnStopWords());
 		
 		// 保存LDA est arguments组中的值
 		preferenceStore.setValue(PreferenceConstant.LDA_EST_ARG_ALPHA,
@@ -97,6 +99,7 @@ public class TraceableFormulaPreferencePage extends PreferencePage implements
 		Constant.toolPath = this.traceableFormulaPreferencesComposite.getToolFolder();
 		Constant.workingFolder = this.traceableFormulaPreferencesComposite.getWorkingFolder();
 		Constant.dataDictPath = this.traceableFormulaPreferencesComposite.getDataDict();
+		Constant.cnStopWordsFilePath = this.traceableFormulaPreferencesComposite.getCnStopWords();
 		
 		// 保存LDA est arguments组中的值 到 Constant
 		Constant.estAlpha = Double.valueOf(this.traceableFormulaPreferencesComposite.getLDAEstArgumentsAlpha());

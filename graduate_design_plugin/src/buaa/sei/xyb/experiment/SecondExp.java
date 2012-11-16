@@ -6,6 +6,15 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
+ * 实验2步骤：
+ * 1.Input: 在exp2/input文件夹中保存形如lda_lsi_result_i-j.log的文件，用于提取前N个关联关系作为后续实验分析的样本空间
+ *   Output: D:\\exp2\\output.txt (抽取的前N个关联关系)
+ * 2. 人工分析output.txt中关联关系的正确性，将所有正确的关联关系保存到correctLinks.txt文件中，格式形如：“Directory.wds\t概要设计_104.wds”
+ * 3. Input Dir: exp2/inputCP, 该文件夹保存待分析的关联关系结果文件，形如：lda_lsi_result_i-j.log
+ * 	  Input file： exp2/correctLinks.txt, 作为正确关联关系的标准
+ * 	  Output : 直接在终端输出查全率和查准率的计算结果
+ */
+/**
  * 实验2代码
  * @author Xu Yebing
  */

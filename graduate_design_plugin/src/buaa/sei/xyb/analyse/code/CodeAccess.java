@@ -48,7 +48,7 @@ public class CodeAccess {
 			// 考虑是否需要进行类似文档的处理(去停用词)
 			try {
 				StopFilter sf = new StopFilter();
-				sf.initStopWordSet(DocumentAccess.stopWordFilePath);
+				sf.initStopWordSet(Constant.cnStopWordsFilePath);
 				termMap = sf.filterStopWord(termMap);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

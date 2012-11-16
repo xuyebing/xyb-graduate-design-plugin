@@ -1,5 +1,7 @@
 package buaa.sei.xyb.common.dict;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -140,7 +142,7 @@ public class SegTran {
 	/**
 	 * ChiEng2Chi_SynonymDict 使用“同义词”词典，进行翻译
 	 */
-	public static String ChiEng2Chi_SynonymDict(String CE) throws IOException
+	public static String ChiEng2Chi_SynonymDict(String CE, String codeTransFilePath) throws IOException
 	{
 		String tCE = new String(CE); // 保留输入的字符串
 		String Ch="";
@@ -148,12 +150,16 @@ public class SegTran {
         
         CE=analyzer.segment(CE, " ");
         
+        StringBuilder strBld = new StringBuilder(); // 保存输出道codeTransFile中的内容
+        
         String []zes=CE.split(" ");
         for(int i=0;i<zes.length;i++)
         {
         	if(zes[i].matches("[\\u4E00-\\u9FA5]+")) // 匹配中文字符
 			{
 				Ch+=zes[i]+" ";
+				String outputPair = zes[i] + " => " + zes[i] + "\r\n";
+				strBld.append(outputPair);
 				continue;
 			}
         	String[] tceStrs = tCE.split("(?i)"+zes[i]); // 利用英文串分割原字符串
@@ -166,7 +172,7 @@ public class SegTran {
         		int st = 0;
         		for (int k = 1 ; k < lens; k++) {
         			if ((shorterEn.charAt(k) >= 'A' && shorterEn.charAt(k) <= 'Z')
-        					&& (shorterEn.charAt(k-1) < 'A' && shorterEn.charAt(k-1) > 'Z')) {
+        					&& (shorterEn.charAt(k-1) < 'A' || shorterEn.charAt(k-1) > 'Z')) {
         				String oneEn = shorterEn.substring(st, k-1);
         				enWds.add(oneEn);
         				st = k;
@@ -179,11 +185,15 @@ public class SegTran {
         	{                                     // 如果有，则将该英文串转换为对应的中文串
         		//如果数据词典有中英文对照
         		Ch+=Dict.dataDict.get(zes[i].toLowerCase())+" ";//+" "+zhs[i]+" ";
+        		String outputPair = zes[i] + " => " + Dict.dataDict.get(zes[i].toLowerCase()) + "\r\n";
+        		strBld.append(outputPair);
         		continue;
         	} else {
         		for (String enWd : enWds) {
         			if (Dict.dataDict.containsKey(enWd.trim().toLowerCase())) {
         				Ch+=Dict.dataDict.get(enWd.trim().toLowerCase())+" ";
+        				String outputPair = enWd.trim() + " => " + Dict.dataDict.get(enWd.trim().toLowerCase()) + "\r\n";
+        				strBld.append(outputPair);
         				continue;
         			} else if (Dict.dict.containsKey(enWd)) {
 		        		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++");
@@ -222,7 +232,10 @@ public class SegTran {
 		        			Jset.retainAll(allDBCnSet);
 		        			if (Jset.size() > 0) { // 交集不为空
 		        				Iterator<String> it = Jset.iterator();
-		        				Ch += it.next() + " ";
+		        				String tCh = it.next();
+		        				Ch += tCh + " ";
+		        				String outputPair = enWd + " => " + tCh + "\r\n";
+		        				strBld.append(outputPair);
 		        			} else { // 交集为空
 		        				HashMap<Integer, Vector<String>> allCnMap = new HashMap<Integer, Vector<String>>();
 		        				HashMap<Integer, Vector<String>> allDBCnMap = new HashMap<Integer, Vector<String>>();
@@ -282,12 +295,16 @@ public class SegTran {
 		        					assert(vec.size() > 0);
 		        					String cnToTrans = vec.get(0); // 使用lineNo中的第一个词汇（！待研究！）
 		        					Ch+=cnToTrans + " ";
+		        					String outputPair = enWd + " => " + cnToTrans + "\r\n";
+		        					strBld.append(outputPair);
 		        				} else { // 两个Map中不包含相同的key，将字典翻译中的第一个词作为英文词的翻译
 		        					Ch+=allCnWords[0] + " ";
+		        					String outputPair = enWd + " => " + allCnWords[0] + "\r\n";
+		        					strBld.append(outputPair);
 		        				}
 		        			}
 		        			
-		        		} else {
+		        		} else { // 数据库translatetable表中不包含所查的英文单词enWd, 则直接使用通用词典进行翻译
 			        		/** 分析形如 "declaration = n.宣言(说明,声明)  宣布, 宣言, 声明 说明" 的字符串 **/
 			        		if (cnTrans.matches("^[a-zA-Z\\.]+.*")) {
 			        			cnTrans = cnTrans.replaceAll("[a-zA-Z\\.]+", "");
@@ -301,10 +318,14 @@ public class SegTran {
 			        				}
 			        			}
 			        			Ch+=cnTrans + " ";
+			        			String outputPair = enWd + " => " + cnTrans + "\r\n";
+			        			strBld.append(outputPair);
 			        		}
 			        		/** 分析形如"simple = 简单的" 的字符串 **/
 			        		else if (cnTrans.matches("[\\u4E00-\\u9FA5]+")) {
 			        			Ch+=cnTrans + " ";
+			        			String outputPair = enWd + " => " + cnTrans + "\r\n";
+			        			strBld.append(outputPair);
 			        		}
 		        		}
 		        	}
@@ -315,6 +336,16 @@ public class SegTran {
 //        		Ch += zes[i] + " ";
 //        	}
         }
+        // 将代码英文词汇翻译情况保存到指定的文件codeTransFilePath中
+        try {
+        	BufferedWriter bw = new BufferedWriter(new FileWriter(codeTransFilePath));
+        	bw.write(strBld.toString());
+        	bw.flush();
+        	bw.close();
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
+        
         System.out.println("@@@@@@@@@@@@@@@@@@@@----***** Ch 分词前 = " + Ch);
         Ch=analyzer.segment(Ch, " ");
         System.out.println("@@@@@@@@@@@@@@@@@@@@----***** Ch 分词后 = " + Ch);

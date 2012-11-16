@@ -18,10 +18,13 @@ public class Constant {
   public static String workingFolder = null; // 用于保存相似度计算结果的文件夹路径
   public static boolean doExpansion = true;
   public static String dataDictPath = null; // 保存数据词典的绝对路径
+  public static String cnStopWordsFilePath = null; //
   
   // 2012-08-06 添加
   public static String codeAnalysisLog = null; // 保存代码段分析时的日志文件，用于分析提高翻译精度
   public static final String LOG_NAME = "codeAnalysis.log"; // log文件的固定名称
+  // 2012-08-22 添加
+  public static final String CODE_TRANSLATE_DIR = "translate"; // 保存代码文件英文词汇翻译情况的文件夹名称
   
   // LDA Est Arguments constant variant
   public static double estAlpha = 0.5;

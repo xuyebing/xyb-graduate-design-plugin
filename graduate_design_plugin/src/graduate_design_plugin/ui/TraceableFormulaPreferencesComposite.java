@@ -52,6 +52,10 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 	private Text textDataDict;
 	private Label labelDataDict;
 	private Button buttonDataDict;
+	// 中文停用词
+	private Text textCnStopWords;
+	private Label labelCnStopWords;
+	private Button buttonCnStopWords;
 	
 	private PreferenceValue preferenceValue;
 	// New Tab "Model-Setting"
@@ -87,6 +91,9 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 	}
 	public String getDataDict() {
 		return this.textDataDict.getText();
+	}
+	public String getCnStopWords() {
+		return this.textCnStopWords.getText();
 	}
 	
 	// LDA Est Arguments
@@ -135,14 +142,14 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 					this.tabConfiguration.setControl(this.confComposite); // set tab page's composite
 					{
 						this.artefactConfGroup = new Group(this.confComposite, SWT.NONE);
-						this.artefactConfGroup.setBounds(0, 0, 492, 220);
+						this.artefactConfGroup.setBounds(0, 0, 492, 250);
 						this.artefactConfGroup.setText("Artefact Configuration");
 						{
 							// Label
 							this.labelSrcCodeProjectName = new Label(
 									this.artefactConfGroup, SWT.NONE);
 							this.labelSrcCodeProjectName.setBounds(5, 35, 102, 20);
-							this.labelSrcCodeProjectName.setText("Source code dir");
+							this.labelSrcCodeProjectName.setText("Source Code Dir");
 							// Text
 							this.sourceCodeProjectName = new Text(
 									this.artefactConfGroup, SWT.BORDER);
@@ -172,7 +179,7 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 							this.labelWorkingFolder = new Label(
 									this.artefactConfGroup, SWT.NONE);
 							this.labelWorkingFolder.setBounds(5, 67, 102, 20);
-							this.labelWorkingFolder.setText("Working folder");
+							this.labelWorkingFolder.setText("Working Folder");
 							// Button
 							this.buttonBuildSpace = new Button(
 									this.artefactConfGroup, SWT.NONE);
@@ -196,7 +203,7 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 							this.labelSoftDoc = new Label(
 									this.artefactConfGroup, SWT.NONE);
 							this.labelSoftDoc.setBounds(5, 95, 102, 20);
-							this.labelSoftDoc.setText("Document dir");
+							this.labelSoftDoc.setText("Document Dir");
 							// Button
 							this.buttonSoftDoc = new Button(
 									this.artefactConfGroup, SWT.NONE);
@@ -248,7 +255,7 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 							this.labelToolFolder = new Label(
 									this.artefactConfGroup, SWT.NONE);
 							this.labelToolFolder.setBounds(5, 155, 102, 20);
-							this.labelToolFolder.setText("Tool folder");
+							this.labelToolFolder.setText("Tool Folder");
 							// Button
 							this.buttonToolFolder = new Button(
 									this.artefactConfGroup, SWT.NONE);
@@ -287,6 +294,30 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 							});
 							this.buttonDataDict.setBounds(432, 185, 53, 20);
 							this.buttonDataDict.setText("scan");
+						}
+						{ // "中文停用词文件路径"
+							// Text
+							this.textCnStopWords = new Text(
+									this.artefactConfGroup, SWT.BORDER);
+							this.textCnStopWords.setBounds(120, 215, 306, 20);
+							this.textCnStopWords.setEditable(false);
+							// Label
+							this.labelCnStopWords = new Label(
+									this.artefactConfGroup, SWT.NONE);
+							this.labelCnStopWords.setBounds(5, 215, 102, 20);
+							this.labelCnStopWords.setText("Cn Stop Words");
+							// Button
+							this.buttonCnStopWords = new Button(
+									this.artefactConfGroup, SWT.NONE);
+							this.buttonCnStopWords
+							.addSelectionListener(new SelectionAdapter() {
+								public void widgetSelected(SelectionEvent e) {
+									super.widgetSelected(e);
+									onNewFileFolder(textCnStopWords);
+								}
+							});
+							this.buttonCnStopWords.setBounds(432, 215, 53, 20);
+							this.buttonCnStopWords.setText("scan");
 						}
 					}
 				}
@@ -391,6 +422,9 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 		public String getDataDict() {
 			return TraceableFormulaPreferencesComposite.this.textDataDict.getText();
 		}
+		public String getCnStopWords() {
+			return TraceableFormulaPreferencesComposite.this.textCnStopWords.getText();
+		}
 		// LDA Est Arguments
 		public String getLDAEstArgumentsAlpha() {
 			return TraceableFormulaPreferencesComposite.this.alphaText.getText();
@@ -422,6 +456,7 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 		this.textTempFolder.setText(pPreferenceStore.getString(PreferenceConstant.TEMP_FOLDER));
 		this.textToolFolder.setText(pPreferenceStore.getString(PreferenceConstant.TOOL_FOLDER));
 		this.textDataDict.setText(pPreferenceStore.getString(PreferenceConstant.DATA_DICT));
+		this.textCnStopWords.setText(pPreferenceStore.getString(PreferenceConstant.CN_STOP_WORDS));
 		// set LDA Est Arguments
 		this.alphaText.setText(pPreferenceStore.getString(PreferenceConstant.LDA_EST_ARG_ALPHA));
 		this.betaText.setText(pPreferenceStore.getString(PreferenceConstant.LDA_EST_ARG_BETA));

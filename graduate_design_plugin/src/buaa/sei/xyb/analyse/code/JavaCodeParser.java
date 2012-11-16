@@ -1,6 +1,7 @@
 package buaa.sei.xyb.analyse.code;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import org.eclipse.jdt.core.JavaModelException;
 
 import buaa.sei.xyb.analyse.code.util.LongFormUtils;
 import buaa.sei.xyb.analyse.code.util.SourceProcessor;
+import buaa.sei.xyb.analyse.document.DocumentAccess;
 import buaa.sei.xyb.common.CommonTool;
 import buaa.sei.xyb.common.Constant;
 import buaa.sei.xyb.common.DocumentDescriptor;
@@ -54,8 +56,23 @@ public class JavaCodeParser {
 		
 //		docDescriptor = new DocumentDescriptor(Constant.globalCategoryID, className, javaFileName);
 		parseClass(element);
+		// 保存代码文件中英文词翻译情况的文件（2012-08-22）
+		String codeTransTmpPath = DocumentAccess.resultPath + Constant.FILE_SEPARATOR + Constant.CODE_DIR + Constant.FILE_SEPARATOR + Constant.CODE_TRANSLATE_DIR;
+		File codeTransTmpDir = new File(codeTransTmpPath);
+		if (!codeTransTmpDir.exists() || !codeTransTmpDir.isDirectory()) {
+			if (!codeTransTmpDir.mkdirs()) {
+				System.out.println("=====>>Error: CodeTransTmpDir 没有创建成功 <<=====");
+				return null;
+			}
+		}
+		String fn = element.getElementName();
+		int eindex = fn.lastIndexOf(".");
+		if (eindex > 0)
+			fn = fn.substring(0, eindex);
+		fn += ".txt";
+		String codeTransTmpFilePath = codeTransTmpPath + Constant.FILE_SEPARATOR + fn; // 保存代码英文词翻译情况的文件绝对路径
 		// 将代码中的标识符和注释进行分词和翻译，保存分词结果到文件中
-		createTerms();
+		createTerms(codeTransTmpFilePath);
 		Set<String> terms = termMap.keySet();
 		Iterator<String> t_it = terms.iterator();
 		System.out.println("%%%%%%%%%%%%% 输出代码中的词  %%%%%%%%%%%");
@@ -69,7 +86,7 @@ public class JavaCodeParser {
 	 * 
 	 *
 	 */
-	private void createTerms() {
+	private void createTerms(String codeTransFilePath) {
 		/* 由于body中已经包含了方法名和属性名，所以不需要单独去处理它们 */
 //		// 将代码中的属性名和方法名分词处理
 //		LinkedList<String> fieldsName = codeExtractElement.getFieldsName();
@@ -91,28 +108,29 @@ public class JavaCodeParser {
 //		// methods
 //		getTermsFromString(mn_content);
 		// otherComments
-		getTermsFromString(codeExtractElement.getOtherComments());
+		getTermsFromString(codeExtractElement.getOtherComments(), codeTransFilePath);
 		// classComments
-		getTermsFromString(codeExtractElement.getClassComments());
+		getTermsFromString(codeExtractElement.getClassComments(), codeTransFilePath);
 		// methodComments
-		getTermsFromString(codeExtractElement.getMethodComments());
+		getTermsFromString(codeExtractElement.getMethodComments(), codeTransFilePath);
 		// body
-		getTermsFromString(codeExtractElement.getBody());
+		getTermsFromString(codeExtractElement.getBody(), codeTransFilePath);
 	}
 	/**
 	 * 从String中提取term
 	 * @param content 待分析的String
+	 * @param codeTransFilePath 保存代码英文词翻译情况的文件绝对路径
 	 */
 //	1. 修改UI 中的 Data Dict，让它可以选择文件、而不是文件夹
 //	2. 继续利用数据词典和词典进行英文到中文的翻译
-	private void getTermsFromString(String content) {
+	private void getTermsFromString(String content, String codeTransFilePath) {
 		if(!content.equals("")) {
 			try {
 				if (SegTran.analyzer == null)
 					SegTran.init();
 				System.out.println("&&&&&&&  翻译前  &&&&&&");
 				System.out.println(" content = " + content);
-				content=SegTran.ChiEng2Chi_SynonymDict(content);
+				content=SegTran.ChiEng2Chi_SynonymDict(content, codeTransFilePath);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -144,13 +162,13 @@ public class JavaCodeParser {
 		getJavaChildren(javaClass); // 获得该类的所有属性名和方法名
 		
 		distillClassComments(javaClass); // 处理注释
-		IJavaElement[] children = javaClass.getChildren(); // 又开始处理：属性名、方法名 // 考虑是否重复，需要更改！
+		IJavaElement[] children = javaClass.getChildren(); // 准备处理属性名和方法名以外的内容
 		for (IJavaElement child : children) {
 			if (child instanceof IMethod) {
-				parseMethod((IMethod)child); // 2012-08-06， 需要继续跟进
+				parseMethod((IMethod)child); // 处理方法里的注释和方法体
 			} else if (child instanceof IField) {
 				String fieldBody = ((IField)child).getSource();
-				parseField(fieldBody);  // 2012-08-06， 需要继续跟进
+				parseField(fieldBody);  // 处理属性的注释
 			}
 		}
 		// 打印所有分析的结果

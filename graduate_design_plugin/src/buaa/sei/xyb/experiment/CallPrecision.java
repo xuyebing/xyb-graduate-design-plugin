@@ -52,7 +52,7 @@ public class CallPrecision {
 			}
 			br.close();
 			System.out.println(">>> 代码段数目: " + codeNameSet.size());
-			System.out.println(">>> 文档段数码：" + docNameSet.size());
+			System.out.println(">>> 文档段数目：" + docNameSet.size());
 			BufferedWriter bw = new BufferedWriter(new FileWriter("D:\\exp2\\7_7.txt"));
 			for (String sDocName : docNameSet) {
 				bw.write(sDocName + "\n");
@@ -164,8 +164,8 @@ public class CallPrecision {
 			System.out.print("C: " + (i+1) + " , 正确链接数=" + correctLinkNumS[i] + " , 识别的链接数=" + sumNumS[i] + "\t");
 			double callValue = (double)correctLinkNumS[i]/(double)sum_cor_num;
 			double precisionValue = (double)correctLinkNumS[i]/(double)sumNumS[i];
-			System.out.printf("call = %.4f",callValue);
-			System.out.printf("\t precision = %.4f\n" ,precisionValue);
+			System.out.printf("call \t %.2f",callValue);
+			System.out.printf("\t precision \t %.2f\n" ,precisionValue);
 //			System.out.println(precisionValue + "\t" + callValue);
 		}
 		
@@ -176,7 +176,7 @@ public class CallPrecision {
 		String inputDir = "D:\\exp2\\inputCP"; // 待分析的关联关系文件夹
 		
 		int cut_point = 6;
-		int sum_correct_num = 123;
+		int sum_correct_num = 63;
 		CallPrecision cp = new CallPrecision(cut_point, sum_correct_num);
 		cp.computeCallPrec(correctLinkFile, inputDir);
 	}
