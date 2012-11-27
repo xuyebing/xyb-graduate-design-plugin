@@ -25,7 +25,7 @@ public class CallPrecision {
 	private int maxCutPoint = 6; // Cut-Point的最大数值
 	private int[] correctLinkNumS = null; // 保存每个Cut-Point数值下找到的正确链接数
 	private int[] sumNumS = null; // 保存每个Cut-Point数值下找到的链接总数
-	private int sum_cor_num = 0; // 全部的关联链接数
+	private int sum_cor_num = 0; // 全部的正确关联链接数
 	
 	public CallPrecision (int maxCutPoint, int sumCorNum) {
 		correctLinkSet = new HashSet<String>();
@@ -172,11 +172,11 @@ public class CallPrecision {
 	}
 	
 	public static void main(String[] args) {
-		String correctLinkFile = "D:\\exp2\\correctLinks.txt"; // 正确关联链文件
-		String inputDir = "D:\\exp2\\inputCP"; // 待分析的关联关系文件夹
+		String correctLinkFile = "D:\\exp4\\高层文档与代码的相关性\\LSI方法\\correctLinks.txt"; // 正确关联链文件
+		String inputDir = "D:\\exp4\\高层文档与代码的相关性\\LSI方法\\inputCP"; // 待分析的关联关系文件夹
 		
 		int cut_point = 6;
-		int sum_correct_num = 63;
+		int sum_correct_num = 71;
 		CallPrecision cp = new CallPrecision(cut_point, sum_correct_num);
 		cp.computeCallPrec(correctLinkFile, inputDir);
 	}

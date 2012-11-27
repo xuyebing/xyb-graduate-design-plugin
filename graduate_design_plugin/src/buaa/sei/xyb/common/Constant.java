@@ -26,6 +26,9 @@ public class Constant {
   // 2012-08-22 添加
   public static final String CODE_TRANSLATE_DIR = "translate"; // 保存代码文件英文词汇翻译情况的文件夹名称
   
+  // 2012-11-20 添加
+  public static boolean notSplitDoc = false; // false：需要进行文档的自动分割； true：不需要自动分割文档。
+  
   // LDA Est Arguments constant variant
   public static double estAlpha = 0.5;
   public static double estBeta = 0.1;

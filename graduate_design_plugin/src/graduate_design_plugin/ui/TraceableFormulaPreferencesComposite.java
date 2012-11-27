@@ -19,6 +19,8 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
+import buaa.sei.xyb.common.Constant;
+
 /**
  * TraceableFormula preferences page 
  * "Window"->"Preference"->"TraceableFormula" 界面
@@ -56,6 +58,10 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 	private Text textCnStopWords;
 	private Label labelCnStopWords;
 	private Button buttonCnStopWords;
+	// new group
+	private Group nonSplitGroup;
+	private Button nonDocSplit; // 选中表示不需要进行文档的自动分割（lucene实验使用）。
+	private Button doDocSplit; // 选中表示进行文档的自动分割（lucene实验使用）。
 	
 	private PreferenceValue preferenceValue;
 	// New Tab "Model-Setting"
@@ -319,6 +325,40 @@ public class TraceableFormulaPreferencesComposite extends Composite {
 							this.buttonCnStopWords.setBounds(432, 215, 53, 20);
 							this.buttonCnStopWords.setText("scan");
 						}
+					}
+					//new group
+					this.nonSplitGroup = new Group(this.confComposite, SWT.NONE);
+					this.nonSplitGroup.setBounds(0, 260, 492, 45);
+//					this.nonSplitGroup.setText("Artefact Configuration");
+					{
+						this.nonDocSplit = new Button(
+								this.nonSplitGroup, SWT.RADIO
+								| SWT.LEFT);
+						this.nonDocSplit.setBounds(3,15,243,26);
+						this.nonDocSplit.setText("不进行文档自动分割");
+						this.nonDocSplit
+						.setSelection(false);
+						Constant.notSplitDoc = false;
+						this.nonDocSplit.addSelectionListener(new SelectionAdapter() {
+							public void widgetSelected(SelectionEvent e) {
+								Constant.notSplitDoc = true;
+							}
+						});
+						
+						this.doDocSplit = new Button(
+								this.nonSplitGroup, SWT.RADIO
+								| SWT.LEFT);
+						this.doDocSplit.setBounds(250,15,237,26);
+						this.doDocSplit
+						.setText("文档自动分割");
+						this.doDocSplit
+						.setSelection(true);
+						
+						this.doDocSplit.addSelectionListener(new SelectionAdapter() {
+							public void widgetSelected(SelectionEvent e) {
+								Constant.notSplitDoc = false;
+							}
+						});
 					}
 				}
 			}

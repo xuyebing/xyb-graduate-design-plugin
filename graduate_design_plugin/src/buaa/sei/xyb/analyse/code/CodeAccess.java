@@ -97,5 +97,6 @@ public class CodeAccess {
 		if (GlobalVariant.docDescriptorList == null)
 			GlobalVariant.docDescriptorList = new ArrayList<DocumentDescriptor>();
 		GlobalVariant.docDescriptorList.add(dd);
+		System.out.println("\t GlobalVariant.docDescriptorList.size = " + GlobalVariant.docDescriptorList.size());
 	}
 }

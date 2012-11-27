@@ -18,19 +18,20 @@ public class FirstExp {
 //	public static final String matrixFilePath = "D:\\exp1";
 //	public static final String bMatrixFileName = "model-final.phi"; // 主题-词汇分布矩阵
 	
-	public static final String matrixFileName = "classes"; // 矩阵文件名
-	public static final String matrixFilePath = "D:\\MM";
+	public static final String matrixFileName = "inputMatrix.txt"; // 矩阵文件名
+	public static final String matrixFilePath = "D:\\硕士开题\\大论文\\实验记录\\实验3";
 	public static final String bMatrixFileName = "model-final.phi"; // 主题-词汇分布矩阵
+	public static int niters = 500; // 迭代次数
 	
-	private static Vector<double[]> bMatrix = new Vector<double[]>();
-	private static double[] arrayMo = null; // 保存bMatrix中每个行向量的模长（各分量平方、求和、开根号）
+	public static Vector<double[]> bMatrix = null;
+	public static double[] arrayMo = null; // 保存bMatrix中每个行向量的模长（各分量平方、求和、开根号）
 	private static int K = 0;
 	public static void runSample() {
 		double alpha = 50.0/(double)K;
 		String argStr = "-est -alpha " + alpha +
 	            " -beta " + 0.01 +
 	            " -ntopics " + K +
-	            " -niters " + 500 +
+	            " -niters " + FirstExp.niters +
 	            " -savestep " + 100 +
 	            " -twords " + 20 +
                 " -dir " + matrixFilePath +
@@ -111,9 +112,23 @@ public class FirstExp {
 	}
 	
 	public static void main(String[] args) {
-		FirstExp.K = 275;
-		FirstExp.runSample();
-		double avg_cosine = FirstExp.compute();
-		System.out.println("主题数 = " + FirstExp.K + ", avg_cosine = " + avg_cosine);
+		FirstExp.niters = 1000;
+		Vector<String> result = new Vector<String>();
+		for (int i = 25; i <= 500; i += 25) {
+			// 清空上次的计算结果
+			FirstExp.bMatrix = new Vector<double[]>();
+			FirstExp.arrayMo = null;
+			
+			FirstExp.K = i;
+			FirstExp.runSample();
+			double avg_cosine = FirstExp.compute();
+			System.out.println("主题数 = " + FirstExp.K + ", avg_cosine = " + avg_cosine);
+			String tmpResult = "主题数 = " + FirstExp.K + ", avg_cosine = " + avg_cosine;
+			result.add(tmpResult);
+			System.out.println(" i = " + i);
+		}
+		System.out.println("=============== Result ================");
+		for (String str : result)
+			System.out.println(str);
 	}
 }

@@ -43,6 +43,11 @@ public class DocumentAccess {
 	public static String resultPath = Constant.tempFolder; // 保存分析结果的路径
 	public static String toolPath = Constant.toolPath; // 包含有用的文件（词典、数据词典、停用词文件等）的文件夹（绝对路径）
 	
+	// 2012-11-20 为了解决给每类文档分配一个序号的问题
+//	public static int indexOfDifferentDocument = 0;
+//	public static boolean isFirstLevelDir = true; // 用于标记是否是第一层的文档 
+	                                              // 只有第一层文档下的文件夹才能使indexOfDifferentDocument的序号+1
+	
 //	public static String stopWordFilePath = "D:\\硕士开题\\中文停用词\\stopword1.txt"; // 临时使用
 	/**
 	 * executeStopFilter 执行去停用词的操作
@@ -120,6 +125,71 @@ public class DocumentAccess {
 		}
 		return true;
 	}
+	///
+	/**
+	 * executeStopFilterToFile 只针对单个文档执行去停用词的操作（针对不进行文档分割的情况）
+	 * @return 执行成功返回true，否则返回false
+	 * @throws IOException
+	 */
+	public static boolean executeStopFilterToFile(String filePath) throws IOException {
+		StopFilter stopFilter = new StopFilter();
+		stopFilter.initStopWordSet(Constant.cnStopWordsFilePath); // 初始化停用词集合
+		// 创建保存分词结果的文件夹
+		String filteredFolderPath = resultPath + Constant.FILE_SEPARATOR + Constant.FILTERED_DIR + Constant.FILE_SEPARATOR + Constant.globalCategoryID;
+		File filteredFolder = new File(filteredFolderPath);
+		if (!filteredFolder.exists() || !filteredFolder.isDirectory()) {
+			if (!filteredFolder.mkdirs()) {
+				System.out.println("=====>>Error: filteredFolder 没有创建成功 <<=====");
+				return false; // 目录没有创建成功，则返回
+			}
+		}
+		// 分析je文件夹下的filePath文件
+		File docFile = new File(filePath);
+		String docWordsFolderPath = resultPath + Constant.FILE_SEPARATOR + Constant.SEGMENT_DIR + Constant.FILE_SEPARATOR + Constant.globalCategoryID + Constant.FILE_SEPARATOR + docFile.getName();
+		
+		File docWordsFolderPathFile = new File(docWordsFolderPath);
+		if (docWordsFolderPathFile.exists() && docWordsFolderPathFile.isFile()) {
+			if (docWordsFolderPathFile.getName().endsWith(".txt")) {
+				BufferedReader br = new BufferedReader(new FileReader(docWordsFolderPathFile));
+				String docWordsContent = "";
+				String lineContent;
+				while ((lineContent = br.readLine()) != null) {
+					docWordsContent += lineContent + "\n"; //获得文档的全部内容
+				}
+				String filteredContent = stopFilter.filterStopWord(docWordsContent);
+				
+				String fn = docWordsFolderPathFile.getName();
+				int eindex = fn.lastIndexOf(".");
+				if (eindex > 0)
+					fn = fn.substring(0, eindex);
+				fn += ".wds"; // 将文件名从"abc.xxx"改为了"abc.wds"
+				HashMap<String, Integer> wordsMap = new HashMap<String, Integer>();
+				String[] words = filteredContent.split("\\s");
+				for (String word : words) {
+					if (wordsMap.containsKey(word)) {
+						wordsMap.put(word, wordsMap.get(word)+1);
+					} else {
+						wordsMap.put(word, 1);
+					}
+				}
+				String wdsContent = "";
+				for (Entry<String, Integer> entry : wordsMap.entrySet()) {
+					wdsContent += entry.getKey() + "=" + entry.getValue() + "\r\n";
+				}
+				String wdsFilePath = filteredFolderPath + Constant.FILE_SEPARATOR + fn;
+				File wdsFile = new File(wdsFilePath);
+				BufferedWriter bw2 = new BufferedWriter(new FileWriter(wdsFile));
+				bw2.write(wdsContent);
+				bw2.flush();
+				bw2.close();
+				// 产生文档段对应的文档描述符
+				createDocumentDescriptor(Constant.globalCategoryID, fn,
+						wdsFilePath);
+			}
+		}
+		return true;
+	}
+	///
 	/**
 	 * 产生每个文档段的文档描述符
 	 */
@@ -128,6 +198,16 @@ public class DocumentAccess {
 		if (GlobalVariant.docDescriptorList == null)
 			GlobalVariant.docDescriptorList = new ArrayList<DocumentDescriptor>();
 		GlobalVariant.docDescriptorList.add(dd);
+		System.out.println("\t GlobalVariant.docDescriptorList.size = " + GlobalVariant.docDescriptorList.size());
+	}
+	/**
+	 * isFirstLevelDir： 用于判断当前文件夹是否是输入文档集合文件夹下的第一层文件夹
+	 */
+	private static boolean isFirstLevelDir(File file) {
+		if (file.getParent().equals(Constant.softwareDocFolder))
+			return true;
+		else
+			return false;
 	}
 	/**
 	 * docProcess 递归地分析每个软件文档文件夹下的所有文件
@@ -142,6 +222,10 @@ public class DocumentAccess {
 			if (docFile.getName().contains(WordDocParser.tempDir))
 				return;
 			else {
+				if (DocumentAccess.isFirstLevelDir(docFile)) {
+//				DocumentAccess.indexOfDifferentDocument++;
+					Constant.globalCategoryID ++; // 每分析一个软件文档，全局类别索引加1.
+				}
 				File[] files  = docFile.listFiles();
 				for (File file : files) {
 					String fileName = file.getName();
@@ -151,25 +235,49 @@ public class DocumentAccess {
 				}
 			}
 		} else {
-			WordDocParser wdp = new WordDocParser(); 
-			try {
-				// 1. 文档段分割，同时对每个文档段进行分词操作 [本阶段的输出包括：1.划分好的文档段集合。 2.每个文档段对应的词语集合]
-				Constant.globalCategoryID ++; // 每分析一个软件文档，全局类别索引加1.
-				
-				wdp.analyze(docPath, resultPath);
-				
-				// 2. 对分词结果进行不同步骤的处理（包括：去掉停用词、根据数据词典或词典将文档中的英文词翻译成中文词等）
-				// 考虑使用类似lucene 标准分析器的“管道过滤器”结构，使得分析过程清晰、明确
-				// TODO 文本处理过程
-				boolean stopFilterFlag = DocumentAccess.executeStopFilter();
-				if (stopFilterFlag)
-					System.out.println("=====>> 提取结束! <<=====");
-				// TODO 还没考虑处理文档中的英文单词，这需要考虑根据字典（或数据词典）进行翻译 
-				
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			
+			if (!Constant.notSplitDoc) { // 需要进行文档的自动分割
+				WordDocParser wdp = new WordDocParser(); 
+				try {
+					// 1. 文档段分割，同时对每个文档段进行分词操作 [本阶段的输出包括：1.划分好的文档段集合。 2.每个文档段对应的词语集合]
+//					Constant.globalCategoryID ++; // 每分析一个软件文档，全局类别索引加1.
+					
+					wdp.analyze(docPath, resultPath);
+					
+					// 2. 对分词结果进行不同步骤的处理（包括：去掉停用词、根据数据词典或词典将文档中的英文词翻译成中文词等）
+					// 考虑使用类似lucene 标准分析器的“管道过滤器”结构，使得分析过程清晰、明确
+					// TODO 文本处理过程
+					boolean stopFilterFlag = DocumentAccess.executeStopFilter();
+					if (stopFilterFlag)
+						System.out.println("=====>> 提取结束! <<=====");
+					// TODO 还没考虑处理文档中的英文单词，这需要考虑根据字典（或数据词典）进行翻译 
+					
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else { // 不需要进行文档的自动分割（如：lucene实验）
+				WordDocParser wdp = new WordDocParser(); 
+				try {
+					// 1. 文档段分割，同时对每个文档段进行分词操作 [本阶段的输出包括：1.划分好的文档段集合。 2.每个文档段对应的词语集合]
+//					Constant.globalCategoryID ++; // 每分析一个软件文档，全局类别索引加1.
+					
+					wdp.analyseWithoutSplitDoc(docPath, resultPath);
+					
+					// 2. 对分词结果进行不同步骤的处理（包括：去掉停用词、根据数据词典或词典将文档中的英文词翻译成中文词等）
+					// 考虑使用类似lucene 标准分析器的“管道过滤器”结构，使得分析过程清晰、明确
+					// TODO 文本处理过程
+					boolean stopFilterFlag = DocumentAccess.executeStopFilterToFile(docPath);
+					if (stopFilterFlag)
+						System.out.println("=====>> 提取结束! <<=====");
+					// TODO 还没考虑处理文档中的英文单词，这需要考虑根据字典（或数据词典）进行翻译 
+					
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}

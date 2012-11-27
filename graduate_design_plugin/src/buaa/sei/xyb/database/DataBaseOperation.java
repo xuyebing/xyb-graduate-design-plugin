@@ -153,6 +153,7 @@ public class DataBaseOperation {
 		try {
 			st = conn.createStatement();
 			String insertSql = "insert ignore into " + tableName + "(" + columnStr + ") " + " values (" + insertValue + ");";
+			System.out.println("==== insertSql = " + insertSql);
 			st.execute(insertSql);
 		} catch (SQLException e) {
 			e.printStackTrace();

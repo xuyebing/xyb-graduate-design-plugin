@@ -1,7 +1,9 @@
 package buaa.sei.xyb.analyse.document;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,48 +74,198 @@ public class WordDocParser {
 			
 			System.out.println(outPutName + "; fatherFile = " + docFile + "; offset =  " + offset + "; docPart.length = " + str.length());
 			offset += str.length();
-			// 调用分词类进行分词
-			String words = wordSegmentation.segmentWord(str);
-			words = words.replaceAll("\\s+", " ");
-			// ictclasOutPutName 保存分词结果的文件的绝对路径
-			String ictclasOutPutName = outPutPath + Constant.FILE_SEPARATOR + Constant.SEGMENT_DIR + Constant.FILE_SEPARATOR + Constant.globalCategoryID + Constant.FILE_SEPARATOR + docName + "_" + filePointer + ".txt";
-			writer = new BufferedWriter(new FileWriter(ictclasOutPutName));
-			writer.write(words);
-			writer.close();
-			
+			// 调用分词方法
+			String words = doWordSegmentation(str, outPutPath, docName, filePointer);
 			// 在这里创建数据表，保存文档段中出现的英文单词，以及其所对应的上下文中文词
-			// 1. 将文档段str按照中文进行划分，得到非中文字符组成的串，从中抽取出英文串（保留大小写信息），将该英文串作为数据表的主键，将该文档段中的其他中文词作为它的可能解释，放入对应的“中文词串”表项中
-			//   （进行上述步骤的原因：je工具分词后，将英文字符串全部转换为小写，丢失了进行驼峰标记法分词的信息）
-			char bel = 7;
-			str = str.replace(bel, ' ');
-			String[] nonCnWords = str.split("[\\u4E00-\\u9FA5\\s]+");
-			for (String nonCnWord : nonCnWords) {
-				if (nonCnWord.matches("[a-zA-Z_][\\w]+\\.?[\\w]*")) {
-					// 将该英文串加入数据表中
-					StringBuilder tableFields = new StringBuilder("'" + nonCnWord + "', ");
-					// 构造中文词串
-					String cnStr = constructCNStr(str, nonCnWord);
-					// 检查英文词前后是否包含括号
-					int isSurroundWithParenthesis = surroundWithParenthesis(str, nonCnWord);
-					// 若包含括号，则同时获得紧挨的前一个中文词（没有前一个紧挨的中文词，则返回后一个紧挨的中文词）
-					String previousCnWord = "";
-					if (isSurroundWithParenthesis == 1) {
-						previousCnWord = getPreviousCnWord(words, nonCnWord);
-					}
-					// 开始insert
-					tableFields.append( "'" + cnStr + "', '" + isSurroundWithParenthesis + "'");
-					tableFields.append(", '" + previousCnWord + "'");
-					String columnStr = "en_word, cn_words, in_parenthesis, previous_cn_word";
-					boolean insertSuccess = DataBaseOperation.insertTable(DataBaseOperation.translate_table_name, columnStr, tableFields.toString());
-					if (insertSuccess)
-						System.out.println("---- >> 写数据成功： " + tableFields.toString());
-				}
-			}
+			saveEnCnStrToDB(str, words);
+			
+//			// 调用分词类进行分词
+//			String words = wordSegmentation.segmentWord(str);
+//			words = words.replaceAll("\\s+", " ");
+//			// ictclasOutPutName 保存分词结果的文件的绝对路径
+//			String ictclasOutPutName = outPutPath + Constant.FILE_SEPARATOR + Constant.SEGMENT_DIR + Constant.FILE_SEPARATOR + Constant.globalCategoryID + Constant.FILE_SEPARATOR + docName + "_" + filePointer + ".txt";
+//			writer = new BufferedWriter(new FileWriter(ictclasOutPutName));
+//			writer.write(words);
+//			writer.close();
+
+//			// 在这里创建数据表，保存文档段中出现的英文单词，以及其所对应的上下文中文词
+//			// 1. 将文档段str按照中文进行划分，得到非中文字符组成的串，从中抽取出英文串（保留大小写信息），将该英文串作为数据表的主键，将该文档段中的其他中文词作为它的可能解释，放入对应的“中文词串”表项中
+//			//   （进行上述步骤的原因：je工具分词后，将英文字符串全部转换为小写，丢失了进行驼峰标记法分词的信息）
+//			char bel = 7;
+//			str = str.replace(bel, ' ');
+//			String[] nonCnWords = str.split("[\\u4E00-\\u9FA5\\s]+");
+//			for (String nonCnWord : nonCnWords) {
+//				if (nonCnWord.matches("[a-zA-Z_][\\w]+\\.?[\\w]*")) {
+//					// 将该英文串加入数据表中
+//					StringBuilder tableFields = new StringBuilder("'" + nonCnWord + "', ");
+//					// 构造中文词串
+//					String cnStr = constructCNStr(str, nonCnWord);
+//					// 检查英文词前后是否包含括号
+//					int isSurroundWithParenthesis = surroundWithParenthesis(str, nonCnWord);
+//					// 若包含括号，则同时获得紧挨的前一个中文词（没有前一个紧挨的中文词，则返回后一个紧挨的中文词）
+//					String previousCnWord = "";
+//					if (isSurroundWithParenthesis == 1) {
+//						previousCnWord = getPreviousCnWord(words, nonCnWord);
+//					}
+//					// 开始insert
+//					tableFields.append( "'" + cnStr + "', '" + isSurroundWithParenthesis + "'");
+//					tableFields.append(", '" + previousCnWord + "'");
+//					String columnStr = "en_word, cn_words, in_parenthesis, previous_cn_word";
+//					boolean insertSuccess = DataBaseOperation.insertTable(DataBaseOperation.translate_table_name, columnStr, tableFields.toString());
+//					if (insertSuccess)
+//						System.out.println("---- >> 写数据成功： " + tableFields.toString());
+//				}
+//			}
 			
 			filePointer++;
 		}
 		System.out.println(" >>>> one file splited successful!");
 	}
+	/**
+	 *  2012-11-20 添加， 自动分割文档
+	 */
+	public void analyseWithoutSplitDoc(String docFile, String outPutPath) throws IOException {
+		File outDir = new File(outPutPath + Constant.FILE_SEPARATOR + Constant.globalCategoryID );
+		if (!outDir.exists()) {
+			outDir.mkdirs();
+		}
+		File segOutDir = new File(outPutPath + Constant.FILE_SEPARATOR + Constant.SEGMENT_DIR + Constant.FILE_SEPARATOR + Constant.globalCategoryID);
+		if (!segOutDir.exists()) {
+			segOutDir.mkdirs();
+		}
+		
+		File doc = new File(docFile);
+		String docName = doc.getName();
+		System.out.println("^^^^^^ docName = " + docName + " ^^^^^");
+		docName = docName.substring(0, docName.lastIndexOf("."));
+		
+//		int filePointer = 0;
+//		String outPutName = outPutPath + Constant.FILE_SEPARATOR + Constant.globalCategoryID + Constant.FILE_SEPARATOR + docName + "_" + filePointer + ".txt"; // 不进行文档自动分割时，每个文档名以"_0"结尾
+//		String outPutName = outPutPath + Constant.FILE_SEPARATOR + Constant.globalCategoryID + Constant.FILE_SEPARATOR + docName + ".txt";
+
+		
+		StringBuilder sb = new StringBuilder("");
+		String line = "";
+		BufferedReader br = new BufferedReader(new FileReader(doc));
+		while ((line = br.readLine()) != null) {
+			line.replaceAll("\\s+", " ");
+			if (line.isEmpty() || line.equals(" "))
+				continue;
+			sb.append(line + " ");
+		}
+		String str = sb.toString();
+		////***
+		String outPutName = outPutPath + Constant.FILE_SEPARATOR + Constant.globalCategoryID + Constant.FILE_SEPARATOR + docName + ".txt"; 
+		BufferedWriter writer = new BufferedWriter(new FileWriter(outPutName));
+		writer.write(str);
+		writer.close();
+		////***
+		
+		DocInfo di = new DocInfo();
+//		di.absPath = outPutName;
+		di.absPath = docFile;
+		di.offset = 0;
+		di.length = str.length();
+		di.parentName = docFile;
+		
+		DocumentAccess.docLocationMap.put(docName, di); // 将文档段信息添加到docLocationMap中，便于双击查看时(show related docs)使用
+		
+		System.out.println(docFile + "; fatherFile = " + docFile + "; offset =  " + di.offset + "; docPart.length = " + str.length());
+		// 调用分词方法
+		String words = doWordSegmentationForNonSplit(str, outPutPath, docName);
+		// 在这里创建数据表，保存文档段中出现的英文单词，以及其所对应的上下文中文词
+		saveEnCnStrToDB(str, words);
+	}
+	/**
+	 * doWordSegmentationForNonSplit: 对输入的文本内容进行分词操作, 针对不需要进行文档段分割的情况。
+	 * @param str : 待分词的文档段内容
+	 * @param outPutPath : 存放分割后的小文件的目录
+	 * @return words : 供后续的saveEnCnStrToDB方法使用
+	 */
+	private String doWordSegmentationForNonSplit(String str, String outPutPath, String docName) {
+		// 对str进行预处理，消除其中包含的特殊符号：“=”、“(”、“)”等
+		if (str == null || str.isEmpty())
+			return "";
+//		str = str.replaceAll("\\pP", " ");
+		str = str.replaceAll("(?i)[^_a-zA-Z0-9\u4E00-\u9FA5]", " ");
+		
+				
+		WordSegmentation wordSegmentation = new WordSegmentation();
+		String words = wordSegmentation.segmentWord(str);
+		words = words.replace("\\s+", " ");
+		// ictclasOutPutName 保存分词结果的文件的绝对路径
+		String ictclasOutPutName = outPutPath + Constant.FILE_SEPARATOR + Constant.SEGMENT_DIR + Constant.FILE_SEPARATOR + Constant.globalCategoryID + Constant.FILE_SEPARATOR + docName + ".txt";
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(ictclasOutPutName));
+			writer.write(words);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return words;
+	}
+	/**
+	 * doWordSegmentation: 对输入的文本内容进行分词操作。
+	 * @param str : 待分词的文档段内容
+	 * @param outPutPath : 存放分割后的小文件的目录
+	 * @return words : 供后续的saveEnCnStrToDB方法使用
+	 */
+	private String doWordSegmentation(String str, String outPutPath, String docName, int filePointer) {
+		// 对str进行预处理，消除其中包含的特殊符号：“=”、“(”、“)”等
+		if (str == null || str.isEmpty())
+			return "";
+//		str = str.replaceAll("\\pP", " ");
+		str = str.replaceAll("(?i)[^_a-zA-Z0-9\u4E00-\u9FA5]", " ");
+		
+		WordSegmentation wordSegmentation = new WordSegmentation();
+		String words = wordSegmentation.segmentWord(str);
+		words = words.replace("\\s+", " ");
+		// ictclasOutPutName 保存分词结果的文件的绝对路径
+		String ictclasOutPutName = outPutPath + Constant.FILE_SEPARATOR + Constant.SEGMENT_DIR + Constant.FILE_SEPARATOR + Constant.globalCategoryID + Constant.FILE_SEPARATOR + docName + "_" + filePointer + ".txt";
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(ictclasOutPutName));
+			writer.write(words);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return words;
+	}
+	/**
+	 * 在这里创建数据表，保存文档段中出现的英文单词，以及其所对应的上下文中文词
+	 * / 1. 将文档段str按照中文进行划分，得到非中文字符组成的串，从中抽取出英文串（保留大小写信息），将该英文串作为数据表的主键，将该文档段中的其他中文词作为它的可能解释，放入对应的“中文词串”表项中
+     * //（进行上述步骤的原因：je工具分词后，将英文字符串全部转换为小写，丢失了进行驼峰标记法分词的信息）
+	 * @param str : 带分词的文档段内容
+	 * @param words : 文档段分词后以空格分割的每个词汇所拼成的字符串
+	 */
+	private void saveEnCnStrToDB (String str, String words) {
+		char bel = 7;
+		str = str.replace(bel, ' ');
+		String[] nonCnWords = str.split("[\\u4E00-\\u9FA5\\s]+");
+		for (String nonCnWord : nonCnWords) {
+			if (nonCnWord.matches("[a-zA-Z_][\\w]+\\.?[\\w]*")) {
+				// 将该英文串加入数据表中
+				StringBuilder tableFields = new StringBuilder("'" + nonCnWord + "', ");
+				// 构造中文词串
+				String cnStr = constructCNStr(str, nonCnWord);
+				// 检查英文词前后是否包含括号
+				int isSurroundWithParenthesis = surroundWithParenthesis(str, nonCnWord);
+				// 若包含括号，则同时获得紧挨的前一个中文词（没有前一个紧挨的中文词，则返回后一个紧挨的中文词）
+				String previousCnWord = "";
+				if (isSurroundWithParenthesis == 1) {
+					previousCnWord = getPreviousCnWord(words, nonCnWord);
+				}
+				// 开始insert
+				tableFields.append( "'" + cnStr + "', '" + isSurroundWithParenthesis + "'");
+				tableFields.append(", '" + previousCnWord + "'");
+				String columnStr = "en_word, cn_words, in_parenthesis, previous_cn_word";
+				boolean insertSuccess = DataBaseOperation.insertTable(DataBaseOperation.translate_table_name, columnStr, tableFields.toString());
+				if (insertSuccess)
+					System.out.println("---- >> 写数据成功： " + tableFields.toString());
+			}
+		}
+	}
+	
 	/**
 	 * surroundWithParenthesis 用来判断英文词enWord是否被包含在括号中
 	 * @param para

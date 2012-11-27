@@ -22,8 +22,8 @@ public class SecondExp {
 
 	// 找到LDA-LSI的结果log文件中的前500个关联关系，将其写到指定的文件中。
 	public static void main(String[] args) {
-		String inputDirPath = "D:\\exp2\\input";
-		String outputFile = "D:\\exp2\\output.txt";
+		String inputDirPath = "D:\\exp4\\高层文档与代码的相关性\\LDA方法\\input";
+		String outputFile = "D:\\exp4\\高层文档与代码的相关性\\LDA方法\\output.txt";
 		
 		MinHeap mh = new MinHeap(500); // 取前500个关联关系
 		try {

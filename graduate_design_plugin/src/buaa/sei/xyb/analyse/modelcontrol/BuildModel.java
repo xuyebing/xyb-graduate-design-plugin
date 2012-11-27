@@ -10,8 +10,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -45,6 +45,9 @@ public class BuildModel {
 	private String folderSet; // 包含所有待分析软件文档的文件夹绝对路径
 	private String projectName; // 待分析的项目名称
 	
+	public BuildModel() {
+	}
+	
 	public BuildModel(String folderSet, String projectName) {
 		this.folderSet = folderSet;
 		this.projectName = projectName;
@@ -65,6 +68,11 @@ public class BuildModel {
 	}
 	
 	public void build() throws JavaModelException {
+		// 打印开始时间
+		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
+		Date startDate = new Date();
+		String startTime = df.format(startDate);
+		
 		// 1. 文档段处理
 		createDataBase();
 		// String folderSet = "D:\\毕设用例"; // 包含所有待分析软件文档的文件夹绝对路径
@@ -114,7 +122,8 @@ public class BuildModel {
 					while ((line = br.readLine()) != null) {
 						String[] keyValue = line.split("=");
 						if (keyValue.length != 2) {
-							System.out.println(">>>> Error: Read wds file fail!");
+							System.out.println(">>>> Error: Read wds file fail! keyValue.length = " + keyValue.length);
+							System.out.println("\t line = " + line);
 							return;
 						}
 						int value = Integer.valueOf(keyValue[1]);
@@ -142,6 +151,7 @@ public class BuildModel {
 			}
 			
 		}
+//		System.out.println(">>>>>>>>>>>>>>>  inputMatrix 生成完毕，可以开始实验一!");
 //		2012-4-6 写inputMatrix.txt成功，继续工作，将其加入到LDA模型中
 		String argStr = "-est -alpha " + Constant.estAlpha +
 				            " -beta " + Constant.estBeta +
@@ -152,6 +162,7 @@ public class BuildModel {
                             " -dir " + this.matrixFilePath +
                             " -dfile " + this.matrixFileName;
 		String[] args = argStr.split(" ");
+		System.out.println("============>> Begin LDA Process <<=============");
 		LDA.main(args);
 		System.out.println("============>> LDA 模型执行完毕 <<================");
 		// 继续， 计算每个词汇在每个文档段中的香农信息值
@@ -210,6 +221,12 @@ public class BuildModel {
 		// 计算相似度
 		vsmProcess2.compute();
 		System.out.println("============>> !LSI -> VSM 计算完毕! 整个工具分析完毕! <<================");
+		
+		// 打印结束时间
+		Date endDate = new Date();
+		String endTime = df.format(endDate);
+		System.out.println("[ Start Time : " + startTime + " ]");
+		System.out.println("[ End   Time : " + endTime + " ]");
 	}
 	
 	class SwPair implements Comparable {
@@ -433,5 +450,17 @@ public class BuildModel {
 			}
 		}
 		return 0;
+	}
+	
+	// main 方法用来将lucene in action 书籍的word文档分割为txt文档，方便进行实验。
+	// 对于已经分割好的txt文档，不再进行文档的自动分段过程，直接进行后续的操作。
+	public static void main(String[] args) {
+		
+		String docFolderPath = "D:\\LuceneInActionDoc";
+		
+		BuildModel bm = new BuildModel();
+		bm.createDataBase();
+		DocumentAccess.docProcess(docFolderPath);
+		System.out.println(">>> Word文档分割成功!");
 	}
 }
